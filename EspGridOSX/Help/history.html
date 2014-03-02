@@ -27,6 +27,8 @@
         <a name="history"></a>
         <h1>EspGrid Version History</h1>
         
+        <div>v0.50.1 some pruning of log statements; beacons (internal protocol) now broadcast in a random pattern (1-5s)</div>
+        <div>v0.50.0 two major changes to synchronization: (a) using monotonic, epochless machine clock instead of gettimeofday and (b) each node translates monotonic, epochless machine time of each other peer into its own frame, instead of maintaining a shared, synchronized clock.</div>
         <div>v0.49 Linux/GNUstep port; request-driven messages to flexible host/ports; all UDP sent from meaningful ports; cross-thread notification mechanism for chat/log posting; general refactoring</div>
         <div>v0.48 critical bug fix in mode 1 clock synchronization</div>
         <div>v0.47 request-driven /clock/offset/* /esp/tempo/* messages (cf. TOPLAP discussions), EspClock for SuperCollider</div>

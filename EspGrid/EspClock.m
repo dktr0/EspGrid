@@ -41,19 +41,13 @@
     self = [super init];
     countOfBeaconsIssued = 0;
     [self changeSyncMode:1];
-    urgentBeaconCounter = 20;
-    [NSTimer scheduledTimerWithTimeInterval:0.025
-                                     target:self
-                                   selector:@selector(sendBeacon:)
-                                   userInfo:nil
-                                    repeats:NO];
+    [self sendBeacon:nil];
     return self;
 }
 
 
 -(void) changeSyncMode:(int)mode
 {
-    NSLog(@"[EspClock changeSyncMode]");
     syncMode = mode;
     switch(syncMode) {
         case 0: [self setSyncModeName:@"no adjustments"]; break;
@@ -61,7 +55,7 @@
     }
 }
 
--(void) issueBeacon:(BOOL)urgent
+-(void) issueBeacon
 {
     countOfBeaconsIssued++;
     NSMutableDictionary* d = [[NSMutableDictionary alloc] init]; // was autoreleased on OSX 0.48 ???
@@ -69,7 +63,6 @@
     [d setObject:[NSNumber numberWithInt:ESPGRID_MAJORVERSION] forKey:@"majorVersion"];
     [d setObject:[NSNumber numberWithInt:ESPGRID_MINORVERSION] forKey:@"minorVersion"];
     [d setObject:[NSNumber numberWithInt:syncMode] forKey:@"syncMode"];
-    [d setObject:[NSNumber numberWithBool:urgent] forKey:@"urgent"];
     [udp transmitOpcode:ESP_OPCODE_BEACON withDictionary:d burst:1];
     [peerList checkAllLastBeaconStatuses];
 }
@@ -92,27 +85,14 @@
 
 -(void) sendBeacon:(NSTimer*)t
 {
-    if(urgentBeaconCounter)
-    {
-        [self issueBeacon:YES];
-        urgentBeaconCounter--;
-        [NSTimer scheduledTimerWithTimeInterval:0.025
-                                         target:self
-                                       selector:@selector(sendBeacon:)
-                                       userInfo:nil
-                                        repeats:NO];
-    }
-    else
-    {
-        [self issueBeacon:NO];
-        [NSTimer scheduledTimerWithTimeInterval:5.000
-                                         target:self
-                                       selector:@selector(sendBeacon:)
-                                       userInfo:nil
-                                        repeats:NO];
-    }
+    [self issueBeacon];
+    NSTimeInterval nextBeacon = 1.0+(4.0*((double)arc4random()/4294967295)); // beacons 1 - 5 seconds apart
+    [NSTimer scheduledTimerWithTimeInterval:nextBeacon
+                                     target:self
+                                   selector:@selector(sendBeacon:)
+                                   userInfo:nil
+                                    repeats:NO];
 }
-
 
 -(BOOL) handleOpcode:(NSDictionary*)d;
 {
@@ -130,16 +110,14 @@
         NSNumber* majorVersion = [d objectForKey:@"majorVersion"]; VALIDATE_OPCODE_NSNUMBER(majorVersion);
         NSNumber* minorVersion = [d objectForKey:@"minorVersion"]; VALIDATE_OPCODE_NSNUMBER(minorVersion);
         NSNumber* syncModeObject = [d objectForKey:@"syncMode"]; VALIDATE_OPCODE_NSNUMBER(syncModeObject);
-        BOOL urgent = [[d objectForKey:@"urgent"] boolValue]; // no need to validate: defaults to FALSE which is okay
         NSNumber* monotonicSendTime = [d objectForKey:@"monotonicSendTime"]; VALIDATE_OPCODE_NSNUMBER(monotonicSendTime);
         NSNumber* systemSendTime = [d objectForKey:@"systemSendTime"]; VALIDATE_OPCODE_NSNUMBER(systemSendTime);
         NSNumber* monotonicReceiveTime = [d objectForKey:@"monotonicReceiveTime"]; VALIDATE_OPCODE_NSNUMBER(monotonicReceiveTime);
         NSNumber* systemReceiveTime = [d objectForKey:@"systemReceiveTime"]; VALIDATE_OPCODE_NSNUMBER(systemReceiveTime);
-        // log; respond with ACK; harvest data into peerlist; if beacon was urgent, broadcast lots of info for new peer
+        // log; respond with ACK; harvest data into peerlist
         postLog([NSString stringWithFormat:@"BEACON from %@-%@ at %@",name,machine,ip],self);
         [self issueAck:d];
         [peerList receivedBeacon:d];
-        if(urgent)[[NSNotificationCenter defaultCenter] postNotificationName:@"newPeer" object:nil userInfo:nil];
         return YES;
     }
     
@@ -170,18 +148,8 @@
 
 -(EspTimeType) adjustmentForPeer:(EspPeer*)peer
 {
-    // what to do if passed nil?
-    if(peer)
-    {
-        // NSLog(@"[peer adjustments]=%p",[peer adjustments]);
-        // NSLog(@"syncMode = %d",syncMode);
-        return [peer adjustments][syncMode];
-    }
-    else
-    {
-        NSLog(@"warning? nil peer in adjustmentForPeer");
-        return 0;
-    }
+    if(peer) return [peer adjustments][syncMode];
+    else { NSLog(@"warning? nil peer in adjustmentForPeer"); return 0; }
 }
 
 -(void)updateflux:(EspTimeType)adjToAdj

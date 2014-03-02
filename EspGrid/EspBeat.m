@@ -117,10 +117,6 @@
 
 -(EspTimeType) adjustedDownbeatTime
 {
-    postLog([NSString stringWithFormat:@" downbeatTime=%@\n adjustedBy=%lld\n total=%lld",
-             downbeatTime,
-             [kvc clockAdjustmentForAuthority:@"beat.downbeatTime"],
-             [downbeatTime longLongValue] + [kvc clockAdjustmentForAuthority:@"beat.downbeatTime"]],self);
     return [downbeatTime longLongValue] + [kvc clockAdjustmentForAuthority:@"beat.downbeatTime"];
 }
 

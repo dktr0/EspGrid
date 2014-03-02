@@ -112,22 +112,10 @@
     EspTimeType roundtripMonotonic = ackReceiveMonotonic - beaconSendMonotonic;
     EspTimeType roundtripSystem = ackReceiveSystem - beaconSendSystem;
     
-    NSLog(@"ackForSelf infodump");
-    NSLog(@" ackPrepareMonotonic = %lld",ackPrepareMonotonic);
-    NSLog(@" ackPrepareSystem = %lld",ackPrepareSystem);
-    NSLog(@" roundtripMonotonic = %lld",roundtripMonotonic);
-    NSLog(@" roundtripSystem = %lld",roundtripSystem);
-    
     recentLatencyMM = (roundtripMonotonic - ackPrepareMonotonic) / 2;
     recentLatencyMS = (roundtripMonotonic - ackPrepareSystem) / 2;
     recentLatencySM = (roundtripSystem - ackPrepareMonotonic) / 2;
     recentLatencySS = (roundtripSystem - ackPrepareSystem) / 2;
-    
-    NSLog(@" recentLatencyMM = %lld",recentLatencyMM);
-    NSLog(@" recentLatencyMS = %lld",recentLatencyMS);
-    NSLog(@" recentLatencySM = %lld",recentLatencySM);
-    NSLog(@" recentLatencySS = %lld",recentLatencySS);
-    
     if(recentLatencyMM < lowestLatencyMM) lowestLatencyMM = recentLatencyMM;
     if(recentLatencyMS < lowestLatencyMS) lowestLatencyMS = recentLatencyMS;
     if(recentLatencySM < lowestLatencySM) lowestLatencySM = recentLatencySM;
@@ -156,7 +144,7 @@
     {
         adjustments[13] = adjustments[1];
         adjustments[14] = adjustments[9];
-    } else NSLog(@"confirming peer count >=3");
+    }
 }
 
 -(void) dumpAdjustments

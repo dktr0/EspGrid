@@ -76,7 +76,7 @@ EspGrid* currentGrid;
     highVolumePosts = NO;
     
     [self setVersionString:[NSString stringWithFormat:@"version %d.%2d.%d",
-                            ESPGRID_MAJORVERSION,ESPGRID_MINORVERSION,ESPGRID_BUILDVERSION]];
+                            ESPGRID_MAJORVERSION,ESPGRID_MINORVERSION,ESPGRID_SUBVERSION]];
     postLog(versionString,nil);
     [self setTitle:[NSString stringWithFormat:@"by David Ogborn"]];
     postLog(title,nil);

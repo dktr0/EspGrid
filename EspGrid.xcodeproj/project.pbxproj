@@ -19,7 +19,6 @@
 		060A262415C90E2E00BC5E8D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 060A260C15C90E2E00BC5E8D /* InfoPlist.strings */; };
 		060A262515C90E2E00BC5E8D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 060A260E15C90E2E00BC5E8D /* MainMenu.xib */; };
 		060A262615C90E2E00BC5E8D /* EspAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A261115C90E2E00BC5E8D /* EspAppDelegate.m */; };
-		060A262B15C9110100BC5E8D /* NOTES in Resources */ = {isa = PBXBuildFile; fileRef = 060A262A15C9110100BC5E8D /* NOTES */; };
 		060ABC3217E0C0830031AE8F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 064EF35415CB889700005A16 /* Foundation.framework */; };
 		060ABC3917E0C0830031AE8F /* espgridd.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 060ABC3817E0C0830031AE8F /* espgridd.1 */; };
 		060ABC3E17E0C1200031AE8F /* EspGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25F615C90E2E00BC5E8D /* EspGrid.m */; };
@@ -150,7 +149,6 @@
 		060A261215C90E2E00BC5E8D /* EspGrid-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "EspGrid-Info.plist"; sourceTree = "<group>"; };
 		060A261315C90E2E00BC5E8D /* EspGrid-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EspGrid-Prefix.pch"; sourceTree = "<group>"; };
 		060A261415C90E2E00BC5E8D /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		060A262A15C9110100BC5E8D /* NOTES */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NOTES; sourceTree = "<group>"; };
 		060ABC3017E0C0830031AE8F /* espgridd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = espgridd; sourceTree = BUILT_PRODUCTS_DIR; };
 		060ABC3717E0C0830031AE8F /* espgridd-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "espgridd-Prefix.pch"; sourceTree = "<group>"; };
 		060ABC3817E0C0830031AE8F /* espgridd.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = espgridd.1; sourceTree = "<group>"; };
@@ -394,10 +392,9 @@
 		0699368F15C90761002F64AF = {
 			isa = PBXGroup;
 			children = (
-				06A352B817665486000B66DE /* EspGrid-helpful-code */,
-				060A262A15C9110100BC5E8D /* NOTES */,
 				06ED1A48172AAAE3003401A6 /* COPYING.txt */,
 				0676AF751637A2610082B57D /* Help */,
+				06A352B817665486000B66DE /* EspGrid-helpful-code */,
 				06B51764163080E10036A44B /* Default-568h@2x.png */,
 				060A25EC15C90E2E00BC5E8D /* EspGrid */,
 				060A260715C90E2E00BC5E8D /* EspGridOSX */,
@@ -608,7 +605,6 @@
 				060A262315C90E2E00BC5E8D /* EspPreferencesPanel.xib in Resources */,
 				060A262415C90E2E00BC5E8D /* InfoPlist.strings in Resources */,
 				060A262515C90E2E00BC5E8D /* MainMenu.xib in Resources */,
-				060A262B15C9110100BC5E8D /* NOTES in Resources */,
 				0676AF761637A2610082B57D /* Help in Resources */,
 				06E932621642DCE800D3D4DA /* Esp Grid Icon V2.icns in Resources */,
 				0698E8A71722AF1700FCE1AA /* EspDetailedPeerList.xib in Resources */,

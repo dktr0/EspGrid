@@ -23,7 +23,6 @@
 
 @interface EspClock : NSObject <EspHandleOpcode>
 {
-    int urgentBeaconCounter;
     int countOfBeaconsIssued;
     int syncMode;
     EspTimeType fluxTimes[1024];
