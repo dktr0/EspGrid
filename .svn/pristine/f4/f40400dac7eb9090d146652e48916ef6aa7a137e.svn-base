@@ -1,0 +1,92 @@
+// esp.ck - Chuck code to interact with the ESP app/network
+// by David Ogborn, 2011-13, http://esp.mcmaster.ca
+
+// Example 1: wait for any beat
+// Esp.e => now; // e stands for "event"
+
+// Example 2: wait for a specific beat
+// Esp.b(2) => now; // waits for beat 2 to occur
+
+// Example 3: wait for an offbeat
+// Esp.b(2.5) => now; // wait for half through beat 2
+
+// Example 4: play just ahead of the downbeat
+// Esp.b(0.99) => now; // just a little bit before beat 1...
+
+// Example 5: "tuplets"
+// Esp.b(4) => now;
+// repeat(4) {
+//  spork~ f(); // i.e. do something, in this case whatever f() is
+//  Esp.d / 3 => now; // wait 1/3 of a beat
+// }
+
+public class Esp {
+    static Event@ e; // event triggered by a beat
+    static int n;    // number of the most recent beat
+    static int l;    // number of beats in a bar/cycle
+    static dur d;    // current duration of a beat
+    static time t;   // Chuck time at which last event happened
+
+    fun static Event b(float f) { // 3.0
+        (f - 1.0) => float shifted; // 2.0 
+        Math.floor(shifted) $ int => int whole; // 2
+        if(whole >= 0) { (whole % l) + 1 => whole; } // 3
+        else { (l-((0-whole)%l)) + 1 => whole; } // n.a.
+        f - Math.floor(f) => float remainder; // ?
+        Event theEvent;
+        if(whole == n) { 
+            t + (d*remainder) => time targetTime;
+            if(targetTime > now) {
+                // event fires targetTime-nowTime later
+                spork~ b_shredA(theEvent,targetTime-now);
+                return theEvent;
+            }
+        } 
+        spork~ b_shredB(theEvent,whole,remainder);
+        return theEvent;
+    }
+    
+    fun static void b_shredA(Event y,dur d) {
+        d => now;
+        y.broadcast();
+    }
+    
+    fun static void b_shredB(Event y,int x,float f) {
+        do { e => now; } until ( n == x );
+        d * f => now;
+        y.broadcast();
+    }
+    
+    static int is[];
+    static float fs[];
+    static string ss[];
+   
+}
+
+    [0,0,0,0,0,0,0,0] @=> Esp.is;
+    [0.0,0,0,0,0,0,0,0] @=> Esp.fs;
+    ["","","","","","","",""] @=> Esp.ss;
+
+new Event @=> Esp.e;
+-1 => Esp.n;
+-1 => Esp.l;
+0::day => Esp.d;
+
+OscRecv r;
+5512 => r.port;
+r.listen();
+r.event("/esp/beat, i i f f f") @=> OscEvent oe;
+
+while(true) {
+    oe => now;
+    while(oe.nextMsg()!=0) {
+        oe.getInt() => Esp.n;
+        oe.getInt() => Esp.l;
+        oe.getFloat()::second => Esp.d;
+        oe.getFloat(); // discard clock and adjustment values
+        oe.getFloat();
+        now => Esp.t;
+        Esp.e.broadcast();
+        <<< "/esp/beat",Esp.n,Esp.l,Esp.d >>>;
+    }
+}

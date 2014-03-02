@@ -1,0 +1,53 @@
+//
+//  EspInternalProtocol.h
+//
+//  This file is part of EspGrid.  EspGrid is (c) 2012,2013 by David Ogborn.
+//
+//  EspGrid is free software: you can redistribute it and/or modify
+//  it under the terms of the GNU General Public License as published by
+//  the Free Software Foundation, either version 3 of the License, or
+//  (at your option) any later version.
+//
+//  EspGrid is distributed in the hope that it will be useful,
+//  but WITHOUT ANY WARRANTY; without even the implied warranty of
+//  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//  GNU General Public License for more details.
+//
+//  You should have received a copy of the GNU General Public License
+//  along with EspGrid.  If not, see <http://www.gnu.org/licenses/>.
+//
+//  This class is our "low-level" UDP sender and receiver
+//  for direct communication (opcodes) between ESP applications
+//  At the moment it listens on assigned port (5509)
+//  And sends broadcast packets on the same port
+//  But it will evolve to support multiple destinations, etc
+
+#import <Foundation/Foundation.h>
+#import "EspHandleOpcode.h"
+#import "EspSocket.h"
+#import "EspPeerList.h"
+#import "EspBridge.h"
+
+#define ESPUDP_MAX_HANDLERS 16
+
+@interface EspInternalProtocol : NSObject <EspSocketDelegate,EspHandleOpcode>
+{
+    EspSocket* udpReceive;
+    id<EspHandleOpcode> handlers[ESPUDP_MAX_HANDLERS];
+
+    NSInteger messageHash; // a count used to identify multi-transmitted messages, ignore duplicates
+    NSMutableArray* hashQueue; // the most recent received hashes, used to ignore duplicates
+    int hashQueueIndex; // circular index into hashQueue
+
+    EspPeerList* peerList;
+    EspBridge* bridge;
+}
+@property (nonatomic,assign) EspPeerList* peerList;
+@property (nonatomic,assign) EspBridge* bridge;
+
+-(void) transmitOpcode:(int)opcode withDictionary:(NSDictionary*)d burst:(int)n;
+-(void) transmitOpcodeToSelf:(int)opcode withDictionary:(NSDictionary*)d;
+-(void) receivedOpcode:(NSDictionary*)d;
+-(BOOL) isDuplicateMessage:(NSDictionary*)msg;
+-(void) setHandler:(id)h forOpcode:(int)o;
+@end

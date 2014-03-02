@@ -1,0 +1,59 @@
+<!--
+ 
+ This file is part of EspGrid.  EspGrid is (c) 2012,2013 by David Ogborn.
+ 
+ EspGrid is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ EspGrid is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with EspGrid.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ -->
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" class="nojs">
+    <head>
+    <title>EspGrid</title>
+    <meta name="AppleTitle" content="EspGrid" />
+    </head>
+    
+    <body>
+        
+<h1>EspGrid</h1>
+        
+        <h2>by David Ogborn</h2>
+
+        <div>EspGrid is a protocol/application developed to streamline the sharing of timing, beats and code in participatory electronic ensembles, such as laptop orchestras.  EspGrid has been developed and tested in the busy rehearsal and performance environment of McMaster University's Cybernetic Orchestra, during the project "Scalable, Collective Traditions of Electronic Sound Performance" supported by Canada's Social Sciences and Humanities Research Council (SSHRC), and the Arts Research Board of McMaster University.  The design of EspGrid has been heavily influenced by the following 5 principles:</div>
+    <div>
+    <ol>
+        <li>Immediacy: Simply launching EspGrid on a network makes shared resources immediately available, with new resources becoming available as soon as they exist</li>
+        <li>Neutrality: EspGrid works alongside diverse performance/environments languages (ChucK, Max, PD, SuperCollider, etc)</li>
+        <li>Hybridity: EspGrid facilitates the use of multiple languages/environments within the same ensemble or even the same machine</li>
+        <li>Decentralization: All machines run the same EspGrid software, and all performers have equal access to the resources and controls of the grid - there is no "server".</li>
+        <li>Extensibility: EspGrid can be used to synchronize and schedule arbitrary OSC messages across an ensemble</li>
+    </ol></div>
+        
+<div>EspGrid is still very much in development - so the fine details of many of the features documented in this help system can be expected to change rapidly and without (much) warning in the future.  The basic architecture and approach, however, is likely to be much more stable.  So fire up the grid, launch the electronic music tools of your choice, and let's all make music together!</div>
+            
+<div>
+    <h1>Table of Contents</h1>
+    <ol>
+    <li><a href="getting-started.html">Getting Started</a></li>
+    <li><a href="preferences.html">Preferences</a></li>
+    <li><a href="beats.html">Sharing Beats</a></li>
+    <li><a href="code.html">Sharing Code</a></li>
+    <li><a href="chat.html">Sharing Chat</a></li>
+    <li><a href="architecture.html">EspGrid Architecture</a></li>
+    <li><a href="osc.html">OSC output and input</a></li>
+    <li><a href="history.html">Version History</a></li>
+    </ol>
+</div>
+    </body>
+</html>

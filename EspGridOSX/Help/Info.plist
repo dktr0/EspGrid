@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en-us</string>
+	<key>CFBundleIdentifier</key>
+	<string>ogborn.david.EspGrid.help</string>
+	<key>CFBundleName</key>
+	<string>EspGrid</string>
+	<key>CFBundlePackageType</key>
+	<string>BNDL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1</string>
+	<key>CFBundleSignature</key>
+	<string>hbwr</string>
+	<key>CFBundleVersion</key>
+	<string>32</string>
+	<key>HPDBookAccessPath</key>
+	<string>index.html</string>
+	<key>HPDBookIconPath</key>
+	<string></string>
+	<key>HPDBookIndexPath</key>
+	<string>Help/Help.helpindex</string>
+	<key>HPDBookKBProduct</key>
+	<string>EspGrid1</string>
+	<key>HPDBookKBURL</key>
+	<string></string>
+	<key>HPDBookRemoteURL</key>
+	<string></string>
+	<key>HPDBookTitle</key>
+	<string>EspGrid Help</string>
+	<key>HPDBookType</key>
+	<string>3</string>
+	<key>HPDBookTopicListCSSPath</key>
+	<string></string>
+	<key>HPDBookTopicListTemplatePath</key>
+	<string></string>
+</dict>
+</plist>

@@ -1,0 +1,43 @@
+<!--
+ 
+ This file is part of EspGrid.  EspGrid is (c) 2012,2013 by David Ogborn.
+ 
+ EspGrid is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ 
+ EspGrid is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ 
+ You should have received a copy of the GNU General Public License
+ along with EspGrid.  If not, see <http://www.gnu.org/licenses/>.
+ 
+ -->
+
+<html>
+    <head>
+        <title>EspGrid</title>
+    </head>
+    <body>
+        
+        <a name="main"></a>
+        <h1>EspGrid Main tab</h1>
+        
+        <div>On the Main tab of the EspGrid application you will find controls that pertain to the shared beat and chat systems - in addition to some reports of the status of the grid.</div>
+        
+        <h2>Beat Controls</h2>
+        <div><h3>Tempo</h3>This sets the tempo in beats per minute (BPM) of the shared, synchronized beat system.</div>
+        <div><h3>cycleLength</h3>This sets the number of beats in each bar.  The synchronized beats will be generated with identifiers ranging from 1 up to this number.  For example, for 4/4 - set cycleLength to 4.  The generated beats will be 1, then 2, then 3, then 4, then back to 1, etc.  Each generated beat is an OSC message issued to a list of local applications - these local applications can use information from the beat to place events between beats (each beat message includes the number of beats in a bar as well as the duration, in seconds, of a current beat).</div>
+        <div><h3>On/Off</h3>This turns the generation of synchronized beats on/off.  Each time the beat system is turned on, the first beat to be generated will be beat 1.</div>
+        
+        <h2>Chat Controls</h2>
+        <div><h3>EspChat</h3>The first long box is for the entry of chat messages.  Type a message here and press enter - it will be sent to all of your co-performers on the grid.</div>
+        <div>Below the long box is a large area where received chat messages are displayed.</div>
+            
+        <div>(Note: If you are using EspGrid for the first time, you may wish to peruse the <a href="getting-started.html">"Getting Started" section</a> of this help book.</div>
+        
+    </body>
+</html>

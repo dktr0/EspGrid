@@ -1,0 +1,1044 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0603F51117DD562D009943C3 /* EspBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 0603F51017DD562D009943C3 /* EspBridge.m */; };
+		060A261515C90E2E00BC5E8D /* EspBeat.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25EE15C90E2E00BC5E8D /* EspBeat.m */; };
+		060A261615C90E2E00BC5E8D /* EspChat.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25F015C90E2E00BC5E8D /* EspChat.m */; };
+		060A261715C90E2E00BC5E8D /* EspClock.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25F215C90E2E00BC5E8D /* EspClock.m */; };
+		060A261815C90E2E00BC5E8D /* EspCodeShare.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25F415C90E2E00BC5E8D /* EspCodeShare.m */; };
+		060A261915C90E2E00BC5E8D /* EspGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25F615C90E2E00BC5E8D /* EspGrid.m */; };
+		060A261B15C90E2E00BC5E8D /* EspKeyValueController.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25FA15C90E2E00BC5E8D /* EspKeyValueController.m */; };
+		060A261E15C90E2E00BC5E8D /* EspPeerList.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A260015C90E2E00BC5E8D /* EspPeerList.m */; };
+		060A262315C90E2E00BC5E8D /* EspPreferencesPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 060A260A15C90E2E00BC5E8D /* EspPreferencesPanel.xib */; };
+		060A262415C90E2E00BC5E8D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 060A260C15C90E2E00BC5E8D /* InfoPlist.strings */; };
+		060A262515C90E2E00BC5E8D /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 060A260E15C90E2E00BC5E8D /* MainMenu.xib */; };
+		060A262615C90E2E00BC5E8D /* EspAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A261115C90E2E00BC5E8D /* EspAppDelegate.m */; };
+		060A262B15C9110100BC5E8D /* NOTES in Resources */ = {isa = PBXBuildFile; fileRef = 060A262A15C9110100BC5E8D /* NOTES */; };
+		060ABC3217E0C0830031AE8F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 064EF35415CB889700005A16 /* Foundation.framework */; };
+		060ABC3917E0C0830031AE8F /* espgridd.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 060ABC3817E0C0830031AE8F /* espgridd.1 */; };
+		060ABC3E17E0C1200031AE8F /* EspGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25F615C90E2E00BC5E8D /* EspGrid.m */; };
+		060ABC3F17E0C1290031AE8F /* EspMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D6C54A161F928700372D54 /* EspMessage.m */; };
+		060ABC4017E0C12D0031AE8F /* EspQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FED5331631DDEF00BF393B /* EspQueue.m */; };
+		060ABC4117E0C1300031AE8F /* EspBeat.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25EE15C90E2E00BC5E8D /* EspBeat.m */; };
+		060ABC4217E0C1330031AE8F /* EspChat.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25F015C90E2E00BC5E8D /* EspChat.m */; };
+		060ABC4317E0C1360031AE8F /* EspClock.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25F215C90E2E00BC5E8D /* EspClock.m */; };
+		060ABC4417E0C1390031AE8F /* EspCodeShareItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D31E98164ADFCA002CCCAF /* EspCodeShareItem.m */; };
+		060ABC4517E0C13E0031AE8F /* EspCodeShare.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25F415C90E2E00BC5E8D /* EspCodeShare.m */; };
+		060ABC4617E0C1450031AE8F /* EspKeyValueController.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25FA15C90E2E00BC5E8D /* EspKeyValueController.m */; };
+		060ABC4917E0C14C0031AE8F /* EspPeerList.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A260015C90E2E00BC5E8D /* EspPeerList.m */; };
+		060ABC4D17E0C15A0031AE8F /* EspBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 0603F51017DD562D009943C3 /* EspBridge.m */; };
+		060ABC4E17E0C15C0031AE8F /* EspBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 0603F51017DD562D009943C3 /* EspBridge.m */; };
+		060ABC4F17E0C15C0031AE8F /* EspBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 0603F51017DD562D009943C3 /* EspBridge.m */; };
+		063BE05618259F1000B31C18 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 063BE05518259F1000B31C18 /* main.m */; };
+		063BE058182738BA00B31C18 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A261415C90E2E00BC5E8D /* main.m */; };
+		0649463816A1C26600FCC2F2 /* EspChatTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649463716A1C26600FCC2F2 /* EspChatTests.m */; };
+		064EF35315CB889700005A16 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 064EF35215CB889700005A16 /* UIKit.framework */; };
+		064EF35515CB889700005A16 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 064EF35415CB889700005A16 /* Foundation.framework */; };
+		064EF35715CB889700005A16 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 064EF35615CB889700005A16 /* CoreGraphics.framework */; };
+		064EF35D15CB889700005A16 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 064EF35B15CB889700005A16 /* InfoPlist.strings */; };
+		064EF35F15CB889700005A16 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 064EF35E15CB889700005A16 /* main.m */; };
+		064EF36315CB889700005A16 /* EspAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 064EF36215CB889700005A16 /* EspAppDelegate.m */; };
+		064EF36615CB889700005A16 /* EspFirstViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 064EF36515CB889700005A16 /* EspFirstViewController.m */; };
+		064EF36815CB889700005A16 /* first.png in Resources */ = {isa = PBXBuildFile; fileRef = 064EF36715CB889700005A16 /* first.png */; };
+		064EF36A15CB889800005A16 /* first@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 064EF36915CB889800005A16 /* first@2x.png */; };
+		064EF36D15CB889800005A16 /* EspSecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 064EF36C15CB889800005A16 /* EspSecondViewController.m */; };
+		064EF36F15CB889800005A16 /* second.png in Resources */ = {isa = PBXBuildFile; fileRef = 064EF36E15CB889800005A16 /* second.png */; };
+		064EF37115CB889800005A16 /* second@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 064EF37015CB889800005A16 /* second@2x.png */; };
+		064EF37415CB889800005A16 /* EspFirstViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 064EF37215CB889800005A16 /* EspFirstViewController_iPhone.xib */; };
+		064EF37715CB889800005A16 /* EspFirstViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 064EF37515CB889800005A16 /* EspFirstViewController_iPad.xib */; };
+		064EF37A15CB889800005A16 /* EspSecondViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 064EF37815CB889800005A16 /* EspSecondViewController_iPhone.xib */; };
+		064EF37D15CB889800005A16 /* EspSecondViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 064EF37B15CB889800005A16 /* EspSecondViewController_iPad.xib */; };
+		064EF38415CB8C9F00005A16 /* EspPeerList.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A260015C90E2E00BC5E8D /* EspPeerList.m */; };
+		064EF38715CB8D8500005A16 /* EspKeyValueController.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25FA15C90E2E00BC5E8D /* EspKeyValueController.m */; };
+		064EF38A15CB8DFB00005A16 /* EspClock.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25F215C90E2E00BC5E8D /* EspClock.m */; };
+		064EF38B15CB8E0C00005A16 /* EspChat.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25F015C90E2E00BC5E8D /* EspChat.m */; };
+		064EF38C15CB8E1200005A16 /* EspBeat.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25EE15C90E2E00BC5E8D /* EspBeat.m */; };
+		064EF38D15CB8E2700005A16 /* EspGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25F615C90E2E00BC5E8D /* EspGrid.m */; };
+		0676AF761637A2610082B57D /* Help in Resources */ = {isa = PBXBuildFile; fileRef = 0676AF751637A2610082B57D /* Help */; };
+		068B283F182C6E2500EA2990 /* EspSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283A182C6E2500EA2990 /* EspSocket.m */; };
+		068B2840182C6E2500EA2990 /* EspSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283A182C6E2500EA2990 /* EspSocket.m */; };
+		068B2841182C6E2500EA2990 /* EspSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283A182C6E2500EA2990 /* EspSocket.m */; };
+		068B2842182C6E2500EA2990 /* EspInternalProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283B182C6E2500EA2990 /* EspInternalProtocol.m */; };
+		068B2843182C6E2500EA2990 /* EspInternalProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283B182C6E2500EA2990 /* EspInternalProtocol.m */; };
+		068B2844182C6E2500EA2990 /* EspInternalProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283B182C6E2500EA2990 /* EspInternalProtocol.m */; };
+		068B2845182C6E2500EA2990 /* EspOsc.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283D182C6E2500EA2990 /* EspOsc.m */; };
+		068B2846182C6E2500EA2990 /* EspOsc.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283D182C6E2500EA2990 /* EspOsc.m */; };
+		068B2847182C6E2500EA2990 /* EspOsc.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283D182C6E2500EA2990 /* EspOsc.m */; };
+		0698E8A71722AF1700FCE1AA /* EspDetailedPeerList.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0698E8A61722AF1700FCE1AA /* EspDetailedPeerList.xib */; };
+		0698E8AB1722B2D900FCE1AA /* EspDetailedPeerListController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0698E8A91722B2D900FCE1AA /* EspDetailedPeerListController.m */; };
+		0699369F15C90761002F64AF /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0699369E15C90761002F64AF /* Cocoa.framework */; };
+		069BA8D61684F24500377CED /* MockEspUdp.m in Sources */ = {isa = PBXBuildFile; fileRef = 069BA8D51684F24500377CED /* MockEspUdp.m */; };
+		06A17BEA16A39CE900F798D5 /* EspClockTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06A17BE916A39CE900F798D5 /* EspClockTests.m */; };
+		06A17BED16A3C0DF00F798D5 /* EspKeyValueControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06A17BEC16A3C0DF00F798D5 /* EspKeyValueControllerTests.m */; };
+		06A352B917665486000B66DE /* EspGrid-helpful-code in Resources */ = {isa = PBXBuildFile; fileRef = 06A352B817665486000B66DE /* EspGrid-helpful-code */; };
+		06B51765163080E10036A44B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 06B51764163080E10036A44B /* Default-568h@2x.png */; };
+		06C3436A163F664000F72BE8 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C34369163F664000F72BE8 /* SenTestingKit.framework */; };
+		06C3436B163F664000F72BE8 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0699369E15C90761002F64AF /* Cocoa.framework */; };
+		06C34371163F664000F72BE8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 06C3436F163F664000F72BE8 /* InfoPlist.strings */; };
+		06C34374163F664000F72BE8 /* EspCodeShareTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C34373163F664000F72BE8 /* EspCodeShareTests.m */; };
+		06C3437C163F724C00F72BE8 /* EspGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25F615C90E2E00BC5E8D /* EspGrid.m */; };
+		06C3437D163F724C00F72BE8 /* EspMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D6C54A161F928700372D54 /* EspMessage.m */; };
+		06C3437E163F724C00F72BE8 /* EspQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FED5331631DDEF00BF393B /* EspQueue.m */; };
+		06C3437F163F724C00F72BE8 /* EspBeat.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25EE15C90E2E00BC5E8D /* EspBeat.m */; };
+		06C34380163F724C00F72BE8 /* EspChat.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25F015C90E2E00BC5E8D /* EspChat.m */; };
+		06C34381163F724C00F72BE8 /* EspClock.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25F215C90E2E00BC5E8D /* EspClock.m */; };
+		06C34382163F724C00F72BE8 /* EspCodeShare.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25F415C90E2E00BC5E8D /* EspCodeShare.m */; };
+		06C34383163F724C00F72BE8 /* EspKeyValueController.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25FA15C90E2E00BC5E8D /* EspKeyValueController.m */; };
+		06C34386163F724C00F72BE8 /* EspPeerList.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A260015C90E2E00BC5E8D /* EspPeerList.m */; };
+		06D2BBC5163DC0F2002AB7AE /* EspMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D6C54A161F928700372D54 /* EspMessage.m */; };
+		06D2BBC6163DC0F5002AB7AE /* EspQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FED5331631DDEF00BF393B /* EspQueue.m */; };
+		06D2BBC7163DC155002AB7AE /* EspCodeShare.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25F415C90E2E00BC5E8D /* EspCodeShare.m */; };
+		06D31E99164ADFCA002CCCAF /* EspCodeShareItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D31E98164ADFCA002CCCAF /* EspCodeShareItem.m */; };
+		06D31E9A164ADFCA002CCCAF /* EspCodeShareItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D31E98164ADFCA002CCCAF /* EspCodeShareItem.m */; };
+		06D31E9B164ADFCA002CCCAF /* EspCodeShareItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D31E98164ADFCA002CCCAF /* EspCodeShareItem.m */; };
+		06D31E9F164AE078002CCCAF /* EspCodeShareItemTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D31E9E164AE078002CCCAF /* EspCodeShareItemTests.m */; };
+		06D31EA2164C0FE9002CCCAF /* EspOscReceiveTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D31EA1164C0FE9002CCCAF /* EspOscReceiveTests.m */; };
+		06D6C54B161F928700372D54 /* EspMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 06D6C54A161F928700372D54 /* EspMessage.m */; };
+		06E932621642DCE800D3D4DA /* Esp Grid Icon V2.icns in Resources */ = {isa = PBXBuildFile; fileRef = 06E932611642DCE800D3D4DA /* Esp Grid Icon V2.icns */; };
+		06ED1A49172AAAE3003401A6 /* COPYING.txt in Resources */ = {isa = PBXBuildFile; fileRef = 06ED1A48172AAAE3003401A6 /* COPYING.txt */; };
+		06F9206A168370DA005EDCDF /* EspOpcodeReceiveTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F92069168370DA005EDCDF /* EspOpcodeReceiveTests.m */; };
+		06FED5341631DDEF00BF393B /* EspQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FED5331631DDEF00BF393B /* EspQueue.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		060ABC2E17E0C0830031AE8F /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+				060ABC3917E0C0830031AE8F /* espgridd.1 in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0603F50F17DD562D009943C3 /* EspBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspBridge.h; sourceTree = "<group>"; };
+		0603F51017DD562D009943C3 /* EspBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspBridge.m; sourceTree = "<group>"; };
+		060A25ED15C90E2E00BC5E8D /* EspBeat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = EspBeat.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		060A25EE15C90E2E00BC5E8D /* EspBeat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspBeat.m; sourceTree = "<group>"; };
+		060A25EF15C90E2E00BC5E8D /* EspChat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = EspChat.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		060A25F015C90E2E00BC5E8D /* EspChat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspChat.m; sourceTree = "<group>"; };
+		060A25F115C90E2E00BC5E8D /* EspClock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspClock.h; sourceTree = "<group>"; };
+		060A25F215C90E2E00BC5E8D /* EspClock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspClock.m; sourceTree = "<group>"; };
+		060A25F315C90E2E00BC5E8D /* EspCodeShare.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspCodeShare.h; sourceTree = "<group>"; };
+		060A25F415C90E2E00BC5E8D /* EspCodeShare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspCodeShare.m; sourceTree = "<group>"; };
+		060A25F515C90E2E00BC5E8D /* EspGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspGrid.h; sourceTree = "<group>"; };
+		060A25F615C90E2E00BC5E8D /* EspGrid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspGrid.m; sourceTree = "<group>"; };
+		060A25F715C90E2E00BC5E8D /* EspJack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspJack.h; sourceTree = "<group>"; };
+		060A25F815C90E2E00BC5E8D /* EspJack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspJack.m; sourceTree = "<group>"; };
+		060A25F915C90E2E00BC5E8D /* EspKeyValueController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspKeyValueController.h; sourceTree = "<group>"; };
+		060A25FA15C90E2E00BC5E8D /* EspKeyValueController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspKeyValueController.m; sourceTree = "<group>"; };
+		060A25FF15C90E2E00BC5E8D /* EspPeerList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspPeerList.h; sourceTree = "<group>"; };
+		060A260015C90E2E00BC5E8D /* EspPeerList.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspPeerList.m; sourceTree = "<group>"; };
+		060A260B15C90E2E00BC5E8D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/EspPreferencesPanel.xib; sourceTree = "<group>"; };
+		060A260D15C90E2E00BC5E8D /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		060A260F15C90E2E00BC5E8D /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		060A261015C90E2E00BC5E8D /* EspAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspAppDelegate.h; sourceTree = "<group>"; };
+		060A261115C90E2E00BC5E8D /* EspAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspAppDelegate.m; sourceTree = "<group>"; };
+		060A261215C90E2E00BC5E8D /* EspGrid-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "EspGrid-Info.plist"; sourceTree = "<group>"; };
+		060A261315C90E2E00BC5E8D /* EspGrid-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "EspGrid-Prefix.pch"; sourceTree = "<group>"; };
+		060A261415C90E2E00BC5E8D /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		060A262A15C9110100BC5E8D /* NOTES */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = NOTES; sourceTree = "<group>"; };
+		060ABC3017E0C0830031AE8F /* espgridd */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = espgridd; sourceTree = BUILT_PRODUCTS_DIR; };
+		060ABC3717E0C0830031AE8F /* espgridd-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "espgridd-Prefix.pch"; sourceTree = "<group>"; };
+		060ABC3817E0C0830031AE8F /* espgridd.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = espgridd.1; sourceTree = "<group>"; };
+		063BE05518259F1000B31C18 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		063BE05718259F2200B31C18 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		0649463616A1C26600FCC2F2 /* EspChatTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = EspChatTests.h; path = ../EspGrid/EspChatTests.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		0649463716A1C26600FCC2F2 /* EspChatTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EspChatTests.m; path = ../EspGrid/EspChatTests.m; sourceTree = "<group>"; };
+		064EF35015CB889700005A16 /* EspGridTouchTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EspGridTouchTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		064EF35215CB889700005A16 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		064EF35415CB889700005A16 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		064EF35615CB889700005A16 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
+		064EF35A15CB889700005A16 /* EspGridTouchTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "EspGridTouchTest-Info.plist"; sourceTree = "<group>"; };
+		064EF35C15CB889700005A16 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		064EF35E15CB889700005A16 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		064EF36015CB889700005A16 /* EspGridTouchTest-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EspGridTouchTest-Prefix.pch"; sourceTree = "<group>"; };
+		064EF36115CB889700005A16 /* EspAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EspAppDelegate.h; sourceTree = "<group>"; };
+		064EF36215CB889700005A16 /* EspAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EspAppDelegate.m; sourceTree = "<group>"; };
+		064EF36415CB889700005A16 /* EspFirstViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EspFirstViewController.h; sourceTree = "<group>"; };
+		064EF36515CB889700005A16 /* EspFirstViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EspFirstViewController.m; sourceTree = "<group>"; };
+		064EF36715CB889700005A16 /* first.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = first.png; sourceTree = "<group>"; };
+		064EF36915CB889800005A16 /* first@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "first@2x.png"; sourceTree = "<group>"; };
+		064EF36B15CB889800005A16 /* EspSecondViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EspSecondViewController.h; sourceTree = "<group>"; };
+		064EF36C15CB889800005A16 /* EspSecondViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EspSecondViewController.m; sourceTree = "<group>"; };
+		064EF36E15CB889800005A16 /* second.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = second.png; sourceTree = "<group>"; };
+		064EF37015CB889800005A16 /* second@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "second@2x.png"; sourceTree = "<group>"; };
+		064EF37315CB889800005A16 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/EspFirstViewController_iPhone.xib; sourceTree = "<group>"; };
+		064EF37615CB889800005A16 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/EspFirstViewController_iPad.xib; sourceTree = "<group>"; };
+		064EF37915CB889800005A16 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/EspSecondViewController_iPhone.xib; sourceTree = "<group>"; };
+		064EF37C15CB889800005A16 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/EspSecondViewController_iPad.xib; sourceTree = "<group>"; };
+		065343DD182C1E6600B16732 /* EspHandleOpcode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspHandleOpcode.h; sourceTree = "<group>"; };
+		065F7040162B16B6008D0CB7 /* EspGridDefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspGridDefs.h; sourceTree = "<group>"; };
+		0676AF751637A2610082B57D /* Help */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Help; path = EspGridOSX/Help; sourceTree = "<group>"; };
+		068B2839182C6E2500EA2990 /* EspSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspSocket.h; sourceTree = "<group>"; };
+		068B283A182C6E2500EA2990 /* EspSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspSocket.m; sourceTree = "<group>"; };
+		068B283B182C6E2500EA2990 /* EspInternalProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspInternalProtocol.m; sourceTree = "<group>"; };
+		068B283C182C6E2500EA2990 /* EspOsc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspOsc.h; sourceTree = "<group>"; };
+		068B283D182C6E2500EA2990 /* EspOsc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspOsc.m; sourceTree = "<group>"; };
+		068B283E182C6E2500EA2990 /* EspInternalProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspInternalProtocol.h; sourceTree = "<group>"; };
+		0698E8A61722AF1700FCE1AA /* EspDetailedPeerList.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EspDetailedPeerList.xib; sourceTree = "<group>"; };
+		0698E8A81722B2D900FCE1AA /* EspDetailedPeerListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspDetailedPeerListController.h; sourceTree = "<group>"; };
+		0698E8A91722B2D900FCE1AA /* EspDetailedPeerListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspDetailedPeerListController.m; sourceTree = "<group>"; };
+		0699369A15C90761002F64AF /* EspGrid.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EspGrid.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0699369E15C90761002F64AF /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		069936A115C90761002F64AF /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		069936A215C90761002F64AF /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		069936A315C90761002F64AF /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		069BA8D41684F24500377CED /* MockEspUdp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MockEspUdp.h; path = ../EspGrid/MockEspUdp.h; sourceTree = "<group>"; };
+		069BA8D51684F24500377CED /* MockEspUdp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MockEspUdp.m; path = ../EspGrid/MockEspUdp.m; sourceTree = "<group>"; };
+		06A17BE816A39CE900F798D5 /* EspClockTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspClockTests.h; sourceTree = "<group>"; };
+		06A17BE916A39CE900F798D5 /* EspClockTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspClockTests.m; sourceTree = "<group>"; };
+		06A17BEB16A3C0DE00F798D5 /* EspKeyValueControllerTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspKeyValueControllerTests.h; sourceTree = "<group>"; };
+		06A17BEC16A3C0DF00F798D5 /* EspKeyValueControllerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspKeyValueControllerTests.m; sourceTree = "<group>"; };
+		06A352B817665486000B66DE /* EspGrid-helpful-code */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "EspGrid-helpful-code"; sourceTree = "<group>"; };
+		06B51764163080E10036A44B /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		06C34368163F664000F72BE8 /* EspGridUnitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EspGridUnitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		06C34369163F664000F72BE8 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		06C3436E163F664000F72BE8 /* EspGridUnitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "EspGridUnitTests-Info.plist"; sourceTree = "<group>"; };
+		06C34370163F664000F72BE8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		06C34372163F664000F72BE8 /* EspCodeShareTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EspCodeShareTests.h; sourceTree = "<group>"; };
+		06C34373163F664000F72BE8 /* EspCodeShareTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EspCodeShareTests.m; sourceTree = "<group>"; };
+		06C34375163F664000F72BE8 /* EspGridUnitTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EspGridUnitTests-Prefix.pch"; sourceTree = "<group>"; };
+		06D31E97164ADFCA002CCCAF /* EspCodeShareItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspCodeShareItem.h; sourceTree = "<group>"; };
+		06D31E98164ADFCA002CCCAF /* EspCodeShareItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspCodeShareItem.m; sourceTree = "<group>"; };
+		06D31E9D164AE078002CCCAF /* EspCodeShareItemTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspCodeShareItemTests.h; sourceTree = "<group>"; };
+		06D31E9E164AE078002CCCAF /* EspCodeShareItemTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspCodeShareItemTests.m; sourceTree = "<group>"; };
+		06D31EA0164C0FE9002CCCAF /* EspOscReceiveTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspOscReceiveTests.h; sourceTree = "<group>"; };
+		06D31EA1164C0FE9002CCCAF /* EspOscReceiveTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspOscReceiveTests.m; sourceTree = "<group>"; };
+		06D6C549161F928700372D54 /* EspMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspMessage.h; sourceTree = "<group>"; };
+		06D6C54A161F928700372D54 /* EspMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspMessage.m; sourceTree = "<group>"; };
+		06E932611642DCE800D3D4DA /* Esp Grid Icon V2.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = "Esp Grid Icon V2.icns"; sourceTree = "<group>"; };
+		06ED1A48172AAAE3003401A6 /* COPYING.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = COPYING.txt; sourceTree = "<group>"; };
+		06F92068168370DA005EDCDF /* EspOpcodeReceiveTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspOpcodeReceiveTests.h; sourceTree = "<group>"; };
+		06F92069168370DA005EDCDF /* EspOpcodeReceiveTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspOpcodeReceiveTests.m; sourceTree = "<group>"; };
+		06FED5321631DDEF00BF393B /* EspQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspQueue.h; sourceTree = "<group>"; };
+		06FED5331631DDEF00BF393B /* EspQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspQueue.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		060ABC2D17E0C0830031AE8F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				060ABC3217E0C0830031AE8F /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		064EF34D15CB889700005A16 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				064EF35315CB889700005A16 /* UIKit.framework in Frameworks */,
+				064EF35515CB889700005A16 /* Foundation.framework in Frameworks */,
+				064EF35715CB889700005A16 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0699369715C90761002F64AF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0699369F15C90761002F64AF /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		06C34364163F664000F72BE8 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06C3436A163F664000F72BE8 /* SenTestingKit.framework in Frameworks */,
+				06C3436B163F664000F72BE8 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		060A25EC15C90E2E00BC5E8D /* EspGrid */ = {
+			isa = PBXGroup;
+			children = (
+				063BE05718259F2200B31C18 /* Makefile */,
+				063BE05518259F1000B31C18 /* main.m */,
+				068B2839182C6E2500EA2990 /* EspSocket.h */,
+				068B283A182C6E2500EA2990 /* EspSocket.m */,
+				068B283B182C6E2500EA2990 /* EspInternalProtocol.m */,
+				068B283E182C6E2500EA2990 /* EspInternalProtocol.h */,
+				068B283C182C6E2500EA2990 /* EspOsc.h */,
+				068B283D182C6E2500EA2990 /* EspOsc.m */,
+				065F7040162B16B6008D0CB7 /* EspGridDefs.h */,
+				060A25F515C90E2E00BC5E8D /* EspGrid.h */,
+				060A25F615C90E2E00BC5E8D /* EspGrid.m */,
+				06D6C549161F928700372D54 /* EspMessage.h */,
+				06D6C54A161F928700372D54 /* EspMessage.m */,
+				06FED5321631DDEF00BF393B /* EspQueue.h */,
+				06FED5331631DDEF00BF393B /* EspQueue.m */,
+				060A25ED15C90E2E00BC5E8D /* EspBeat.h */,
+				060A25EE15C90E2E00BC5E8D /* EspBeat.m */,
+				060A25EF15C90E2E00BC5E8D /* EspChat.h */,
+				060A25F015C90E2E00BC5E8D /* EspChat.m */,
+				060A25F115C90E2E00BC5E8D /* EspClock.h */,
+				060A25F215C90E2E00BC5E8D /* EspClock.m */,
+				06D31E97164ADFCA002CCCAF /* EspCodeShareItem.h */,
+				06D31E98164ADFCA002CCCAF /* EspCodeShareItem.m */,
+				060A25F315C90E2E00BC5E8D /* EspCodeShare.h */,
+				060A25F415C90E2E00BC5E8D /* EspCodeShare.m */,
+				060A25F715C90E2E00BC5E8D /* EspJack.h */,
+				060A25F815C90E2E00BC5E8D /* EspJack.m */,
+				060A25F915C90E2E00BC5E8D /* EspKeyValueController.h */,
+				060A25FA15C90E2E00BC5E8D /* EspKeyValueController.m */,
+				060A25FF15C90E2E00BC5E8D /* EspPeerList.h */,
+				060A260015C90E2E00BC5E8D /* EspPeerList.m */,
+				065343DD182C1E6600B16732 /* EspHandleOpcode.h */,
+				0603F50F17DD562D009943C3 /* EspBridge.h */,
+				0603F51017DD562D009943C3 /* EspBridge.m */,
+			);
+			path = EspGrid;
+			sourceTree = "<group>";
+		};
+		060A260715C90E2E00BC5E8D /* EspGridOSX */ = {
+			isa = PBXGroup;
+			children = (
+				06E932611642DCE800D3D4DA /* Esp Grid Icon V2.icns */,
+				060A260A15C90E2E00BC5E8D /* EspPreferencesPanel.xib */,
+				0698E8A61722AF1700FCE1AA /* EspDetailedPeerList.xib */,
+				060A260C15C90E2E00BC5E8D /* InfoPlist.strings */,
+				060A260E15C90E2E00BC5E8D /* MainMenu.xib */,
+				060A261015C90E2E00BC5E8D /* EspAppDelegate.h */,
+				060A261115C90E2E00BC5E8D /* EspAppDelegate.m */,
+				0698E8A81722B2D900FCE1AA /* EspDetailedPeerListController.h */,
+				0698E8A91722B2D900FCE1AA /* EspDetailedPeerListController.m */,
+				060A261215C90E2E00BC5E8D /* EspGrid-Info.plist */,
+				060A261315C90E2E00BC5E8D /* EspGrid-Prefix.pch */,
+				060A261415C90E2E00BC5E8D /* main.m */,
+			);
+			path = EspGridOSX;
+			sourceTree = "<group>";
+		};
+		060ABC3317E0C0830031AE8F /* espgridd */ = {
+			isa = PBXGroup;
+			children = (
+				060ABC3817E0C0830031AE8F /* espgridd.1 */,
+				060ABC3617E0C0830031AE8F /* Supporting Files */,
+			);
+			path = espgridd;
+			sourceTree = "<group>";
+		};
+		060ABC3617E0C0830031AE8F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				060ABC3717E0C0830031AE8F /* espgridd-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		064EF35815CB889700005A16 /* EspGridTouchTest */ = {
+			isa = PBXGroup;
+			children = (
+				064EF36115CB889700005A16 /* EspAppDelegate.h */,
+				064EF36215CB889700005A16 /* EspAppDelegate.m */,
+				064EF36415CB889700005A16 /* EspFirstViewController.h */,
+				064EF36515CB889700005A16 /* EspFirstViewController.m */,
+				064EF36715CB889700005A16 /* first.png */,
+				064EF36915CB889800005A16 /* first@2x.png */,
+				064EF36B15CB889800005A16 /* EspSecondViewController.h */,
+				064EF36C15CB889800005A16 /* EspSecondViewController.m */,
+				064EF36E15CB889800005A16 /* second.png */,
+				064EF37015CB889800005A16 /* second@2x.png */,
+				064EF37215CB889800005A16 /* EspFirstViewController_iPhone.xib */,
+				064EF37515CB889800005A16 /* EspFirstViewController_iPad.xib */,
+				064EF37815CB889800005A16 /* EspSecondViewController_iPhone.xib */,
+				064EF37B15CB889800005A16 /* EspSecondViewController_iPad.xib */,
+				064EF35915CB889700005A16 /* Supporting Files */,
+			);
+			path = EspGridTouchTest;
+			sourceTree = "<group>";
+		};
+		064EF35915CB889700005A16 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				064EF35A15CB889700005A16 /* EspGridTouchTest-Info.plist */,
+				064EF35B15CB889700005A16 /* InfoPlist.strings */,
+				064EF35E15CB889700005A16 /* main.m */,
+				064EF36015CB889700005A16 /* EspGridTouchTest-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		0699368F15C90761002F64AF = {
+			isa = PBXGroup;
+			children = (
+				06A352B817665486000B66DE /* EspGrid-helpful-code */,
+				060A262A15C9110100BC5E8D /* NOTES */,
+				06ED1A48172AAAE3003401A6 /* COPYING.txt */,
+				0676AF751637A2610082B57D /* Help */,
+				06B51764163080E10036A44B /* Default-568h@2x.png */,
+				060A25EC15C90E2E00BC5E8D /* EspGrid */,
+				060A260715C90E2E00BC5E8D /* EspGridOSX */,
+				064EF35815CB889700005A16 /* EspGridTouchTest */,
+				06C3436C163F664000F72BE8 /* EspGridUnitTests */,
+				060ABC3317E0C0830031AE8F /* espgridd */,
+				0699369D15C90761002F64AF /* Frameworks */,
+				0699369B15C90761002F64AF /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		0699369B15C90761002F64AF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0699369A15C90761002F64AF /* EspGrid.app */,
+				064EF35015CB889700005A16 /* EspGridTouchTest.app */,
+				06C34368163F664000F72BE8 /* EspGridUnitTests.octest */,
+				060ABC3017E0C0830031AE8F /* espgridd */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0699369D15C90761002F64AF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0699369E15C90761002F64AF /* Cocoa.framework */,
+				064EF35215CB889700005A16 /* UIKit.framework */,
+				064EF35415CB889700005A16 /* Foundation.framework */,
+				064EF35615CB889700005A16 /* CoreGraphics.framework */,
+				06C34369163F664000F72BE8 /* SenTestingKit.framework */,
+				069936A015C90761002F64AF /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		069936A015C90761002F64AF /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				069936A115C90761002F64AF /* AppKit.framework */,
+				069936A215C90761002F64AF /* CoreData.framework */,
+				069936A315C90761002F64AF /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		06C3436C163F664000F72BE8 /* EspGridUnitTests */ = {
+			isa = PBXGroup;
+			children = (
+				06A17BE816A39CE900F798D5 /* EspClockTests.h */,
+				06A17BE916A39CE900F798D5 /* EspClockTests.m */,
+				06A17BEB16A3C0DE00F798D5 /* EspKeyValueControllerTests.h */,
+				06A17BEC16A3C0DF00F798D5 /* EspKeyValueControllerTests.m */,
+				0649463616A1C26600FCC2F2 /* EspChatTests.h */,
+				0649463716A1C26600FCC2F2 /* EspChatTests.m */,
+				069BA8D41684F24500377CED /* MockEspUdp.h */,
+				069BA8D51684F24500377CED /* MockEspUdp.m */,
+				06F92068168370DA005EDCDF /* EspOpcodeReceiveTests.h */,
+				06F92069168370DA005EDCDF /* EspOpcodeReceiveTests.m */,
+				06D31EA0164C0FE9002CCCAF /* EspOscReceiveTests.h */,
+				06D31EA1164C0FE9002CCCAF /* EspOscReceiveTests.m */,
+				06D31E9D164AE078002CCCAF /* EspCodeShareItemTests.h */,
+				06D31E9E164AE078002CCCAF /* EspCodeShareItemTests.m */,
+				06C34372163F664000F72BE8 /* EspCodeShareTests.h */,
+				06C34373163F664000F72BE8 /* EspCodeShareTests.m */,
+				06C3436D163F664000F72BE8 /* Supporting Files */,
+			);
+			path = EspGridUnitTests;
+			sourceTree = "<group>";
+		};
+		06C3436D163F664000F72BE8 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				06C3436E163F664000F72BE8 /* EspGridUnitTests-Info.plist */,
+				06C3436F163F664000F72BE8 /* InfoPlist.strings */,
+				06C34375163F664000F72BE8 /* EspGridUnitTests-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		060ABC2F17E0C0830031AE8F /* espgridd */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 060ABC3C17E0C0830031AE8F /* Build configuration list for PBXNativeTarget "espgridd" */;
+			buildPhases = (
+				060ABC2C17E0C0830031AE8F /* Sources */,
+				060ABC2D17E0C0830031AE8F /* Frameworks */,
+				060ABC2E17E0C0830031AE8F /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = espgridd;
+			productName = espgridd;
+			productReference = 060ABC3017E0C0830031AE8F /* espgridd */;
+			productType = "com.apple.product-type.tool";
+		};
+		064EF34F15CB889700005A16 /* EspGridTouchTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 064EF37E15CB889800005A16 /* Build configuration list for PBXNativeTarget "EspGridTouchTest" */;
+			buildPhases = (
+				064EF34C15CB889700005A16 /* Sources */,
+				064EF34D15CB889700005A16 /* Frameworks */,
+				064EF34E15CB889700005A16 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = EspGridTouchTest;
+			productName = EspGridTouchTest;
+			productReference = 064EF35015CB889700005A16 /* EspGridTouchTest.app */;
+			productType = "com.apple.product-type.application";
+		};
+		0699369915C90761002F64AF /* EspGrid */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 069936B815C90761002F64AF /* Build configuration list for PBXNativeTarget "EspGrid" */;
+			buildPhases = (
+				0699369615C90761002F64AF /* Sources */,
+				0699369715C90761002F64AF /* Frameworks */,
+				0699369815C90761002F64AF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = EspGrid;
+			productName = EspGrid;
+			productReference = 0699369A15C90761002F64AF /* EspGrid.app */;
+			productType = "com.apple.product-type.application";
+		};
+		06C34367163F664000F72BE8 /* EspGridUnitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 06C34378163F664000F72BE8 /* Build configuration list for PBXNativeTarget "EspGridUnitTests" */;
+			buildPhases = (
+				06C34363163F664000F72BE8 /* Sources */,
+				06C34364163F664000F72BE8 /* Frameworks */,
+				06C34365163F664000F72BE8 /* Resources */,
+				06C34366163F664000F72BE8 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = EspGridUnitTests;
+			productName = EspGridUnitTests;
+			productReference = 06C34368163F664000F72BE8 /* EspGridUnitTests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0699369115C90761002F64AF /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = Esp;
+				LastUpgradeCheck = 0450;
+				ORGANIZATIONNAME = "";
+			};
+			buildConfigurationList = 0699369415C90761002F64AF /* Build configuration list for PBXProject "EspGrid" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 0699368F15C90761002F64AF;
+			productRefGroup = 0699369B15C90761002F64AF /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0699369915C90761002F64AF /* EspGrid */,
+				064EF34F15CB889700005A16 /* EspGridTouchTest */,
+				06C34367163F664000F72BE8 /* EspGridUnitTests */,
+				060ABC2F17E0C0830031AE8F /* espgridd */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		064EF34E15CB889700005A16 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				064EF35D15CB889700005A16 /* InfoPlist.strings in Resources */,
+				064EF36815CB889700005A16 /* first.png in Resources */,
+				064EF36A15CB889800005A16 /* first@2x.png in Resources */,
+				064EF36F15CB889800005A16 /* second.png in Resources */,
+				064EF37115CB889800005A16 /* second@2x.png in Resources */,
+				064EF37415CB889800005A16 /* EspFirstViewController_iPhone.xib in Resources */,
+				064EF37715CB889800005A16 /* EspFirstViewController_iPad.xib in Resources */,
+				064EF37A15CB889800005A16 /* EspSecondViewController_iPhone.xib in Resources */,
+				064EF37D15CB889800005A16 /* EspSecondViewController_iPad.xib in Resources */,
+				06B51765163080E10036A44B /* Default-568h@2x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0699369815C90761002F64AF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				060A262315C90E2E00BC5E8D /* EspPreferencesPanel.xib in Resources */,
+				060A262415C90E2E00BC5E8D /* InfoPlist.strings in Resources */,
+				060A262515C90E2E00BC5E8D /* MainMenu.xib in Resources */,
+				060A262B15C9110100BC5E8D /* NOTES in Resources */,
+				0676AF761637A2610082B57D /* Help in Resources */,
+				06E932621642DCE800D3D4DA /* Esp Grid Icon V2.icns in Resources */,
+				0698E8A71722AF1700FCE1AA /* EspDetailedPeerList.xib in Resources */,
+				06ED1A49172AAAE3003401A6 /* COPYING.txt in Resources */,
+				06A352B917665486000B66DE /* EspGrid-helpful-code in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		06C34365163F664000F72BE8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06C34371163F664000F72BE8 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		06C34366163F664000F72BE8 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		060ABC2C17E0C0830031AE8F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				068B2841182C6E2500EA2990 /* EspSocket.m in Sources */,
+				060ABC3E17E0C1200031AE8F /* EspGrid.m in Sources */,
+				060ABC3F17E0C1290031AE8F /* EspMessage.m in Sources */,
+				068B2847182C6E2500EA2990 /* EspOsc.m in Sources */,
+				068B2844182C6E2500EA2990 /* EspInternalProtocol.m in Sources */,
+				060ABC4017E0C12D0031AE8F /* EspQueue.m in Sources */,
+				060ABC4117E0C1300031AE8F /* EspBeat.m in Sources */,
+				060ABC4217E0C1330031AE8F /* EspChat.m in Sources */,
+				060ABC4317E0C1360031AE8F /* EspClock.m in Sources */,
+				060ABC4417E0C1390031AE8F /* EspCodeShareItem.m in Sources */,
+				060ABC4517E0C13E0031AE8F /* EspCodeShare.m in Sources */,
+				060ABC4617E0C1450031AE8F /* EspKeyValueController.m in Sources */,
+				060ABC4917E0C14C0031AE8F /* EspPeerList.m in Sources */,
+				063BE05618259F1000B31C18 /* main.m in Sources */,
+				060ABC4D17E0C15A0031AE8F /* EspBridge.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		064EF34C15CB889700005A16 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				064EF35F15CB889700005A16 /* main.m in Sources */,
+				064EF36315CB889700005A16 /* EspAppDelegate.m in Sources */,
+				064EF36615CB889700005A16 /* EspFirstViewController.m in Sources */,
+				064EF36D15CB889800005A16 /* EspSecondViewController.m in Sources */,
+				064EF38415CB8C9F00005A16 /* EspPeerList.m in Sources */,
+				064EF38715CB8D8500005A16 /* EspKeyValueController.m in Sources */,
+				064EF38A15CB8DFB00005A16 /* EspClock.m in Sources */,
+				064EF38B15CB8E0C00005A16 /* EspChat.m in Sources */,
+				064EF38C15CB8E1200005A16 /* EspBeat.m in Sources */,
+				064EF38D15CB8E2700005A16 /* EspGrid.m in Sources */,
+				06D2BBC5163DC0F2002AB7AE /* EspMessage.m in Sources */,
+				06D2BBC6163DC0F5002AB7AE /* EspQueue.m in Sources */,
+				06D2BBC7163DC155002AB7AE /* EspCodeShare.m in Sources */,
+				06D31E9A164ADFCA002CCCAF /* EspCodeShareItem.m in Sources */,
+				060ABC4E17E0C15C0031AE8F /* EspBridge.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0699369615C90761002F64AF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				060A261515C90E2E00BC5E8D /* EspBeat.m in Sources */,
+				060A261615C90E2E00BC5E8D /* EspChat.m in Sources */,
+				060A261715C90E2E00BC5E8D /* EspClock.m in Sources */,
+				068B283F182C6E2500EA2990 /* EspSocket.m in Sources */,
+				060A261815C90E2E00BC5E8D /* EspCodeShare.m in Sources */,
+				060A261915C90E2E00BC5E8D /* EspGrid.m in Sources */,
+				060A261B15C90E2E00BC5E8D /* EspKeyValueController.m in Sources */,
+				068B2842182C6E2500EA2990 /* EspInternalProtocol.m in Sources */,
+				063BE058182738BA00B31C18 /* main.m in Sources */,
+				060A261E15C90E2E00BC5E8D /* EspPeerList.m in Sources */,
+				060A262615C90E2E00BC5E8D /* EspAppDelegate.m in Sources */,
+				06D6C54B161F928700372D54 /* EspMessage.m in Sources */,
+				06FED5341631DDEF00BF393B /* EspQueue.m in Sources */,
+				068B2845182C6E2500EA2990 /* EspOsc.m in Sources */,
+				06D31E99164ADFCA002CCCAF /* EspCodeShareItem.m in Sources */,
+				0698E8AB1722B2D900FCE1AA /* EspDetailedPeerListController.m in Sources */,
+				0603F51117DD562D009943C3 /* EspBridge.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		06C34363163F664000F72BE8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06C34374163F664000F72BE8 /* EspCodeShareTests.m in Sources */,
+				06C3437C163F724C00F72BE8 /* EspGrid.m in Sources */,
+				06C3437D163F724C00F72BE8 /* EspMessage.m in Sources */,
+				068B2840182C6E2500EA2990 /* EspSocket.m in Sources */,
+				06C3437E163F724C00F72BE8 /* EspQueue.m in Sources */,
+				06C3437F163F724C00F72BE8 /* EspBeat.m in Sources */,
+				06C34380163F724C00F72BE8 /* EspChat.m in Sources */,
+				06C34381163F724C00F72BE8 /* EspClock.m in Sources */,
+				06C34382163F724C00F72BE8 /* EspCodeShare.m in Sources */,
+				06C34383163F724C00F72BE8 /* EspKeyValueController.m in Sources */,
+				068B2843182C6E2500EA2990 /* EspInternalProtocol.m in Sources */,
+				06C34386163F724C00F72BE8 /* EspPeerList.m in Sources */,
+				06D31E9B164ADFCA002CCCAF /* EspCodeShareItem.m in Sources */,
+				06D31E9F164AE078002CCCAF /* EspCodeShareItemTests.m in Sources */,
+				06D31EA2164C0FE9002CCCAF /* EspOscReceiveTests.m in Sources */,
+				06F9206A168370DA005EDCDF /* EspOpcodeReceiveTests.m in Sources */,
+				069BA8D61684F24500377CED /* MockEspUdp.m in Sources */,
+				0649463816A1C26600FCC2F2 /* EspChatTests.m in Sources */,
+				06A17BEA16A39CE900F798D5 /* EspClockTests.m in Sources */,
+				06A17BED16A3C0DF00F798D5 /* EspKeyValueControllerTests.m in Sources */,
+				068B2846182C6E2500EA2990 /* EspOsc.m in Sources */,
+				060ABC4F17E0C15C0031AE8F /* EspBridge.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		060A260A15C90E2E00BC5E8D /* EspPreferencesPanel.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				060A260B15C90E2E00BC5E8D /* en */,
+			);
+			name = EspPreferencesPanel.xib;
+			sourceTree = "<group>";
+		};
+		060A260C15C90E2E00BC5E8D /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				060A260D15C90E2E00BC5E8D /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		060A260E15C90E2E00BC5E8D /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				060A260F15C90E2E00BC5E8D /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		064EF35B15CB889700005A16 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				064EF35C15CB889700005A16 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		064EF37215CB889800005A16 /* EspFirstViewController_iPhone.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				064EF37315CB889800005A16 /* en */,
+			);
+			name = EspFirstViewController_iPhone.xib;
+			sourceTree = "<group>";
+		};
+		064EF37515CB889800005A16 /* EspFirstViewController_iPad.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				064EF37615CB889800005A16 /* en */,
+			);
+			name = EspFirstViewController_iPad.xib;
+			sourceTree = "<group>";
+		};
+		064EF37815CB889800005A16 /* EspSecondViewController_iPhone.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				064EF37915CB889800005A16 /* en */,
+			);
+			name = EspSecondViewController_iPhone.xib;
+			sourceTree = "<group>";
+		};
+		064EF37B15CB889800005A16 /* EspSecondViewController_iPad.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				064EF37C15CB889800005A16 /* en */,
+			);
+			name = EspSecondViewController_iPad.xib;
+			sourceTree = "<group>";
+		};
+		06C3436F163F664000F72BE8 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				06C34370163F664000F72BE8 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		060ABC3A17E0C0830031AE8F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Library/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "espgridd/espgridd-Prefix.pch";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		060ABC3B17E0C0830031AE8F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Library/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "espgridd/espgridd-Prefix.pch";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		064EF37F15CB889800005A16 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Library/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "EspGridTouchTest/EspGridTouchTest-Prefix.pch";
+				INFOPLIST_FILE = "EspGridTouchTest/EspGridTouchTest-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		064EF38015CB889800005A16 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_APPS_DIR)/Xcode.app/Contents/Developer/Library/Frameworks\"",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "EspGridTouchTest/EspGridTouchTest-Prefix.pch";
+				INFOPLIST_FILE = "EspGridTouchTest/EspGridTouchTest-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		069936B615C90761002F64AF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		069936B715C90761002F64AF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		069936B915C90761002F64AF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "EspGridOSX/EspGrid-Prefix.pch";
+				INFOPLIST_FILE = "EspGridOSX/EspGrid-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				STRIP_INSTALLED_PRODUCT = NO;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		069936BA15C90761002F64AF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "EspGridOSX/EspGrid-Prefix.pch";
+				INFOPLIST_FILE = "EspGridOSX/EspGrid-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				STRIP_INSTALLED_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		06C34376163F664000F72BE8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "EspGridUnitTests/EspGridUnitTests-Prefix.pch";
+				INFOPLIST_FILE = "EspGridUnitTests/EspGridUnitTests-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		06C34377163F664000F72BE8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "EspGridUnitTests/EspGridUnitTests-Prefix.pch";
+				INFOPLIST_FILE = "EspGridUnitTests/EspGridUnitTests-Info.plist";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		060ABC3C17E0C0830031AE8F /* Build configuration list for PBXNativeTarget "espgridd" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				060ABC3A17E0C0830031AE8F /* Debug */,
+				060ABC3B17E0C0830031AE8F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		064EF37E15CB889800005A16 /* Build configuration list for PBXNativeTarget "EspGridTouchTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				064EF37F15CB889800005A16 /* Debug */,
+				064EF38015CB889800005A16 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0699369415C90761002F64AF /* Build configuration list for PBXProject "EspGrid" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				069936B615C90761002F64AF /* Debug */,
+				069936B715C90761002F64AF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		069936B815C90761002F64AF /* Build configuration list for PBXNativeTarget "EspGrid" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				069936B915C90761002F64AF /* Debug */,
+				069936BA15C90761002F64AF /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		06C34378163F664000F72BE8 /* Build configuration list for PBXNativeTarget "EspGridUnitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				06C34376163F664000F72BE8 /* Debug */,
+				06C34377163F664000F72BE8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0699369115C90761002F64AF /* Project object */;
+}
