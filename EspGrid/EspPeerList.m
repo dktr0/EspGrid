@@ -152,7 +152,7 @@
 
 -(EspPeer*) findPeerWithName:(NSString*)name andMachine:(NSString*)machine
 {
-    for(EspPeer* x in peers) if([[x name] isEqual:name] && [[x machine] isEqual:machine]) return x;
+    for(EspPeer* x in peers) if([[x name] isEqualToString:name] && [[x machine] isEqualToString:machine]) return x;
     return nil;
 }
 

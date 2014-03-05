@@ -35,7 +35,7 @@
     authorities = [[NSMutableDictionary alloc] init];
     timeStamps = [[NSMutableDictionary alloc] init];
     values = [[NSMutableDictionary alloc] init];
-    [NSTimer scheduledTimerWithTimeInterval:0.100
+    [NSTimer scheduledTimerWithTimeInterval:0.030
                                      target:self
                                    selector:@selector(broadcastCycle:)
                                    userInfo:nil
@@ -81,17 +81,26 @@
 
 -(void) broadcastKeyPath:(NSString*)keyPath
 {
+    // don't broadcast values that haven't been changed/set yet (no authority)
     EspTimeType t = [[timeStamps objectForKey:keyPath] longLongValue];
-    if(t != 0) // don't broadcast values that haven't been changed/set yet
+    if(t == 0) return;
+    // also: don't broadcast values when we aren't the authority, unless authority is AWOL...
+    NSString* authorityName = [authorityNames objectForKey:keyPath];
+    NSString* authorityMachine = [authorityMachines objectForKey:keyPath];
+    EspPeer* authority = [peerList findPeerWithName:authorityName andMachine:authorityMachine];
+    if(authority != [peerList selfInPeerList])
     {
-        NSMutableDictionary* d = [[[NSMutableDictionary alloc] init] autorelease];
-        [d setObject:keyPath forKey:@"keyPath"];
-        [d setObject:[authorityNames objectForKey:keyPath] forKey:@"authorityName"];
-        [d setObject:[authorityMachines objectForKey:keyPath] forKey:@"authorityMachine"];
-        [d setObject:[[timeStamps objectForKey:keyPath] copy] forKey:@"timeStamp"];
-        [d setObject:[[values objectForKey:keyPath] copy] forKey:@"value"];
-        [udp transmitOpcode:ESP_OPCODE_KVC withDictionary:d burst:1];
+        EspTimeType t = monotonicTime() - [authority lastBeaconMonotonic];
+        if(t < 10000000000) return; // authority considered AWOL if more than 10s since beacon
     }
+    // all conditions have been met: so broadcast the opcode
+    NSMutableDictionary* d = [[[NSMutableDictionary alloc] init] autorelease];
+    [d setObject:keyPath forKey:@"keyPath"];
+    [d setObject:[authorityNames objectForKey:keyPath] forKey:@"authorityName"];
+    [d setObject:[authorityMachines objectForKey:keyPath] forKey:@"authorityMachine"];
+    [d setObject:[[timeStamps objectForKey:keyPath] copy] forKey:@"timeStamp"];
+    [d setObject:[[values objectForKey:keyPath] copy] forKey:@"value"];
+    [udp transmitOpcode:ESP_OPCODE_KVC withDictionary:d burst:1];
 }
 
 -(EspTimeType) clockAdjustmentForAuthority:(NSString*)keyPath
@@ -113,7 +122,12 @@
         NSString* name = [d objectForKey:@"authorityName"]; VALIDATE_OPCODE_NSSTRING(name);
         NSString* machine = [d objectForKey:@"authorityMachine"]; VALIDATE_OPCODE_NSSTRING(machine);
         EspPeer* newAuthority = [peerList findPeerWithName:name andMachine:machine];
-        if(newAuthority == nil) { postLog(@"dropping KVC from unknown authority", self); return NO; }
+        if(newAuthority == nil)
+        {
+            postLog([NSString stringWithFormat:@"dropping KVC (unknown authority): %@-%@",
+                     name,machine], self);
+            return NO;
+        }
         EspTimeType t2 = [timeStamp longLongValue] + [clock adjustmentForPeer:newAuthority];
         EspPeer* oldAuthority = [authorities objectForKey:keyPath];
         EspTimeType t1;
@@ -123,15 +137,14 @@
             [model setValue:value forKeyPath:keyPath];
             [values setObject:value forKey:keyPath];
             [timeStamps setObject:[timeStamp copy] forKey:keyPath];
-            [authorityMachines setObject:[name copy] forKey:keyPath];
-            [authorityNames setObject:[machine copy] forKey:keyPath];
+            [authorityNames setObject:[name copy] forKey:keyPath];
+            [authorityMachines setObject:[machine copy] forKey:keyPath];
             [authorities setObject:newAuthority forKey:keyPath];
-            [self broadcastKeyPath:keyPath];
-            postLog([NSString stringWithFormat:@"received remote broadcast for %@ with value %@ and newer time",keyPath,value],self);
+            postLog([NSString stringWithFormat:@"new value %@ for key %@",keyPath,value],self);
         }
         return YES;
     }
- 
+    
     return NO;
 }
 

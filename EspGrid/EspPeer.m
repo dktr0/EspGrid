@@ -126,24 +126,25 @@
     averageLatencySS = [averageLatencySSobj push:recentLatencySS];
     
     adjustments[1] = ackReceiveMonotonic - (ackSendMonotonic + recentLatencyMM);
-    adjustments[2] = ackReceiveMonotonic - (ackSendMonotonic + recentLatencyMS);
-    adjustments[3] = ackReceiveMonotonic - (ackSendMonotonic + recentLatencySM);
-    adjustments[4] = ackReceiveMonotonic - (ackSendMonotonic + recentLatencySS);
-    adjustments[5] = ackReceiveMonotonic - (ackSendMonotonic + lowestLatencyMM);
-    adjustments[6] = ackReceiveMonotonic - (ackSendMonotonic + lowestLatencyMS);
-    adjustments[7] = ackReceiveMonotonic - (ackSendMonotonic + lowestLatencySM);
-    adjustments[8] = ackReceiveMonotonic - (ackSendMonotonic + lowestLatencySS);
-    adjustments[9] = ackReceiveMonotonic - (ackSendMonotonic + averageLatencyMM);
-    adjustments[10]= ackReceiveMonotonic - (ackSendMonotonic + averageLatencyMS);
-    adjustments[11]= ackReceiveMonotonic - (ackSendMonotonic + averageLatencySM);
-    adjustments[12]= ackReceiveMonotonic - (ackSendMonotonic + averageLatencySS);
+    adjustments[2] = ackReceiveMonotonic - (ackSendMonotonic + lowestLatencyMM);
+    adjustments[3] = ackReceiveMonotonic - (ackSendMonotonic + averageLatencyMM);
+    
+    adjustments[6] = ackReceiveMonotonic - (ackSendMonotonic + recentLatencyMS);
+    adjustments[7] = ackReceiveMonotonic - (ackSendMonotonic + recentLatencySM);
+    adjustments[8] = ackReceiveMonotonic - (ackSendMonotonic + recentLatencySS);
+    adjustments[9] = ackReceiveMonotonic - (ackSendMonotonic + lowestLatencyMS);
+    adjustments[10] = ackReceiveMonotonic - (ackSendMonotonic + lowestLatencySM);
+    adjustments[11] = ackReceiveMonotonic - (ackSendMonotonic + lowestLatencySS);
+    adjustments[12]= ackReceiveMonotonic - (ackSendMonotonic + averageLatencyMS);
+    adjustments[13]= ackReceiveMonotonic - (ackSendMonotonic + averageLatencySM);
+    adjustments[14]= ackReceiveMonotonic - (ackSendMonotonic + averageLatencySS);
     
     // if there are fewer than 3 peers, fill in temp. values for ref beacon adjustments
     // based on these latency calculations
     if(count<3)
     {
-        adjustments[13] = adjustments[1];
-        adjustments[14] = adjustments[9];
+        adjustments[4] = adjustments[1];
+        adjustments[5] = adjustments[3];
     }
 }
 
@@ -169,8 +170,8 @@
     {
         EspTimeType incomingBeaconTime = [[d objectForKey:@"beaconReceiveMonotonic"] longLongValue];
         EspTimeType storedBeaconTime = [other lastBeaconMonotonic];
-        adjustments[13] = refBeaconMonotonic = storedBeaconTime - incomingBeaconTime;
-        adjustments[14] = refBeaconMonotonicAverage = [refBeaconMonotonicAverageObj push:refBeaconMonotonic];
+        adjustments[4] = refBeaconMonotonic = storedBeaconTime - incomingBeaconTime;
+        adjustments[5] = refBeaconMonotonicAverage = [refBeaconMonotonicAverageObj push:refBeaconMonotonic];
         NSLog(@"confirming reference beacon calculations");
     }
     else NSLog(@"mismatched beacon counts - stored = %d, received = %d",storedBeaconCount,incomingBeaconCount);

@@ -51,7 +51,7 @@ EspGrid* currentGrid;
     [defs setObject:[NSNumber numberWithBool:NO] forKey:@"connectToCustom2"];
     [defs setObject:[NSNumber numberWithBool:NO] forKey:@"connectToCustom3"];
     [defs setObject:[NSNumber numberWithBool:NO] forKey:@"connectToCustom4"];
-    [defs setObject:[NSNumber numberWithInt:2] forKey:@"clockMode"];
+    [defs setObject:[NSNumber numberWithInt:5] forKey:@"clockMode"]; // average reference beacon difference
     [[NSUserDefaults standardUserDefaults] registerDefaults:defs];
 }
 
@@ -183,10 +183,7 @@ EspGrid* currentGrid;
     [osc addHandler:self forAddress:@"/esp/customPort3"];
     [osc addHandler:self forAddress:@"/esp/customAddress4"];
     [osc addHandler:self forAddress:@"/esp/customPort4"];
-    
-    [osc addHandler:self forAddress:@"/esp/syncMode"];
-    
-    // handlers for request-driven protocol
+    [osc addHandler:self forAddress:@"/esp/clockMode"];
     [osc addHandler:self forAddress:@"/esp/tempo/q"]; // response will be /esp/tempo/r
     [osc addHandler:self forAddress:@"/esp/clock/q"]; // response will be /esp/clock/r
     
@@ -280,8 +277,7 @@ EspGrid* currentGrid;
     else if([address isEqual:@"/esp/customPort3"]) return [self setDefault:@"custom3port" withParameters:d];
     else if([address isEqual:@"/esp/customAddress4"]) return [self setDefault:@"custom4address" withParameters:d];
     else if([address isEqual:@"/esp/customPort4"]) return [self setDefault:@"custom4port" withParameters:d];
-    
-    else if([address isEqual:@"/esp/syncMode"]) return [self setDefault:@"clockMode" withParameters:d];
+    else if([address isEqual:@"/esp/clockMode"]) return [self setDefault:@"clockMode" withParameters:d];
     
     return NO;
 }
