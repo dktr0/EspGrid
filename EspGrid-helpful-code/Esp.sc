@@ -1,7 +1,7 @@
 /*
 Esp -- SuperCollider classes to connect with EspGrid (classes Esp and EspClock)
 by David Ogborn <ogbornd@mcmaster.ca>
-Version-date: 27 February 2014 (EspGrid 0.50.0)
+Version-date: 5 March 2014 (EspGrid 0.50.2)
 
 Installation Instructions:
 1. Place this file in your SuperCollider extensions folder
@@ -21,16 +21,18 @@ Esp {
     classvar <version; // a string describing the update-date of this class definition
 	classvar <gridAddress; // string pointing to network location of EspGrid (normally loopback)
 	classvar <send; // cached NetAddr for communication from SC to EspGrid
+    classvar <>clockAdjust; // manual adjustment for when you have a high latency, remote EspGrid (NOT recommended)
 
 	*gridAddress_ { |x| gridAddress = x; send = NetAddr(gridAddress,5510); }
 
 	*chat { |x| send.sendMsg("/esp/chat/send",x); }
 
 	*initClass {
-		version = "27 February 2014 (EspGrid 0.50.0)";
+		version = "5 March 2014 (EspGrid 0.50.2)";
 		("Esp.sc: " + version).postln;
 		gridAddress = "127.0.0.1";
 		send = NetAddr(gridAddress,5510);
+        clockAdjust = 0.0;
 
 		StartUp.add {
 			OSCdef(\espChat,
@@ -64,7 +66,7 @@ EspClock : TempoClock {
 		OSCdef(\espClock,
 			{
 				| msg,time,addr,port |
-				clockDiff = msg[1]+(msg[2]*0.000000001) - SystemClock.seconds;
+				clockDiff = msg[1]+(msg[2]*0.000000001) + Esp.clockAdjust - SystemClock.seconds;
 				// Note: this is an estimate of the difference between the monotonic machine clock
 				// and SuperCollider's SystemClock.  Internally, SuperCollider has an exact unchanging
 				// value for this, but there seems to be no way of accessing it at the moment.
