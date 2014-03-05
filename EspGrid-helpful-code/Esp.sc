@@ -51,7 +51,7 @@ EspClock : TempoClock {
 
 	// private variables:
 	var clockDiff; // difference between SystemClock.seconds and EspGrid time
-    var prevFreq,prevTime,prevBeat;
+    var refOn,refFreq,refTime,refBeat;
 
 	// public methods:
 	pause { Esp.send.sendMsg("/esp/beat/on",0); }
@@ -79,24 +79,30 @@ EspClock : TempoClock {
 		OSCdef(\espTempo,
 			{
 				| msg,time,addr,port |
-				if(clockDiff.notNil, // don't sync metre before system clock adjustment is known
-                    {
-                    if(msg[1]==0,{
-                        this.setTempoAtSec(0.000000001,SystemClock.seconds); // SC doesn't pause, so...
-                    },{
-                        var refFreq = msg[2]/60;
-                        var refTime = msg[3] + (msg[4]*0.000000001);
-                        var refBeat = (SystemClock.seconds - refTime + clockDiff) * refFreq + msg[5];
-                        var newFreq = (refBeat - this.beats * 10 + refFreq).clip(0.000000001,1000000000);
-                        this.setTempoAtSec(newFreq,SystemClock.seconds);
-                    });
-                });
+                refOn = msg[1];
+                refFreq = msg[2]/60;
+                refTime = msg[3] + (msg[4]*0.000000001);
+                refBeat = msg[5];
 			},
 			"/esp/tempo/r").permanent_(true);
 
 		Esp.send.sendMsg("/esp/clock/q");
         SkipJack.new( {Esp.send.sendMsg("/esp/tempo/q");}, 0.05, clock: SystemClock);
+        SkipJack.new( {this.sync;},0.05, clock: SystemClock);
 		SkipJack.new( {Esp.send.sendMsg("/esp/clock/q");}, 10.0, clock: SystemClock);
 	}
+    
+    sync {
+        if(clockDiff.notNil && refFreq.notNil, // don't sync metre before system clock adjustment is known
+            {
+                if(refOn==0,{
+                    this.setTempoAtSec(0.000000001,SystemClock.seconds); // SC doesn't pause, so...
+                },{
+                    var beat = (SystemClock.seconds - refTime + clockDiff) * refFreq + refBeat;
+                    var freq = (beat - this.beats * 10 + refFreq).clip(0.000000001,1000);
+                    this.setTempoAtSec(freq,SystemClock.seconds);
+                });
+            });
+    }
 
 }
