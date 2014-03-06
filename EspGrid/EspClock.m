@@ -40,7 +40,6 @@
     [self setFluxStatus:@"---"];
     self = [super init];
     countOfBeaconsIssued = 0;
-    [self changeSyncMode:1];
     [self sendBeacon:nil];
     return self;
 }
@@ -49,6 +48,7 @@
 -(void) changeSyncMode:(int)mode
 {
     syncMode = mode;
+    [[peerList selfInPeerList] setSyncMode:mode];
     switch(syncMode) {
         case 0: [self setSyncModeName:@"no adjustments"]; break;
         default: [self setSyncModeName:@"unknown name"]; break;
