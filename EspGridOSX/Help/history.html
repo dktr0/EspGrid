@@ -27,6 +27,7 @@
         <a name="history"></a>
         <h1>EspGrid Version History</h1>
         
+        <div>v0.50.3 fixed inter-thread problem in EspCodeShare by adding a lock; various tiny fixes/changes</div>
         <div>v0.50.2 EspKeyValueController now broadcasts only when a node is the authority for a value, OR the authority for a value hasn't been heard from (time since beacon) in more than 10 seconds</div>
         <div>v0.50.1 some pruning of log statements; beacons (internal protocol) now broadcast in a random pattern (1-5s)</div>
         <div>v0.50.0 two major changes to synchronization: (a) using monotonic, epochless machine clock instead of gettimeofday and (b) each node translates monotonic, epochless machine time of each other peer into its own frame, instead of maintaining a shared, synchronized clock.</div>

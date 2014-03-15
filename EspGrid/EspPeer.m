@@ -34,6 +34,8 @@
 @synthesize ip;
 @synthesize majorVersion;
 @synthesize minorVersion;
+@synthesize subVersion;
+@synthesize version;
 @synthesize syncMode;
 @synthesize beaconCount;
 @synthesize lastBeaconMonotonic,lastBeaconSystem;
@@ -82,6 +84,8 @@
     [self setIp:[d objectForKey:@"ip"]];
     majorVersion = [[d objectForKey:@"majorVersion"] intValue];
     minorVersion = [[d objectForKey:@"minorVersion"] intValue];
+    subVersion = [[d objectForKey:@"subVersion"] intValue];
+    version = [NSString stringWithFormat:@"%d.%d.%d",majorVersion,minorVersion,subVersion];
     syncMode = [[d objectForKey:@"syncMode"] intValue];
     beaconCount = [[d objectForKey:@"beaconCount"] intValue];
     lastBeaconMonotonic = [[d objectForKey:@"monotonicReceiveTime"] longLongValue];

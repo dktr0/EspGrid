@@ -17,6 +17,7 @@
 //  along with EspGrid.  If not, see <http://www.gnu.org/licenses/>.
 
 #import <Cocoa/Cocoa.h>
+#import "EspGrid.h"
 
 int main(int argc, char *argv[])
 {
@@ -24,7 +25,9 @@ int main(int argc, char *argv[])
         return NSApplicationMain(argc, (const char **)argv);
     }
     @catch (NSException* e) {
-        NSLog(@"main: Caught %@: %@", [e name], [e reason]);
+        NSString* l = [NSString stringWithFormat:@"main: Caught %@: %@",[e name],[e reason]];
+        postProblem(l,nil);
+        // NSLog(@"main: Caught %@: %@", [e name], [e reason]);
     }
 }
 

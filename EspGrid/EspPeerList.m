@@ -50,6 +50,11 @@
     [d setIp:@"unknown"];
     [d setMajorVersion:ESPGRID_MAJORVERSION];
     [d setMinorVersion:ESPGRID_MINORVERSION];
+    [d setSubVersion:ESPGRID_SUBVERSION];
+    [d setVersion:[NSString stringWithFormat:@"%d.%d.%d",
+                   ESPGRID_MAJORVERSION,
+                   ESPGRID_MINORVERSION,
+                   ESPGRID_SUBVERSION]];
     [peers addObject:d];
     selfInPeerList = d;
 }

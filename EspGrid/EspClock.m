@@ -62,6 +62,7 @@
     [d setObject:[NSNumber numberWithLong:countOfBeaconsIssued] forKey:@"beaconCount"];
     [d setObject:[NSNumber numberWithInt:ESPGRID_MAJORVERSION] forKey:@"majorVersion"];
     [d setObject:[NSNumber numberWithInt:ESPGRID_MINORVERSION] forKey:@"minorVersion"];
+    [d setObject:[NSNumber numberWithInt:ESPGRID_SUBVERSION] forKey:@"subVersion"];
     [d setObject:[NSNumber numberWithInt:syncMode] forKey:@"syncMode"];
     [udp transmitOpcode:ESP_OPCODE_BEACON withDictionary:d burst:1];
     [peerList checkAllLastBeaconStatuses];
@@ -109,6 +110,7 @@
         NSNumber* beaconCount = [d objectForKey:@"beaconCount"]; VALIDATE_OPCODE_NSNUMBER(beaconCount);
         NSNumber* majorVersion = [d objectForKey:@"majorVersion"]; VALIDATE_OPCODE_NSNUMBER(majorVersion);
         NSNumber* minorVersion = [d objectForKey:@"minorVersion"]; VALIDATE_OPCODE_NSNUMBER(minorVersion);
+        // should change later to validate received subVersion from BEACON as well
         NSNumber* syncModeObject = [d objectForKey:@"syncMode"]; VALIDATE_OPCODE_NSNUMBER(syncModeObject);
         NSNumber* monotonicSendTime = [d objectForKey:@"monotonicSendTime"]; VALIDATE_OPCODE_NSNUMBER(monotonicSendTime);
         NSNumber* systemSendTime = [d objectForKey:@"systemSendTime"]; VALIDATE_OPCODE_NSNUMBER(systemSendTime);
