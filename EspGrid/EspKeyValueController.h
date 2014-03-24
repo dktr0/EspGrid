@@ -30,6 +30,7 @@
     NSMutableDictionary* authorities;
     NSMutableDictionary* timeStamps;
     NSMutableDictionary* values;
+    NSLock* lock;
     int broadcastIndex;
     NSObject* model;
     EspOsc* osc;

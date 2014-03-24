@@ -47,13 +47,13 @@
 @synthesize recentLatencySM,lowestLatencySM,averageLatencySM;
 @synthesize recentLatencySS,lowestLatencySS,averageLatencySS;
 @synthesize refBeaconMonotonic,refBeaconMonotonicAverage;
-@synthesize adjustments;
 
 -(id) init
 {
     self = [super init];
-    adjustments = malloc(sizeof(EspTimeType)*21);
-    memset(adjustments,0,sizeof(EspTimeType)*21);
+    adjustments = malloc(sizeof(EspTimeType)*15);
+    memset(adjustments,0,sizeof(EspTimeType)*15);
+    adjustmentsLock = [[NSLock alloc] init];
     averageLatencyMMobj = [[EspMovingAverage alloc] initWithLength:12];
     averageLatencyMSobj = [[EspMovingAverage alloc] initWithLength:12];
     averageLatencySMobj = [[EspMovingAverage alloc] initWithLength:12];
@@ -69,6 +69,7 @@
 -(void) dealloc
 {
     free(adjustments);
+    [adjustmentsLock release];
     [averageLatencyMMobj release];
     [averageLatencyMSobj release];
     [averageLatencySMobj release];
@@ -129,10 +130,10 @@
     averageLatencySM = [averageLatencySMobj push:recentLatencySM];
     averageLatencySS = [averageLatencySSobj push:recentLatencySS];
     
+    [adjustmentsLock lock];
     adjustments[1] = ackReceiveMonotonic - (ackSendMonotonic + recentLatencyMM);
     adjustments[2] = ackReceiveMonotonic - (ackSendMonotonic + lowestLatencyMM);
     adjustments[3] = ackReceiveMonotonic - (ackSendMonotonic + averageLatencyMM);
-    
     adjustments[6] = ackReceiveMonotonic - (ackSendMonotonic + recentLatencyMS);
     adjustments[7] = ackReceiveMonotonic - (ackSendMonotonic + recentLatencySM);
     adjustments[8] = ackReceiveMonotonic - (ackSendMonotonic + recentLatencySS);
@@ -142,7 +143,6 @@
     adjustments[12]= ackReceiveMonotonic - (ackSendMonotonic + averageLatencyMS);
     adjustments[13]= ackReceiveMonotonic - (ackSendMonotonic + averageLatencySM);
     adjustments[14]= ackReceiveMonotonic - (ackSendMonotonic + averageLatencySS);
-    
     // if there are fewer than 3 peers, fill in temp. values for ref beacon adjustments
     // based on these latency calculations
     if(count<3)
@@ -150,6 +150,7 @@
         adjustments[4] = adjustments[1];
         adjustments[5] = adjustments[3];
     }
+    [adjustmentsLock unlock];
 }
 
 -(void) dumpAdjustments
@@ -165,20 +166,28 @@
 {
     // when we receive an ACK to someone else' beacon, we can use the information it contains
     // to form reference beacon style estimates of the difference between their clocks and our clocks
-    
-    // *** WORKING HERE: testing new reference beacon implementation
-    
+        
     int incomingBeaconCount = [[d objectForKey:@"beaconCount"] intValue];
     int storedBeaconCount = [other beaconCount];
     if(incomingBeaconCount == storedBeaconCount)
     {
         EspTimeType incomingBeaconTime = [[d objectForKey:@"beaconReceiveMonotonic"] longLongValue];
         EspTimeType storedBeaconTime = [other lastBeaconMonotonic];
+        [adjustmentsLock lock];
         adjustments[4] = refBeaconMonotonic = storedBeaconTime - incomingBeaconTime;
         adjustments[5] = refBeaconMonotonicAverage = [refBeaconMonotonicAverageObj push:refBeaconMonotonic];
+        [adjustmentsLock unlock];
         NSLog(@"confirming reference beacon calculations");
     }
     else NSLog(@"mismatched beacon counts - stored = %d, received = %d",storedBeaconCount,incomingBeaconCount);
+}
+
+-(EspTimeType) adjustmentForSyncMode:(int)mode
+{
+    [adjustmentsLock lock];
+    EspTimeType x = adjustments[mode];
+    [adjustmentsLock unlock];
+    return x;
 }
 
 -(void) updateLastBeaconStatus

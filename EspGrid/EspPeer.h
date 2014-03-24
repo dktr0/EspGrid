@@ -20,7 +20,10 @@
 #import "EspGridDefs.h"
 
 @interface EspPeer : NSObject
-
+{
+    EspTimeType* adjustments;
+    NSLock* adjustmentsLock;
+}
 // these are set/updated from BEACON opcode
 @property (atomic,copy) NSString* name;
 @property (atomic,copy) NSString* machine;
@@ -39,12 +42,12 @@
 @property (atomic,assign) EspTimeType lowestLatencyMM,lowestLatencyMS,lowestLatencySM,lowestLatencySS;
 @property (atomic,assign) EspTimeType averageLatencyMM,averageLatencyMS,averageLatencySM,averageLatencySS;
 @property (atomic,assign) EspTimeType refBeaconMonotonic,refBeaconMonotonicAverage;
-@property (atomic,assign) EspTimeType* adjustments;
 
 -(void) processBeacon:(NSDictionary*)d;
 -(void) processAckForSelf:(NSDictionary*)d peerCount:(int)count;
 -(void) processAck:(NSDictionary*)d forOther:(EspPeer*)other;
 -(void) updateLastBeaconStatus;
 -(void) dumpAdjustments;
+-(EspTimeType) adjustmentForSyncMode:(int)mode;
 
 @end

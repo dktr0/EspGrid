@@ -24,7 +24,7 @@
 @synthesize peerList;
 @synthesize udp;
 @synthesize osc;
-@synthesize syncModeName;
+@synthesize syncMode;
 @synthesize flux;
 @synthesize fluxStatus;
 
@@ -47,12 +47,8 @@
 
 -(void) changeSyncMode:(int)mode
 {
-    syncMode = mode;
+    [self setSyncMode:mode];
     [[peerList selfInPeerList] setSyncMode:mode];
-    switch(syncMode) {
-        case 0: [self setSyncModeName:@"no adjustments"]; break;
-        default: [self setSyncModeName:@"unknown name"]; break;
-    }
 }
 
 -(void) issueBeacon
@@ -150,7 +146,7 @@
 
 -(EspTimeType) adjustmentForPeer:(EspPeer*)peer
 {
-    if(peer) return [peer adjustments][syncMode];
+    if(peer) return [peer adjustmentForSyncMode:[self syncMode]];
     else { NSLog(@"warning? nil peer in adjustmentForPeer"); return 0; }
 }
 
