@@ -83,7 +83,8 @@
 -(void) sendBeacon:(NSTimer*)t
 {
     [self issueBeacon];
-    NSTimeInterval nextBeacon = 1.0+(4.0*((double)arc4random()/4294967295)); // beacons 1 - 5 seconds apart
+    //    NSTimeInterval nextBeacon = 1.0+(4.0*((double)arc4random()/4294967295)); // beacons 1 - 5 seconds apart
+    NSTimeInterval nextBeacon = 1.0 + (4.0*((double)rand()/RAND_MAX)); // beacons 1 - 5 seconds apart
     [NSTimer scheduledTimerWithTimeInterval:nextBeacon
                                      target:self
                                    selector:@selector(sendBeacon:)

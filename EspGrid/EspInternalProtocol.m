@@ -108,8 +108,8 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
         NSAssert(h != nil, @"host should not be nil");
         NSError* err = nil;
         
-        EspTimeType monotonicSendTime = *((SInt64*)[d bytes]); // first 8 bytes are monotonic send time
-        EspTimeType systemSendTime = *((SInt64*)([d bytes]+8)); // next 8 are system send time
+        EspTimeType monotonicSendTime = *((EspTimeType*)[d bytes]); // first 8 bytes are monotonic send time
+        EspTimeType systemSendTime = *((EspTimeType*)([d bytes]+8)); // next 8 are system send time
         NSData* temp = [NSData dataWithBytesNoCopy:[d bytes]+16 length:[d length]-16 freeWhenDone:NO];
         
         NSMutableDictionary* plist =

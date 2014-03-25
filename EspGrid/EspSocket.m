@@ -100,8 +100,9 @@
     [NSThread setThreadPriority:0.5]; // calling class method since instance method seems to not exist on GNUstep
     for(;;)
     {
-      // NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init]; // was this necessary for GNUstep,or...? it produces a segfault on OSX sometimes
-
+    #ifdef GNUSTEP
+        NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init]; // was this necessary for GNUstep,or...? it produces a segfault on OSX sometimes
+    #endif
     #ifndef MINGW
         struct msghdr msg;
         struct iovec entry;
@@ -193,16 +194,16 @@ static void sendData(int socketRef,const void* data,size_t length,NSString* host
 
 -(void)sendDataWithTimes:(NSData*)data toHost:(NSString*)host port:(int)p
 {
-    *((SInt64*)transmitBuffer) = monotonicTime();
-    *((SInt64*)transmitBuffer+1) = systemTime();
+    *((EspTimeType*)transmitBuffer) = monotonicTime();
+    *((EspTimeType*)transmitBuffer+1) = systemTime();
     memcpy(transmitBuffer+16, [data bytes], [data length]);
     sendData(socketRef, transmitBuffer, [data length]+16, host, p);
 }
 
 -(void)sendDataWithTimes:(NSData*)data toHost:(NSString*)host
 {
-    *((SInt64*)transmitBuffer) = monotonicTime();
-    *((SInt64*)transmitBuffer+1) = systemTime();
+    *((EspTimeType*)transmitBuffer) = monotonicTime();
+    *((EspTimeType*)transmitBuffer+1) = systemTime();
     memcpy(transmitBuffer+16, [data bytes], [data length]);
     sendData(socketRef, transmitBuffer, [data length]+16, host, port);
 }

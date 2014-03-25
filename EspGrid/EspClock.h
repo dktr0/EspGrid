@@ -37,7 +37,7 @@
 @property (nonatomic,assign) EspPeerList* peerList;
 @property (nonatomic,assign) EspInternalProtocol* udp;
 @property (nonatomic,assign) EspOsc* osc;
-@property (atomic,assign) int syncMode;
+@property (assign) int syncMode;
 @property (assign) EspTimeType flux;
 @property (retain) NSString* fluxStatus;
 

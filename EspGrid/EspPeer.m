@@ -20,13 +20,6 @@
 #import "EspMovingAverage.h"
 
 @implementation EspPeer
-{
-    EspMovingAverage* averageLatencyMMobj;
-    EspMovingAverage* averageLatencyMSobj;
-    EspMovingAverage* averageLatencySMobj;
-    EspMovingAverage* averageLatencySSobj;
-    EspMovingAverage* refBeaconMonotonicAverageObj;
-}
 
 // these are updated by BEACON opcode
 @synthesize name;

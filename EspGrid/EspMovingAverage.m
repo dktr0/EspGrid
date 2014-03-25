@@ -9,13 +9,6 @@
 #import "EspMovingAverage.h"
 
 @implementation EspMovingAverage
-{
-    int length; // length of moving average filter
-    int count; // current number of values in storage
-    int index; // an index for a ring buffer
-    EspTimeType* array; // memory for a ring buffer
-    EspTimeType accumulator; // efficient update of sum
-}
 
 -(id) initWithLength:(int)l
 {

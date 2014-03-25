@@ -19,16 +19,20 @@
 #import "EspBeat.h"
 #import "EspGridDefs.h"
 
+#ifndef GNUSTEP
 #import <AudioToolBox/AudioToolbox.h>
 #import <CoreAudio/HostTime.h>
+#endif
 
 @implementation EspBeat
 {
+#ifndef GNUSTEP
     AudioUnit audioUnit;
     mach_timebase_info_data_t tinfo;
     double factor;
     UInt64 systemMinusMach;
     bool isTicking;
+#endif
 }
 @synthesize udp;
 @synthesize osc;
@@ -152,6 +156,7 @@
 
 -(bool) startTicking
 {
+#ifndef GNUSTEP
     if(isTicking)return YES;
     OSStatus err;
     AudioComponentDescription description = {0};
@@ -179,17 +184,23 @@
     if(err!=noErr) { postProblem(@"error in AudioOutputUnitStart",nil); return NO; }
     isTicking = YES;
     return YES;
+#else
+    return NO;
+#endif
 }
 
 -(void) stopTicking
 {
+#ifndef GNUSTEP
     if(!isTicking)return;
     AudioOutputUnitStop(audioUnit);
     AudioUnitUninitialize(audioUnit);
     AudioComponentInstanceDispose(audioUnit);
     isTicking = NO;
+#endif
 }
 
+#ifndef GNUSTEP
 OSStatus EspTickRenderProc(void* inRefCon,
                            AudioUnitRenderActionFlags* ioActionFlags,
                            const AudioTimeStamp* inTimeStamp,
@@ -221,5 +232,6 @@ OSStatus EspTickRenderProc(void* inRefCon,
     }
     return noErr;
 }
+#endif
 
 @end

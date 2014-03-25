@@ -18,30 +18,53 @@
 
 #import <Foundation/Foundation.h>
 #import "EspGridDefs.h"
+#import "EspMovingAverage.h"
 
 @interface EspPeer : NSObject
 {
+    // properties 
+  NSString* name;
+  NSString* machine;
+  NSString* ip;
+  int majorVersion;
+  int minorVersion;
+  int subVersion;
+  NSString* version;
+  int syncMode;
+  int beaconCount;
+  EspTimeType lastBeaconMonotonic,lastBeaconSystem;
+  NSString* lastBeaconStatus;
+  EspTimeType recentLatencyMM,recentLatencyMS,recentLatencySM,recentLatencySS;
+  EspTimeType lowestLatencyMM,lowestLatencyMS,lowestLatencySM,lowestLatencySS;
+  EspTimeType averageLatencyMM,averageLatencyMS,averageLatencySM,averageLatencySS;
+  EspTimeType refBeaconMonotonic,refBeaconMonotonicAverage;
+    // instance variables
     EspTimeType* adjustments;
     NSLock* adjustmentsLock;
+    EspMovingAverage* averageLatencyMMobj;
+    EspMovingAverage* averageLatencyMSobj;
+    EspMovingAverage* averageLatencySMobj;
+    EspMovingAverage* averageLatencySSobj;
+    EspMovingAverage* refBeaconMonotonicAverageObj;
 }
 // these are set/updated from BEACON opcode
-@property (atomic,copy) NSString* name;
-@property (atomic,copy) NSString* machine;
-@property (atomic,copy) NSString* ip;
-@property (atomic,assign) int majorVersion;
-@property (atomic,assign) int minorVersion;
-@property (atomic,assign) int subVersion;
-@property (atomic,copy) NSString* version;
-@property (atomic,assign) int syncMode;
-@property (atomic,assign) int beaconCount;
-@property (atomic,assign) EspTimeType lastBeaconMonotonic,lastBeaconSystem;
-@property (atomic,copy) NSString* lastBeaconStatus;
+@property (copy) NSString* name;
+@property (copy) NSString* machine;
+@property (copy) NSString* ip;
+@property (assign) int majorVersion;
+@property (assign) int minorVersion;
+@property (assign) int subVersion;
+@property (copy) NSString* version;
+@property (assign) int syncMode;
+@property (assign) int beaconCount;
+@property (assign) EspTimeType lastBeaconMonotonic,lastBeaconSystem;
+@property (copy) NSString* lastBeaconStatus;
 
 // these are set/updated from ACK opcode
-@property (atomic,assign) EspTimeType recentLatencyMM,recentLatencyMS,recentLatencySM,recentLatencySS;
-@property (atomic,assign) EspTimeType lowestLatencyMM,lowestLatencyMS,lowestLatencySM,lowestLatencySS;
-@property (atomic,assign) EspTimeType averageLatencyMM,averageLatencyMS,averageLatencySM,averageLatencySS;
-@property (atomic,assign) EspTimeType refBeaconMonotonic,refBeaconMonotonicAverage;
+@property (assign) EspTimeType recentLatencyMM,recentLatencyMS,recentLatencySM,recentLatencySS;
+@property (assign) EspTimeType lowestLatencyMM,lowestLatencyMS,lowestLatencySM,lowestLatencySS;
+@property (assign) EspTimeType averageLatencyMM,averageLatencyMS,averageLatencySM,averageLatencySS;
+@property (assign) EspTimeType refBeaconMonotonic,refBeaconMonotonicAverage;
 
 -(void) processBeacon:(NSDictionary*)d;
 -(void) processAckForSelf:(NSDictionary*)d peerCount:(int)count;

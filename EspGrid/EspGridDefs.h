@@ -61,9 +61,13 @@ void postLogHighVolume(NSString* s,id sender);
 // #define MINGW 1
 
 #import <sys/time.h>
-#import <mach/mach_time.h>
 
+#ifndef GNUSTEP
+#import <mach/mach_time.h>
 typedef SInt64 EspTimeType;
+#else
+typedef int64_t EspTimeType;
+#endif
 
 inline static EspTimeType systemTime(void) {
     struct timeval t;
@@ -72,7 +76,13 @@ inline static EspTimeType systemTime(void) {
 }
 
 inline static EspTimeType monotonicTime(void) {
+#ifndef GNUSTEP
     return mach_absolute_time();
+#else
+    struct timespec t;
+    clock_gettime(CLOCK_MONOTONIC,&t);
+    return (t.tv_sec*1000000000) + (t.tv_nsec);
+#endif
 }
 
 #ifdef GNUSTEP
