@@ -146,6 +146,7 @@
         {
             postLog([NSString stringWithFormat:@"dropping KVC (unknown authority): %@-%@",
                      name,machine], self);
+            [lock unlock];
             return NO;
         }
         EspTimeType t2 = [timeStamp longLongValue] + [clock adjustmentForPeer:newAuthority];
