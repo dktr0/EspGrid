@@ -70,7 +70,7 @@
         [d setObject:params forKey:@"params"];
         [d setObject:[NSNumber numberWithLongLong:t] forKey:@"time"];
         [udp transmitOpcode:ESP_OPCODE_OSCNOW withDictionary:d burst:8];
-        [udp transmitOpcodeToSelf:ESP_OPCODE_OSCNOW withDictionary:d];
+        [udp transmitOpcodeToSelf:ESP_OPCODE_OSCNOW withDictionary:d]; // ??? WORKING HERE ???
         return YES;
     }
     

@@ -85,13 +85,13 @@
     }
 }
 
+
 -(void) addItem:(id)item atTime:(EspTimeType)t
 {
     // right now we are doing this with brute force
     // in the future, we should sort as we insert objects so that queueThreadLoop doesn't have to traverse the whole array!
     NSArray* a = [NSArray arrayWithObjects:[NSNumber numberWithDouble:t],item,nil];
-    [items addObject:a];
+    [items performSelector:@selector(addObject:) onThread:queueThread withObject:a waitUntilDone:NO];
 }
-
 
 @end

@@ -24,7 +24,7 @@
 @synthesize osc;
 @synthesize clock;
 @synthesize items;
-@synthesize requestedShare;
+// @synthesize requestedShare;
 
 
 -(id) init

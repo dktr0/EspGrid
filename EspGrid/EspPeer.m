@@ -76,14 +76,14 @@
     [self setName:[d objectForKey:@"name"]];
     [self setMachine:[d objectForKey:@"machine"]];
     [self setIp:[d objectForKey:@"ip"]];
-    majorVersion = [[d objectForKey:@"majorVersion"] intValue];
-    minorVersion = [[d objectForKey:@"minorVersion"] intValue];
-    subVersion = [[d objectForKey:@"subVersion"] intValue];
-    version = [NSString stringWithFormat:@"%d.%d.%d",majorVersion,minorVersion,subVersion];
-    syncMode = [[d objectForKey:@"syncMode"] intValue];
-    beaconCount = [[d objectForKey:@"beaconCount"] intValue];
-    lastBeaconMonotonic = [[d objectForKey:@"monotonicReceiveTime"] longLongValue];
-    lastBeaconSystem = [[d objectForKey:@"systemReceiveTime"] longLongValue];
+    [self setMajorVersion:[[d objectForKey:@"majorVersion"] intValue]];
+    [self setMinorVersion:[[d objectForKey:@"minorVersion"] intValue]];
+    [self setSubVersion:[[d objectForKey:@"subVersion"] intValue]];
+    [self setVersion:[NSString stringWithFormat:@"%d.%d.%d",majorVersion,minorVersion,subVersion]];
+    [self setSyncMode:[[d objectForKey:@"syncMode"] intValue]];
+    [self setBeaconCount:[[d objectForKey:@"beaconCount"] intValue]];
+    [self setLastBeaconMonotonic:[[d objectForKey:@"monotonicReceiveTime"] longLongValue]];
+    [self setLastBeaconSystem:[[d objectForKey:@"systemReceiveTime"] longLongValue]];
     [self setLastBeaconStatus:@"<10s"];
 }
 

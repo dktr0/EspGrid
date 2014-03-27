@@ -61,7 +61,7 @@
     [d setObject:[NSNumber numberWithInt:ESPGRID_SUBVERSION] forKey:@"subVersion"];
     [d setObject:[NSNumber numberWithInt:syncMode] forKey:@"syncMode"];
     [udp transmitOpcode:ESP_OPCODE_BEACON withDictionary:d burst:1];
-    [peerList checkAllLastBeaconStatuses];
+    [peerList updateStatus];
 }
 
 -(void) issueAck:(NSDictionary*)d

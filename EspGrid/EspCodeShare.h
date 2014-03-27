@@ -30,7 +30,7 @@
   EspClock* clock;
   NSMutableArray* items;
     NSLock* itemsLock;
-  EspCodeShareItem* requestedShare;
+//  EspCodeShareItem* requestedShare;
 }
 @property (nonatomic,assign) EspOsc* osc;
 @property (nonatomic,assign) EspInternalProtocol* udp;

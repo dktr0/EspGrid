@@ -22,11 +22,11 @@
 
 @interface EspPeerList : NSObject
 {
-  NSMutableArray* peers;
-  NSString* status;
-  EspPeer* selfInPeerList;
+    NSMutableArray* peers;
+    NSLock* peersLock;
+    NSString* status;
+    EspPeer* selfInPeerList;
 }
-@property (assign) NSMutableArray* peers;
 @property (nonatomic,assign) NSString* status;
 @property (nonatomic,assign) EspPeer* selfInPeerList;
 
@@ -34,8 +34,6 @@
 -(EspPeer*) receivedAck:(NSDictionary*)d;
 -(EspPeer*) findPeerWithName:(NSString*)name andMachine:(NSString*)machine;
 -(EspPeer*) addNewPeer:(NSDictionary*)d;
--(long) peerCount;
--(void) checkAllLastBeaconStatuses;
 -(void) addSelfToPeerList;
 -(void) updateStatus;
 @end

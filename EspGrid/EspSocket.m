@@ -32,6 +32,7 @@
     self = [super init];
     transmitData = [[NSMutableData alloc] initWithLength:ESP_SOCKET_BUFFER_SIZE];
     if(!transmitData) { postProblem(@"unable to allocate transmitData", self); }
+    transmitLock = [[NSLock alloc] init];
     transmitBuffer = (void*)[transmitData bytes];
     receiveData = [[NSMutableData alloc] initWithLength:ESP_SOCKET_BUFFER_SIZE];
     if(!receiveData) { postProblem(@"unable to allocate receiveData", self); }
@@ -58,6 +59,7 @@
 -(void) dealloc
 {
     close(socketRef);
+    [transmitLock release];
     [receiveData release];
     free(receiveBuffer);
     [transmitData release];
@@ -155,7 +157,9 @@
                 @throw;
             }
             [d release];
-	    // [pool drain]; // is this necessary?  see above.
+#ifdef GNUSTEP
+	    [pool drain];
+#endif
         }
         else if (n==-1)
         {
@@ -184,28 +188,36 @@ static void sendData(int socketRef,const void* data,size_t length,NSString* host
 
 -(void)sendData: (NSData*)data toHost:(NSString*)host port:(int)p
 {
+    [transmitLock lock];
     sendData(socketRef, [data bytes], [data length], host, p); // a specific port indicated by argument p
+    [transmitLock unlock];
 }
 
 -(void)sendData: (NSData*)data toHost:(NSString*)host
 {
+    [transmitLock lock];
     sendData(socketRef, [data bytes], [data length], host, port); // use the port on which we listen
+    [transmitLock unlock];
 }
 
 -(void)sendDataWithTimes:(NSData*)data toHost:(NSString*)host port:(int)p
 {
+    [transmitLock lock];
     *((EspTimeType*)transmitBuffer) = monotonicTime();
     *((EspTimeType*)transmitBuffer+1) = systemTime();
     memcpy(transmitBuffer+16, [data bytes], [data length]);
     sendData(socketRef, transmitBuffer, [data length]+16, host, p);
+    [transmitLock unlock];
 }
 
 -(void)sendDataWithTimes:(NSData*)data toHost:(NSString*)host
 {
+    [transmitLock lock];
     *((EspTimeType*)transmitBuffer) = monotonicTime();
     *((EspTimeType*)transmitBuffer+1) = systemTime();
     memcpy(transmitBuffer+16, [data bytes], [data length]);
     sendData(socketRef, transmitBuffer, [data length]+16, host, port);
+    [transmitLock unlock];
 }
 
 @end

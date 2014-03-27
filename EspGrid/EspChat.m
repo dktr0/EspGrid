@@ -25,14 +25,12 @@
 
 -(void) sendMessage:(NSString*)msg
 {
-    // [udp transmitOpcode:ESP_OPCODE_CHATSEND withString:msg forKey:@"msg" burst:64];
     NSDictionary* d = [NSDictionary dictionaryWithObject:msg forKey:@"msg"];
     [udp transmitOpcode:ESP_OPCODE_CHATSEND withDictionary:d burst:64];
     NSString* from = [[NSUserDefaults standardUserDefaults] stringForKey:@"name"];
-    NSString* m = [NSString stringWithFormat:@"%@: %@",from,msg];
-    // [osc transmitToAddress:@"/esp/chat/receive" withString:from withString:m];
-    NSArray* a = [NSArray arrayWithObjects:@"/esp/chat/receive",from,m,nil];
+    NSArray* a = [NSArray arrayWithObjects:@"/esp/chat/receive",from,msg,nil];
     [osc transmit:a log:YES];
+    NSString* m = [NSString stringWithFormat:@"%@: %@",from,msg];
     postChat(m);
 }
 
@@ -44,9 +42,9 @@
         NSString* name = [d objectForKey:@"name"]; VALIDATE_OPCODE_NSSTRING(name);
         NSString* msg = [d objectForKey:@"msg"]; VALIDATE_OPCODE_NSSTRING(msg);
         NSString* msgOut = [NSString stringWithFormat:@"%@: %@",name,msg];
-        postChat(msgOut);
-        // [osc transmitToAddress:@"/esp/chat/receive" withString:msgOut];
-        NSArray* a = [NSArray arrayWithObjects:@"/esp/chat/receive",name,msgOut,nil];
+        postChat(msgOut); // post received message in-app
+        // and send it to all registered OSC clients
+        NSArray* a = [NSArray arrayWithObjects:@"/esp/chat/receive",name,msg,nil];
         [osc transmit:a log:YES];
         return YES;
     }
@@ -59,14 +57,12 @@
     {
         if([d count]<1){postProblem(@"received /esp/chat/send with no parameters",self); return NO;}
         else [osc logReceivedMessage:address fromHost:h port:p];
-        NSString* from = [d objectAtIndex:0];
         NSMutableString* msg = [[NSMutableString alloc] init];
-        for(int i=1;i<[d count];i++)
+        for(int i=0;i<[d count];i++)
         {
             [msg appendFormat:@"%@ ",[d objectAtIndex:i]];
         }
-        NSString* x = [NSString stringWithFormat:@"(fwd from %@) %@",from,msg];
-        [self sendMessage:x];
+        [self sendMessage:msg];
         return YES;
     }
     return NO;

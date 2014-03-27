@@ -21,12 +21,12 @@
 
 @implementation EspPeerList
 @synthesize status;
-@synthesize peers;
 @synthesize selfInPeerList;
 
 -(id) init {
     self = [super init];
     peers = [[NSMutableArray alloc] init];
+    peersLock = [[NSLock alloc] init];
     NSUserDefaults* x = [NSUserDefaults standardUserDefaults];
     [x addObserver:self forKeyPath:@"name" options:NSKeyValueObservingOptionNew context:nil];
     [x addObserver:self forKeyPath:@"machine" options:NSKeyValueObservingOptionNew context:nil];
@@ -37,6 +37,7 @@
 
 -(void) dealloc
 {
+    [peersLock release];
     [peers release];
     [super dealloc];
 }
@@ -113,22 +114,14 @@
     int theirMinorVersion = [[d objectForKey:@"minorVersion"] intValue];
     
     // check EspGrid version of peer/sender and warn in cases of mismatch
-    if(theirMajorVersion < ESPGRID_MAJORVERSION ) 
+    if(theirMajorVersion < ESPGRID_MAJORVERSION ||
+       (theirMajorVersion==ESPGRID_MAJORVERSION && theirMinorVersion < ESPGRID_MINORVERSION))
     {
         NSString* s = [NSString stringWithFormat:@"%@-%@ is running old EspGrid %d.%2d",name,machine,theirMajorVersion,theirMinorVersion];
         postWarning(s,self);
     }
-    else if(theirMajorVersion > ESPGRID_MAJORVERSION )
-    {
-        NSString* s = [NSString stringWithFormat:@"%@-%@ is running newer EspGrid %d.%2d",name,machine,theirMajorVersion,theirMinorVersion];
-        postWarning(s,self);
-    }
-    else if(theirMinorVersion < ESPGRID_MINORVERSION)
-    {
-        NSString* s = [NSString stringWithFormat:@"%@-%@ is running old EspGrid %d.%2d",name,machine,theirMajorVersion,theirMinorVersion];
-        postWarning(s,self);
-    }
-    else if(theirMinorVersion > ESPGRID_MINORVERSION)
+    else if(theirMajorVersion > ESPGRID_MAJORVERSION ||
+            (theirMajorVersion==ESPGRID_MAJORVERSION && theirMinorVersion > ESPGRID_MINORVERSION))
     {
         NSString* s = [NSString stringWithFormat:@"%@-%@ is running newer EspGrid %d.%2d",name,machine,theirMajorVersion,theirMinorVersion];
         postWarning(s,self);
@@ -137,40 +130,35 @@
     // add new peer to peerlist
     [self willChangeValueForKey:@"peers"];
     EspPeer* x = [[EspPeer alloc] init];
-    [x setName:name];
-    [x setMachine:machine];
-    [x setIp:ip];
-    [x setMajorVersion:theirMajorVersion];
-    [x setMinorVersion:theirMinorVersion];
+    [peersLock lock];
     [peers addObject:x];
+    [peersLock unlock];
     [self didChangeValueForKey:@"peers"];
     postLog([NSString stringWithFormat:@"adding %@-%@ at %@",name,machine,ip], self);
     [self updateStatus];
     return x;
 }
 
--(void) checkAllLastBeaconStatuses
+-(void) updateStatus
 {
+    [peersLock lock];
+    long c = [peers count];
     for(EspPeer* x in peers) [x updateLastBeaconStatus];
+    [peersLock unlock];
+    if(c>1) [self setStatus:[NSString stringWithFormat:@"%ld peers on grid",c]];
+    else [self setStatus:@"no peers found yet"];
 }
-
 
 -(EspPeer*) findPeerWithName:(NSString*)name andMachine:(NSString*)machine
 {
-    for(EspPeer* x in peers) if([[x name] isEqualToString:name] && [[x machine] isEqualToString:machine]) return x;
+    [peersLock lock];
+    for(EspPeer* x in peers) if([[x name] isEqualToString:name] && [[x machine] isEqualToString:machine])
+    {
+        [peersLock unlock];
+        return x;
+    }
+    [peersLock unlock];
     return nil;
-}
-
--(long) peerCount
-{
-    return [peers count];
-}
-
--(void) updateStatus
-{
-    long c = [self peerCount];
-    if(c>1) [self setStatus:[NSString stringWithFormat:@"%ld peers on grid",[self peerCount]]];
-    else [self setStatus:@"no peers found yet"];
 }
 
 @end

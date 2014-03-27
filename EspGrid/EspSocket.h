@@ -42,6 +42,7 @@
     NSThread* thread;
     struct sockaddr_in them;
     id<EspSocketDelegate> delegate;
+    NSLock* transmitLock;
     void* transmitBuffer;
     NSMutableData* transmitData;
     void* receiveBuffer;

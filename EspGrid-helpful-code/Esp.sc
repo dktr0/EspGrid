@@ -1,7 +1,7 @@
 /*
 Esp -- SuperCollider classes to connect with EspGrid (classes Esp and EspClock)
 by David Ogborn <ogbornd@mcmaster.ca>
-Version-date: 5 March 2014 (EspGrid 0.50.2)
+Version-date: 27 March 2014 (EspGrid 0.50.5)
 
 Installation Instructions:
 1. Place this file in your SuperCollider extensions folder
@@ -28,7 +28,7 @@ Esp {
 	*chat { |x| send.sendMsg("/esp/chat/send",x); }
 
 	*initClass {
-		version = "5 March 2014 (EspGrid 0.50.2)";
+		version = "27 March 2014 (EspGrid 0.50.5)";
 		("Esp.sc: " + version).postln;
 		gridAddress = "127.0.0.1";
 		send = NetAddr(gridAddress,5510);
@@ -39,7 +39,7 @@ Esp {
 				{
 					|msg,time,addr,port|
 					var chat = msg;
-					msg.postln;
+					(msg[1] ++ " says: " ++ msg[2]).postln;
 				}
 				,"/esp/chat/receive"
 			).permanent_(true);
