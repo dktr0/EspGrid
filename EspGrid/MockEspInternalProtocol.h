@@ -1,5 +1,5 @@
 //
-//  MockEspInternalProtocol.h
+//  MockEspNetwork.h
 //
 //  This file is part of EspGrid.  EspGrid is (c) 2012,2013 by David Ogborn.
 //
@@ -16,9 +16,9 @@
 //  You should have received a copy of the GNU General Public License
 //  along with EspGrid.  If not, see <http://www.gnu.org/licenses/>.
 
-#import "EspInternalProtocol.h"
+#import "EspNetwork.h"
 
-@interface MockEspInternalProtocol : EspInternalProtocol
+@interface MockEspNetwork : EspNetwork
 @property (atomic,copy) NSData* transmittedData;
 @property (atomic,assign) NSUInteger burst;
 @property (atomic,assign) BOOL transmitted;

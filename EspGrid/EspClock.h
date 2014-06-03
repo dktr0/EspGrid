@@ -17,11 +17,11 @@
 //  along with EspGrid.  If not, see <http://www.gnu.org/licenses/>.
 
 #import <Foundation/Foundation.h>
-#import "EspInternalProtocol.h"
+#import "EspNetwork.h"
 #import "EspOsc.h"
 #import "EspPeerList.h"
 
-@interface EspClock : NSObject <EspHandleOpcode>
+@interface EspClock : NSObject <EspNetworkDelegate>
 {
     int countOfBeaconsIssued;
     int syncMode;
@@ -29,18 +29,16 @@
     EspTimeType fluxValues[1024];
     int fluxIndex;
     EspPeerList* peerList;
-    EspInternalProtocol* udp;
+    EspNetwork* network;
     EspOsc* osc;
     EspTimeType flux;
     NSString* fluxStatus;
 }
-@property (nonatomic,assign) EspPeerList* peerList;
-@property (nonatomic,assign) EspInternalProtocol* udp;
-@property (nonatomic,assign) EspOsc* osc;
 @property (assign) int syncMode;
 @property (assign) EspTimeType flux;
 @property (retain) NSString* fluxStatus;
 
++(EspClock*) clock;
 -(void) changeSyncMode:(int)mode;
 -(EspTimeType) adjustmentForPeer:(EspPeer*)peer;
 -(void) updateflux:(EspTimeType)adjToAdj;

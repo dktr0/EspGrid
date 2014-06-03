@@ -82,8 +82,8 @@
     [self setVersion:[NSString stringWithFormat:@"%d.%d.%d",majorVersion,minorVersion,subVersion]];
     [self setSyncMode:[[d objectForKey:@"syncMode"] intValue]];
     [self setBeaconCount:[[d objectForKey:@"beaconCount"] intValue]];
-    [self setLastBeaconMonotonic:[[d objectForKey:@"monotonicReceiveTime"] longLongValue]];
-    [self setLastBeaconSystem:[[d objectForKey:@"systemReceiveTime"] longLongValue]];
+    [self setLastBeaconMonotonic:[[d objectForKey:@"packetReceiveTime"] longLongValue]];
+    [self setLastBeaconSystem:[[d objectForKey:@"packetReceiveTimeSystem"] longLongValue]];
     [self setLastBeaconStatus:@"<10s"];
 }
 
@@ -98,10 +98,10 @@
     EspTimeType beaconSendSystem = [[d objectForKey:@"beaconSendSystem"] longLongValue];
     EspTimeType beaconReceiveMonotonic = [[d objectForKey:@"beaconReceiveMonotonic"] longLongValue];
     EspTimeType beaconReceiveSystem = [[d objectForKey:@"beaconReceiveSystem"] longLongValue];
-    EspTimeType ackSendMonotonic = [[d objectForKey:@"monotonicSendTime"] longLongValue];
-    EspTimeType ackSendSystem = [[d objectForKey:@"systemSendTime"] longLongValue];
-    EspTimeType ackReceiveMonotonic = [[d objectForKey:@"monotonicReceiveTime"] longLongValue];
-    EspTimeType ackReceiveSystem = [[d objectForKey:@"systemReceiveTime"] longLongValue];
+    EspTimeType ackSendMonotonic = [[d objectForKey:@"sendTime"] longLongValue];
+    EspTimeType ackSendSystem = [[d objectForKey:@"sendTimeSystem"] longLongValue];
+    EspTimeType ackReceiveMonotonic = [[d objectForKey:@"receiveTime"] longLongValue];
+    EspTimeType ackReceiveSystem = [[d objectForKey:@"receiveTimeSystem"] longLongValue];
     
     // from these times we can calculate roundtrip time, and interval peer spent preparing ACK, on each clock
     // and then each of those can be tracked immediately, lowest value or average value

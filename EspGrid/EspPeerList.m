@@ -23,6 +23,13 @@
 @synthesize status;
 @synthesize selfInPeerList;
 
++(EspPeerList*) peerList
+{
+    static EspPeerList* sharedPeerList = nil;
+    if(!sharedPeerList) sharedPeerList = [[EspPeerList alloc] init];
+    return sharedPeerList;
+}
+
 -(id) init {
     self = [super init];
     peers = [[NSMutableArray alloc] init];
@@ -109,7 +116,7 @@
     // extract parameters from dictionary passed from opcode
     NSString* name = [d objectForKey:@"name"];
     NSString* machine = [d objectForKey:@"machine"];
-    NSString* ip = [d objectForKey:@"ip"];
+    NSString* ip = [d objectForKey:@"originAddress"];
     int theirMajorVersion = [[d objectForKey:@"majorVersion"] intValue];
     int theirMinorVersion = [[d objectForKey:@"minorVersion"] intValue];
     

@@ -33,7 +33,7 @@
 
 -(void) setUp
 {
-    opcodeReceiver = [[EspInternalProtocol alloc] init];
+    opcodeReceiver = [[EspNetwork alloc] init];
     opcodeHandler = [[MockOpcodeHandler alloc] init];
     [opcodeReceiver setHandler:opcodeHandler forOpcode:12];
 }
@@ -59,7 +59,7 @@
 
 -(void) testSettingHandlerBeyondMaximumThrows
 {
-    EspInternalProtocol* udp = [[EspInternalProtocol alloc] init];
+    EspNetwork* udp = [[EspNetwork alloc] init];
     MockOpcodeHandler* h = [[MockOpcodeHandler alloc] init];
     STAssertThrows([udp setHandler:h forOpcode:300],@"adding opcode handler beyond maximum should throw exception");
 }

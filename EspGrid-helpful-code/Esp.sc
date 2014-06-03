@@ -1,7 +1,7 @@
 /*
 Esp -- SuperCollider classes to connect with EspGrid (classes Esp and EspClock)
 by David Ogborn <ogbornd@mcmaster.ca>
-Version-date: 27 March 2014 (EspGrid 0.50.5)
+Version-date: 10 April 2014 (EspGrid 0.50.5)
 
 Installation Instructions:
 1. Place this file in your SuperCollider extensions folder
@@ -28,7 +28,7 @@ Esp {
 	*chat { |x| send.sendMsg("/esp/chat/send",x); }
 
 	*initClass {
-		version = "27 March 2014 (EspGrid 0.50.5)";
+		version = "10 April 2014 (EspGrid 0.50.5)";
 		("Esp.sc: " + version).postln;
 		gridAddress = "127.0.0.1";
 		send = NetAddr(gridAddress,5510);
@@ -47,6 +47,7 @@ Esp {
 	}
 }
 
+
 EspClock : TempoClock {
 
 	// private variables:
@@ -56,7 +57,8 @@ EspClock : TempoClock {
 	// public methods:
 	pause { Esp.send.sendMsg("/esp/beat/on",0); }
 	start { Esp.send.sendMsg("/esp/beat/on",1); }
-	tempo_ {|t| if(t<=5,{Esp.send.sendMsg("/esp/beat/tempo", t * 60);},{"tempo too high".postln;});}
+	tempo { ^if(refOn==1,refFreq,0); }
+	tempo_ {|t| if(t<10,{Esp.send.sendMsg("/esp/beat/tempo", t * 60);},{"tempo too high".postln;});}
 
  	init {
 		| tempo,beats,seconds,queueSize |
@@ -83,26 +85,31 @@ EspClock : TempoClock {
                 refFreq = msg[2]/60;
                 refTime = msg[3] + (msg[4]*0.000000001);
                 refBeat = msg[5];
+				if(clockDiff.notNil) { // synchronize only if system clock adjustment known
+					if(refOn==0,
+						{ // if tempo is off
+							this.setTempoAtSec(0.000000001,SystemClock.seconds); // SC doesn't pause...
+						},
+						{ // if tempo is on
+							var target = (SystemClock.seconds - refTime + clockDiff) * refFreq + refBeat;
+							var adjust = (target - this.beats * 40);
+							var freq = (refFreq + adjust).clip(0.000000001,1000000);
+							if(adjust != 0) {
+								{
+									this.setTempoAtSec(freq,SystemClock.seconds);
+									0.025.wait;
+									this.setTempoAtSec(refFreq,SystemClock.seconds);
+								}.fork(SystemClock);
+							};
+						}
+					);
+				};
 			},
 			"/esp/tempo/r").permanent_(true);
 
 		Esp.send.sendMsg("/esp/clock/q");
         SkipJack.new( {Esp.send.sendMsg("/esp/tempo/q");}, 0.05, clock: SystemClock);
-        SkipJack.new( {this.sync;},0.05, clock: SystemClock);
-		SkipJack.new( {Esp.send.sendMsg("/esp/clock/q");}, 10.0, clock: SystemClock);
+        SkipJack.new( {Esp.send.sendMsg("/esp/clock/q");}, 10.0, clock: SystemClock);
 	}
-    
-    sync {
-        if(clockDiff.notNil && refFreq.notNil, // don't sync metre before system clock adjustment is known
-            {
-                if(refOn==0,{
-                    this.setTempoAtSec(0.000000001,SystemClock.seconds); // SC doesn't pause, so...
-                },{
-                    var beat = (SystemClock.seconds - refTime + clockDiff) * refFreq + refBeat;
-                    var freq = (beat - this.beats * 10 + refFreq).clip(0.000000001,1000);
-                    this.setTempoAtSec(freq,SystemClock.seconds);
-                });
-            });
-    }
 
 }

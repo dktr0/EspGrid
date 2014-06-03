@@ -18,25 +18,20 @@
 
 #import <Foundation/Foundation.h>
 #import "EspClock.h"
-#import "EspInternalProtocol.h"
+#import "EspNetwork.h"
 #import "EspOsc.h"
 #import "EspQueue.h"
 #import "EspPeerList.h"
 
-@interface EspMessage : NSObject <EspQueueDelegate,EspHandleOsc,EspHandleOpcode>
+@interface EspMessage : NSObject <EspQueueDelegate,EspHandleOsc,EspNetworkDelegate>
 {
     EspClock* clock;
-    EspInternalProtocol* udp;
+    EspNetwork* network;
     EspOsc* osc;
-    EspQueue* queue;
     EspPeerList* peerList;
+    EspQueue* queue;
 }
-@property (assign) EspClock* clock;
-@property (assign) EspInternalProtocol* udp;
-@property (assign) EspOsc* osc;
-@property (assign) EspQueue* queue;
-@property (assign) EspPeerList* peerList;
 
 -(void) respondToQueuedItem:(id)item;
-
++(EspMessage*) message;
 @end

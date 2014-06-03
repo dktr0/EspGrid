@@ -17,7 +17,7 @@
 //  along with EspGrid.  If not, see <http://www.gnu.org/licenses/>.
 
 #import <Foundation/Foundation.h>
-#import "EspInternalProtocol.h"
+#import "EspNetwork.h"
 
 #define ESPGRID_CODESHARE_FRAGMENTSIZE 128
 
@@ -47,11 +47,11 @@
 +(id)createWithGridSource:(NSString*)n machine:(NSString*)m title:(NSString*)t timeStamp:(EspTimeType)ts length:(unsigned long)l;
 -(BOOL) isEqualToName:(NSString*)n machine:(NSString*)m timeStamp:(NSNumber*)ts;
 -(void) addFragment:(NSString*)fragment index:(unsigned long)i;
--(void) announceOnUdp:(EspInternalProtocol*)udp;
--(void) requestAllOnUdp:(EspInternalProtocol*)udp;
--(void) deliverAllOnUdp:(EspInternalProtocol*)udp;
--(void) deliverFragment:(unsigned long)i onUdp:(EspInternalProtocol*)udp;
--(NSString*) getOrRequestContentOnUdp:(EspInternalProtocol*)udp;
+-(void) announceOnUdp:(EspNetwork*)udp;
+-(void) requestAllOnUdp:(EspNetwork*)udp;
+-(void) deliverAllOnUdp:(EspNetwork*)udp;
+-(void) deliverFragment:(unsigned long)i onUdp:(EspNetwork*)udp;
+-(NSString*) getOrRequestContentOnUdp:(EspNetwork*)udp;
 -(id)initWithLocalContent:(NSString*)c title:(NSString*)t timeStamp:(EspTimeType)ts;
 -(id)initWithGridSource:(NSString*)n machine:(NSString*)m title:(NSString*)t timeStamp:(EspTimeType)ts length:(unsigned long)l;
 @end

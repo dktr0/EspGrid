@@ -21,16 +21,22 @@
 #import <Foundation/Foundation.h>
 
 @implementation EspClock
-@synthesize peerList;
-@synthesize udp;
-@synthesize osc;
 @synthesize syncMode;
 @synthesize flux;
 @synthesize fluxStatus;
 
++(EspClock*) clock
+{
+    static EspClock* sharedClock = nil;
+    if(!sharedClock)sharedClock = [[EspClock alloc] init];
+    return sharedClock;
+}
 
 -(id) init
 {
+    peerList = [EspPeerList peerList];
+    network = [EspNetwork network];
+    osc = [EspOsc osc];
     for(int x=0;x<1024;x++)
     {
         fluxTimes[x] = 0;
@@ -60,7 +66,7 @@
     [d setObject:[NSNumber numberWithInt:ESPGRID_MINORVERSION] forKey:@"minorVersion"];
     [d setObject:[NSNumber numberWithInt:ESPGRID_SUBVERSION] forKey:@"subVersion"];
     [d setObject:[NSNumber numberWithInt:syncMode] forKey:@"syncMode"];
-    [udp transmitOpcode:ESP_OPCODE_BEACON withDictionary:d burst:1];
+    [network sendOpcode:ESP_OPCODE_BEACON withDictionary:d];
     [peerList updateStatus];
 }
 
@@ -71,13 +77,13 @@
     NSMutableDictionary* d2 = [[NSMutableDictionary alloc] init];
     [d2 setValue:[d objectForKey:@"name"] forKey:@"nameRcvd"];
     [d2 setValue:[d objectForKey:@"machine"]forKey:@"machineRcvd"];
-    [d2 setValue:[d objectForKey:@"ip"] forKey:@"ipRcvd"];
+    [d2 setValue:[d objectForKey:@"originAddress"] forKey:@"ipRcvd"];
     [d2 setValue:[[d objectForKey:@"beaconCount"] copy] forKey:@"beaconCount"];
-    [d2 setValue:[[d objectForKey:@"monotonicSendTime"] copy] forKey:@"beaconSendMonotonic"];
-    [d2 setValue:[[d objectForKey:@"systemSendTime"] copy] forKey:@"beaconSendSystem"];
-    [d2 setValue:[[d objectForKey:@"monotonicReceiveTime"] copy] forKey:@"beaconReceiveMonotonic"];
-    [d2 setValue:[[d objectForKey:@"systemReceiveTime"] copy] forKey:@"beaconReceiveSystem"];
-    [udp transmitOpcode:ESP_OPCODE_ACK withDictionary:d2 burst:1];
+    [d2 setValue:[[d objectForKey:@"sendTime"] copy] forKey:@"beaconSendMonotonic"];
+    [d2 setValue:[[d objectForKey:@"sendTimeSystem"] copy] forKey:@"beaconSendSystem"];
+    [d2 setValue:[[d objectForKey:@"receiveTime"] copy] forKey:@"beaconReceiveMonotonic"];
+    [d2 setValue:[[d objectForKey:@"receiveTimeSystem"] copy] forKey:@"beaconReceiveSystem"];
+    [network sendOpcode:ESP_OPCODE_ACK withDictionary:d2];
 }
 
 -(void) sendBeacon:(NSTimer*)t
@@ -92,39 +98,38 @@
                                     repeats:NO];
 }
 
--(BOOL) handleOpcode:(NSDictionary*)d;
+-(void) handleOpcode:(NSDictionary*)d;
 {
     id opcodeObject = [d objectForKey:@"opcode"];
-    if(opcodeObject == nil) { postWarning(@"asked to handle opcode without opcode field",self); return NO; }
-    if(![opcodeObject isKindOfClass:[NSNumber class]]) { postWarning(@"opcode field not number",self); return NO; }
+    if(opcodeObject == nil) { postWarning(@"asked to handle opcode without opcode field",self); }
+    if(![opcodeObject isKindOfClass:[NSNumber class]]) { postWarning(@"opcode field not number",self); }
     int opcode = [opcodeObject intValue];
         
     if(opcode==ESP_OPCODE_BEACON) {
         // validate opcode fields
         NSString* name = [d objectForKey:@"name"]; VALIDATE_OPCODE_NSSTRING(name);
         NSString* machine = [d objectForKey:@"machine"]; VALIDATE_OPCODE_NSSTRING(machine);
-        NSString* ip = [d objectForKey:@"ip"]; VALIDATE_OPCODE_NSSTRING(ip);
+        NSString* ip = [d objectForKey:@"originAddress"]; VALIDATE_OPCODE_NSSTRING(ip);
         NSNumber* beaconCount = [d objectForKey:@"beaconCount"]; VALIDATE_OPCODE_NSNUMBER(beaconCount);
         NSNumber* majorVersion = [d objectForKey:@"majorVersion"]; VALIDATE_OPCODE_NSNUMBER(majorVersion);
         NSNumber* minorVersion = [d objectForKey:@"minorVersion"]; VALIDATE_OPCODE_NSNUMBER(minorVersion);
         // should change later to validate received subVersion from BEACON as well
         NSNumber* syncModeObject = [d objectForKey:@"syncMode"]; VALIDATE_OPCODE_NSNUMBER(syncModeObject);
-        NSNumber* monotonicSendTime = [d objectForKey:@"monotonicSendTime"]; VALIDATE_OPCODE_NSNUMBER(monotonicSendTime);
-        NSNumber* systemSendTime = [d objectForKey:@"systemSendTime"]; VALIDATE_OPCODE_NSNUMBER(systemSendTime);
-        NSNumber* monotonicReceiveTime = [d objectForKey:@"monotonicReceiveTime"]; VALIDATE_OPCODE_NSNUMBER(monotonicReceiveTime);
-        NSNumber* systemReceiveTime = [d objectForKey:@"systemReceiveTime"]; VALIDATE_OPCODE_NSNUMBER(systemReceiveTime);
+        NSNumber* sendTime = [d objectForKey:@"sendTime"]; VALIDATE_OPCODE_NSNUMBER(sendTime);
+        NSNumber* sendTimeSystem = [d objectForKey:@"sendTimeSystem"]; VALIDATE_OPCODE_NSNUMBER(sendTimeSystem);
+        NSNumber* receiveTime = [d objectForKey:@"receiveTime"]; VALIDATE_OPCODE_NSNUMBER(receiveTime);
+        NSNumber* receiveTimeSystem = [d objectForKey:@"receiveTimeSystem"]; VALIDATE_OPCODE_NSNUMBER(receiveTimeSystem);
         // log; respond with ACK; harvest data into peerlist
         postLog([NSString stringWithFormat:@"BEACON from %@-%@ at %@",name,machine,ip],self);
         [self issueAck:d];
         [peerList receivedBeacon:d];
-        return YES;
     }
     
     if(opcode==ESP_OPCODE_ACK) {
         // validate opcode fields
         NSString* name = [d objectForKey:@"name"]; VALIDATE_OPCODE_NSSTRING(name);
         NSString* machine = [d objectForKey:@"machine"]; VALIDATE_OPCODE_NSSTRING(machine);
-        NSString* ip = [d objectForKey:@"ip"]; VALIDATE_OPCODE_NSSTRING(ip);
+        NSString* ip = [d objectForKey:@"originAddress"]; VALIDATE_OPCODE_NSSTRING(ip);
         NSString* nameRcvd = [d objectForKey:@"nameRcvd"]; VALIDATE_OPCODE_NSSTRING(nameRcvd);
         NSString* machineRcvd = [d objectForKey:@"machineRcvd"]; VALIDATE_OPCODE_NSSTRING(machineRcvd);
         NSString* ipRcvd = [d objectForKey:@"ipRcvd"]; VALIDATE_OPCODE_NSSTRING(ipRcvd);
@@ -133,16 +138,13 @@
         NSNumber* beaconSendSystem = [d objectForKey:@"beaconSendSystem"]; VALIDATE_OPCODE_NSNUMBER(beaconSendSystem);
         NSNumber* beaconReceiveMonotonic = [d objectForKey:@"beaconReceiveMonotonic"]; VALIDATE_OPCODE_NSNUMBER(beaconReceiveMonotonic);
         NSNumber* beaconReceiveSystem = [d objectForKey:@"beaconReceiveSystem"]; VALIDATE_OPCODE_NSNUMBER(beaconReceiveSystem);
-        NSNumber* monotonicSendTime = [d objectForKey:@"monotonicSendTime"]; VALIDATE_OPCODE_NSNUMBER(monotonicSendTime);
-        NSNumber* systemSendTime = [d objectForKey:@"systemSendTime"]; VALIDATE_OPCODE_NSNUMBER(systemSendTime);
-        NSNumber* monotonicReceiveTime = [d objectForKey:@"monotonicReceiveTime"]; VALIDATE_OPCODE_NSNUMBER(monotonicReceiveTime);
-        NSNumber* systemReceiveTime = [d objectForKey:@"systemReceiveTime"]; VALIDATE_OPCODE_NSNUMBER(systemReceiveTime);
+        NSNumber* sendTime = [d objectForKey:@"sendTime"]; VALIDATE_OPCODE_NSNUMBER(sendTime);
+        NSNumber* sendTimeSystem = [d objectForKey:@"sendTimeSystem"]; VALIDATE_OPCODE_NSNUMBER(sendTimeSystem);
+        NSNumber* receiveTime = [d objectForKey:@"receiveTime"]; VALIDATE_OPCODE_NSNUMBER(receiveTime);
+        NSNumber* receiveTimeSystem = [d objectForKey:@"receiveTimeSystem"]; VALIDATE_OPCODE_NSNUMBER(receiveTimeSystem);
         // harvest data into peerlist
         [peerList receivedAck:d];
-        return YES;
     }
-    
-    return NO;
 }
 
 -(EspTimeType) adjustmentForPeer:(EspPeer*)peer

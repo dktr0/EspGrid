@@ -17,7 +17,7 @@
 //  along with EspGrid.  If not, see <http://www.gnu.org/licenses/>.
 
 #import <SenTestingKit/SenTestingKit.h>
-#import "EspInternalProtocol.h"
+#import "EspNetwork.h"
 
 @interface MockOpcodeHandler : NSObject <EspHandleOpcode>
 @property (atomic,assign) BOOL wasHandled;
@@ -25,7 +25,7 @@
 
 @interface EspOpcodeReceiveTests : SenTestCase
 {
-    EspInternalProtocol* opcodeReceiver;
+    EspNetwork* opcodeReceiver;
     MockOpcodeHandler* opcodeHandler;
 }
 @end

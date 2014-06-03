@@ -17,13 +17,13 @@
 //  along with EspGrid.  If not, see <http://www.gnu.org/licenses/>.
 
 #import <SenTestingKit/SenTestingKit.h>
-#import "MockEspInternalProtocol.h"
+#import "MockEspNetwork.h"
 #import "EspKeyValueController.h"
 #import "EspPeerList.h"
 
 @interface EspKeyValueControllerTests : SenTestCase
 {
-    MockEspInternalProtocol* udp;
+    MockEspNetwork* udp;
     EspOsc* osc;
     EspPeerList* peerList;
     EspClock* clock;

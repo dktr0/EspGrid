@@ -17,39 +17,22 @@
 //  along with EspGrid.  If not, see <http://www.gnu.org/licenses/>.
 
 #import <Foundation/Foundation.h>
-#import "EspHandleOpcode.h"
-#import "EspSocket.h"
-#import "EspOsc.h"
+#import "EspChannel.h"
 
-@interface EspBridge : NSObject <EspSocketDelegate,EspHandleOsc>
+@interface EspBridge : EspChannel
 {
-    EspSocket* udpReceive;
-    unsigned long remotePacketsLong;
-    int localPort;
+    NSLock* bridgeLock;
     NSString* localGroup;
     NSString* localAddress;
-    NSString* remoteAddress;
-    NSString* remotePort;
-    NSString* remoteGroup;
     NSString* remoteClaimedAddress;
     NSString* remoteClaimedPort;
     NSString* remotePackets;
-    NSObject<EspHandleOpcode>* udp;
+    unsigned long remotePacketsLong;
 }
-@property (nonatomic,copy) NSString* localGroup;
-@property (nonatomic,copy) NSString* localAddress;
-@property (nonatomic,copy) NSString* remoteAddress;
-@property (nonatomic,copy) NSString* remotePort;
-@property (nonatomic,copy) NSString* remoteGroup;
-@property (nonatomic,copy) NSString* remoteClaimedAddress;
-@property (nonatomic,copy) NSString* remoteClaimedPort;
-@property (nonatomic,copy) NSString* remotePackets;
-@property (nonatomic,assign) NSObject<EspHandleOpcode>* udp;
+@property (atomic,copy) NSString* localGroup;
+@property (atomic,copy) NSString* localAddress;
+@property (atomic,copy) NSString* remoteClaimedAddress;
+@property (atomic,copy) NSString* remoteClaimedPort;
+@property (atomic,copy) NSString* remotePackets;
 
--(void) changeLocalPort:(int)p;
-
--(void) transmitOpcode:(NSDictionary*)d;
--(void) retransmitOpcode:(NSDictionary*)d;
--(void) rebroadcastOpcode:(NSDictionary*)d;
--(BOOL) active;
 @end

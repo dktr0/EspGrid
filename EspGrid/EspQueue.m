@@ -20,7 +20,6 @@
 #import "EspGridDefs.h"
 
 @implementation EspQueue
-@synthesize clock;
 @synthesize delegate;
 
 
@@ -62,7 +61,10 @@
         EspTimeType t = [[a objectAtIndex:0] longLongValue];
         if(t<=now)
         {
-            [delegate respondToQueuedItem:[a objectAtIndex:1]];
+            [delegate performSelectorOnMainThread:@selector(respondToQueuedItem:)
+                                       withObject:[a objectAtIndex:1]
+                                    waitUntilDone:YES];
+            // [delegate respondToQueuedItem:[a objectAtIndex:1]];
             [items removeObject:a];
         }
     }

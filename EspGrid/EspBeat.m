@@ -34,10 +34,6 @@
     bool isTicking;
 #endif
 }
-@synthesize udp;
-@synthesize osc;
-@synthesize clock;
-@synthesize kvc;
 
 @synthesize on;
 @synthesize tempo;
@@ -45,9 +41,20 @@
 @synthesize downbeatNumber;
 @synthesize cycleLength;
 
++(EspBeat*) beat
+{
+    static EspBeat* sharedObject = nil;
+    if(!sharedObject)sharedObject = [[EspBeat alloc] init];
+    return sharedObject;
+}
+
 -(id) init
 {
     self = [super init];
+    osc = [EspOsc osc];
+    network = [EspNetwork network];
+    clock = [EspClock clock];
+    kvc = [EspKeyValueController keyValueController];
     [self setOn:[NSNumber numberWithBool:NO]];
     [self setTempo:[NSNumber numberWithDouble:120.0]];
     [self setCycleLength:[NSNumber numberWithInt:4]];

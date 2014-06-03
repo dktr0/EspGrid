@@ -17,18 +17,15 @@
 //  along with EspGrid.  If not, see <http://www.gnu.org/licenses/>.
 
 #import <Foundation/Foundation.h>
-#import "EspInternalProtocol.h"
+#import "EspNetwork.h"
 #import "EspOsc.h"
 
-@interface EspChat : NSObject <EspHandleOpcode,EspHandleOsc>
+@interface EspChat : NSObject <EspNetworkDelegate,EspHandleOsc>
 {
-  EspInternalProtocol* udp;
+  EspNetwork* network;
   EspOsc* osc;
 }
-@property (nonatomic,assign) EspInternalProtocol* udp;
-@property (nonatomic,assign) EspOsc* osc;
-
 
 -(void) sendMessage:(NSString*)msg;
--(BOOL) handleOpcode:(NSDictionary*)d;
++(EspChat*) chat;
 @end

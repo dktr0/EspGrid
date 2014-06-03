@@ -29,10 +29,8 @@
     NSThread* queueThread;
     NSMutableArray* items;
     NSTimer* queueTimer;
-    EspClock* clock;
     NSObject<EspQueueDelegate>* delegate;
 }
-@property (assign) EspClock* clock;
 @property (assign) NSObject<EspQueueDelegate>* delegate;
 
 -(void) addItem:(id)item atTime:(EspTimeType)t;

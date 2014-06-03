@@ -18,7 +18,7 @@
 
 #import "EspCodeShareItemTests.h"
 #import "EspCodeShareItem.h"
-#import "MockEspInternalProtocol.h"
+#import "MockEspNetwork.h"
 
 @implementation EspCodeShareItemTests
 
@@ -176,7 +176,7 @@
 -(void)testAnnounceOnUdpCausesTransmission
 {
     EspCodeShareItem* item = [EspCodeShareItem createWithLocalContent:@"my code" title:@"local code" timeStamp:123456.0];
-    MockEspInternalProtocol* udp = [[MockEspInternalProtocol alloc] init];
+    MockEspNetwork* udp = [[MockEspNetwork alloc] init];
     [item announceOnUdp:udp];
     STAssertTrue([udp transmitted],@"announceOnUdp should cause transmission");
 }
@@ -184,7 +184,7 @@
 -(void)testRequestAllOnUdpCausesTransmission
 {
     EspCodeShareItem* item = [EspCodeShareItem createWithGridSource:@"name" machine:@"laptop" title:@"grid code" timeStamp:123456.0 length:200];
-    MockEspInternalProtocol* udp = [[MockEspInternalProtocol alloc] init];
+    MockEspNetwork* udp = [[MockEspNetwork alloc] init];
     [item requestAllOnUdp:udp];
     STAssertTrue([udp transmitted],@"requestAllOnUdp should cause transmission");
 }
@@ -192,13 +192,13 @@
 -(void)testDeliverAllOnUdpCausesTransmission
 {
     EspCodeShareItem* item = [EspCodeShareItem createWithLocalContent:@"my code" title:@"local code" timeStamp:123456.0];
-    MockEspInternalProtocol* udp = [[MockEspInternalProtocol alloc] init];
+    MockEspNetwork* udp = [[MockEspNetwork alloc] init];
     [item deliverAllOnUdp:udp];
     STAssertTrue([udp transmitted],@"deliverAllOnUdp should cause transmission");
 }
 
-// -(void) deliverAllOnUdp:(EspInternalProtocol*)udp
-// -(void) deliverFragment:(unsigned long)i onUdp:(EspInternalProtocol*)udp
+// -(void) deliverAllOnUdp:(EspNetwork*)udp
+// -(void) deliverFragment:(unsigned long)i onUdp:(EspNetwork*)udp
 
 
 

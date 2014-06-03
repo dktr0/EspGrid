@@ -20,18 +20,23 @@
 #import "EspGridDefs.h"
 
 @implementation  EspCodeShare
-@synthesize udp;
-@synthesize osc;
-@synthesize clock;
 @synthesize items;
-// @synthesize requestedShare;
 
++(EspCodeShare*) codeShare
+{
+    static EspCodeShare* sharedObject = nil;
+    if(!sharedObject)sharedObject = [[EspCodeShare alloc] init];
+    return sharedObject;
+}
 
 -(id) init
 {
     self = [super init];
     items = [[NSMutableArray alloc] init];
     itemsLock = [[NSLock alloc] init];
+    network = [EspNetwork network];
+    osc = [EspOsc osc];
+    clock = [EspClock clock];
     return self;
 }
 
@@ -50,12 +55,12 @@
     [items addObject:item];
     [itemsLock unlock];
     [self didChangeValueForKey:@"items"];
-    [item announceOnUdp:udp];
+    [item announceOnUdp:network];
 }
 
 -(NSString*) getOrRequestItem:(EspCodeShareItem*)item
 {
-    return [item getOrRequestContentOnUdp:udp];
+    return [item getOrRequestContentOnUdp:network];
 }
 
 -(void) handleAnnounceShare:(NSDictionary*)d
@@ -127,7 +132,7 @@
            [[x sourceMachine] isEqualToString:sourceMachine] &&
            [x timeStamp] == timeStamp)
         {
-            [x deliverAllOnUdp:udp];
+            [x deliverAllOnUdp:network];
             [itemsLock unlock];
             return;
         }
@@ -169,14 +174,13 @@
 }
 
 
--(BOOL) handleOpcode:(NSDictionary*)d;
+-(void) handleOpcode:(NSDictionary*)d;
 {
     int opcode = [[d objectForKey:@"opcode"] intValue];
     
     if(opcode == ESP_OPCODE_ANNOUNCESHARE) // receiving ANNOUNCE_SHARE
     {
         [self handleAnnounceShare:d];
-        return YES;
     }
     else if(opcode == ESP_OPCODE_REQUESTSHARE) // receiving REQUEST_SHARE
     {
@@ -193,15 +197,11 @@
                 [self handleRequestShare:d];
             }
         }
-        return YES;
     }
     else if(opcode == ESP_OPCODE_DELIVERSHARE) // receiving DELIVER_SHARE
     {
         [self handleDeliverShare:d];
-        return YES;
     }
-    
-    return NO;
 }
 
 -(BOOL) handleOsc:(NSString*)address withParameters:(NSArray*)d fromHost:(NSString*)h port:(int)p

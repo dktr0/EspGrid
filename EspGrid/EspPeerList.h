@@ -30,6 +30,7 @@
 @property (nonatomic,assign) NSString* status;
 @property (nonatomic,assign) EspPeer* selfInPeerList;
 
++(EspPeerList*) peerList;
 -(EspPeer*) receivedBeacon:(NSDictionary*)d;
 -(EspPeer*) receivedAck:(NSDictionary*)d;
 -(EspPeer*) findPeerWithName:(NSString*)name andMachine:(NSString*)machine;

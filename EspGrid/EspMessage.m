@@ -20,25 +20,116 @@
 #import "EspGridDefs.h"
 
 @implementation EspMessage
-@synthesize clock;
-@synthesize udp;
-@synthesize osc;
-@synthesize queue;
-@synthesize peerList;
+
++(EspMessage*) message
+{
+    static EspMessage* sharedObject = nil;
+    if(!sharedObject)sharedObject = [[EspMessage alloc] init];
+    return sharedObject;
+}
+
+-(id) init
+{
+    self = [super init];
+    network = [EspNetwork network];
+    osc = [EspOsc osc];
+    clock = [EspClock clock];
+    peerList = [EspPeerList peerList];
+    queue = [[EspQueue alloc] init];
+    return self;
+}
 
 -(void) respondToQueuedItem:(id)item
 {
     [osc transmit:(NSArray*)item log:YES];
 }
 
--(BOOL) handleOpcode:(NSDictionary*)d;
+-(void) sendMessageNow:(NSArray*)params
+{
+    EspTimeType t = monotonicTime();
+    NSMutableDictionary* d = [[NSMutableDictionary alloc] init];
+    [d setObject:params forKey:@"params"];
+    [d setObject:[NSNumber numberWithLongLong:t] forKey:@"time"];
+    [network sendOpcode:ESP_OPCODE_OSCNOW withDictionary:d];
+    [osc transmit:params log:YES];
+}
+
+-(void) sendMessageNowStamped:(NSArray*)params
+{
+    EspTimeType t = monotonicTime();
+    NSNumber* n = [NSNumber numberWithLongLong:t];
+    NSMutableArray* a = [NSMutableArray arrayWithArray:params];
+    [a insertObject:n atIndex:1]; // insert time stamp into parameters
+    NSMutableDictionary* d = [[NSMutableDictionary alloc] init];
+    [d setObject:a forKey:@"params"];
+    [d setObject:[NSNumber numberWithLongLong:t] forKey:@"time"];
+    [network sendOpcode:ESP_OPCODE_OSCNOW withDictionary:d];
+    [osc transmit:a log:YES];
+}
+
+-(void) sendMessageSoon:(NSArray*)params
+{
+    EspTimeType t = monotonicTime();
+    t += 100000000; // fixed latency for now (100ms), change this later (should be maximum real latency from peerlist)
+    NSMutableDictionary* d = [[NSMutableDictionary alloc] init];
+    [d setObject:params forKey:@"params"];
+    [d setObject:[NSNumber numberWithLongLong:t] forKey:@"time"];
+    [network sendOpcode:ESP_OPCODE_OSCFUTURE withDictionary:d];
+    [queue addItem:params atTime:t];
+}
+
+
+-(void) sendMessageSoonStamped:(NSArray*)params
+{
+    EspTimeType t = monotonicTime();
+    t += 100000000; // fixed latency for now (100ms), change this later (should be maximum real latency from peerlist)
+    NSNumber* n = [NSNumber numberWithLongLong:t];
+    NSMutableArray* a = [NSMutableArray arrayWithArray:params];
+    [a insertObject:n atIndex:1]; // insert time stamp into parameters
+    NSMutableDictionary* d = [[NSMutableDictionary alloc] init];
+    [d setObject:a forKey:@"params"];
+    [d setObject:[NSNumber numberWithLongLong:t] forKey:@"time"];
+    [network sendOpcode:ESP_OPCODE_OSCFUTURE withDictionary:d];
+    [queue addItem:a atTime:t];
+}
+
+-(void) sendMessageFuture:(NSArray*)params
+{
+    EspTimeType t = monotonicTime();
+    EspTimeType i = [[params objectAtIndex:0] floatValue];
+    NSMutableDictionary* d = [[NSMutableDictionary alloc] init];
+    NSMutableArray* a = [NSMutableArray arrayWithArray:params];
+    [a removeObjectAtIndex:0]; // remove time increment parameter
+    [d setObject:a forKey:@"params"];
+    [d setObject:[NSNumber numberWithLongLong:t+i] forKey:@"time"];
+    [network sendOpcode:ESP_OPCODE_OSCFUTURE withDictionary:d];
+    [queue addItem:a atTime:t+i];
+}
+
+-(void) sendMessageFutureStamped:(NSArray*)params
+{
+    EspTimeType t = monotonicTime();
+    EspTimeType i = [[params objectAtIndex:0] floatValue];
+    NSNumber* n = [NSNumber numberWithLongLong:t+i];
+    NSMutableArray* a = [NSMutableArray arrayWithArray:params];
+    [a removeObjectAtIndex:0]; // remove time increment parameter
+    [a insertObject:n atIndex:1]; // insert time stamp into parameters
+    NSMutableDictionary* d = [[NSMutableDictionary alloc] init];
+    [d setObject:a forKey:@"params"];
+    [d setObject:n forKey:@"time"];
+    [network sendOpcode:ESP_OPCODE_OSCFUTURE withDictionary:d];
+    [queue addItem:a atTime:t+i];
+}
+
+
+-(void) handleOpcode:(NSDictionary*)d;
 {
     int opcode = [[d objectForKey:@"opcode"] intValue];
     
     if(opcode==ESP_OPCODE_OSCNOW) {
         NSMutableArray* params = [NSMutableArray arrayWithArray:[d objectForKey:@"params"]];
         [osc transmit:params log:YES];
-        return YES;
+        return;
     }
     if(opcode==ESP_OPCODE_OSCFUTURE) {
         EspTimeType t = [[d objectForKey:@"time"] longLongValue]; // trigger time in other's terms
@@ -48,7 +139,7 @@
         if(peer == nil)
         {
             postLog(@"dropping OSCFUTURE from unknown peer", self);
-            return NO;
+            return;
         }
         EspTimeType adjustment = [clock adjustmentForPeer:peer];
         EspTimeType t2 = t + adjustment;
@@ -57,7 +148,6 @@
         // NSLog(@" description of params=%@",[params description]);
         [queue addItem:params atTime:t2];
     }
-    return NO;
 }
 
 -(BOOL) handleOsc:(NSString*)address withParameters:(NSArray*)params fromHost:(NSString*)h port:(int)p
@@ -65,88 +155,37 @@
     if([address isEqualToString:@"/esp/msg/now"])
     {
         [osc logReceivedMessage:address fromHost:h port:p];
-        EspTimeType t = monotonicTime();
-        NSMutableDictionary* d = [[NSMutableDictionary alloc] init];
-        [d setObject:params forKey:@"params"];
-        [d setObject:[NSNumber numberWithLongLong:t] forKey:@"time"];
-        [udp transmitOpcode:ESP_OPCODE_OSCNOW withDictionary:d burst:8];
-        [udp transmitOpcodeToSelf:ESP_OPCODE_OSCNOW withDictionary:d]; // ??? WORKING HERE ???
+        [self sendMessageNow:params];
         return YES;
     }
-    
     else if([address isEqualToString:@"/esp/msg/nowStamp"])
     {
         [osc logReceivedMessage:address fromHost:h port:p];
-        EspTimeType t = monotonicTime();
-        NSNumber* n = [NSNumber numberWithLongLong:t];
-        NSMutableArray* a = [NSMutableArray arrayWithArray:params];
-        [a insertObject:n atIndex:1]; // insert time stamp into parameters
-        NSMutableDictionary* d = [[NSMutableDictionary alloc] init];
-        [d setObject:a forKey:@"params"];
-        [d setObject:[NSNumber numberWithLongLong:t] forKey:@"time"];
-        [udp transmitOpcode:ESP_OPCODE_OSCNOW withDictionary:d burst:8];
-        [udp transmitOpcodeToSelf:ESP_OPCODE_OSCNOW withDictionary:d];
+        [self sendMessageNowStamped:params];
         return YES;
     }
-    
     else if([address isEqualToString:@"/esp/msg/soon"])
     {
         [osc logReceivedMessage:address fromHost:h port:p];
-        EspTimeType t = monotonicTime();
-        t += 100000000; // fixed latency for now (100ms), change this later (should be maximum real latency from peerlist)
-        NSMutableDictionary* d = [[NSMutableDictionary alloc] init];
-        [d setObject:params forKey:@"params"];
-        [d setObject:[NSNumber numberWithLongLong:t] forKey:@"time"];
-        [udp transmitOpcode:ESP_OPCODE_OSCFUTURE withDictionary:d burst:8];
-        [udp transmitOpcodeToSelf:ESP_OPCODE_OSCFUTURE withDictionary:d];
+        [self sendMessageSoon:params];
         return YES;
     }
-    
     else if([address isEqualToString:@"/esp/msg/soonStamp"])
     {
         [osc logReceivedMessage:address fromHost:h port:p];
-        EspTimeType t = monotonicTime();
-        t += 100000000; // fixed latency for now (100ms), change this later (should be maximum real latency from peerlist)
-        NSNumber* n = [NSNumber numberWithLongLong:t];
-        NSMutableArray* a = [NSMutableArray arrayWithArray:params];
-        [a insertObject:n atIndex:1]; // insert time stamp into parameters
-        NSMutableDictionary* d = [[NSMutableDictionary alloc] init];
-        [d setObject:a forKey:@"params"];
-        [d setObject:[NSNumber numberWithLongLong:t] forKey:@"time"];
-        [udp transmitOpcode:ESP_OPCODE_OSCFUTURE withDictionary:d burst:8];
-        [udp transmitOpcodeToSelf:ESP_OPCODE_OSCFUTURE withDictionary:d];
+        [self sendMessageSoonStamped:params];
         return YES;
     }
-    
     else if([address isEqualToString:@"/esp/msg/future"])
     {
         [osc logReceivedMessage:address fromHost:h port:p];
-        EspTimeType t = monotonicTime();
-        EspTimeType i = [[params objectAtIndex:0] floatValue];
-        NSMutableDictionary* d = [[NSMutableDictionary alloc] init];
-        NSMutableArray* a = [NSMutableArray arrayWithArray:params];
-        [a removeObjectAtIndex:0]; // remove time increment parameter
-        [d setObject:a forKey:@"params"];
-        [d setObject:[NSNumber numberWithLongLong:t+i] forKey:@"time"];
-        [udp transmitOpcode:ESP_OPCODE_OSCFUTURE withDictionary:d burst:8];
-        [udp transmitOpcodeToSelf:ESP_OPCODE_OSCFUTURE withDictionary:d];
+        [self sendMessageFuture:params];
         return YES;
     }
-    
     else if([address isEqualToString:@"/esp/msg/futureStamp"])
     {
         [osc logReceivedMessage:address fromHost:h port:p];
-        EspTimeType t = monotonicTime();
-        EspTimeType i = [[params objectAtIndex:0] floatValue];
-        NSNumber* n = [NSNumber numberWithLongLong:t+i];
-        NSMutableArray* a = [NSMutableArray arrayWithArray:params];
-        [a removeObjectAtIndex:0]; // remove time increment parameter
-        [a insertObject:n atIndex:1]; // insert time stamp into parameters
-        NSMutableDictionary* d = [[NSMutableDictionary alloc] init];
-        [d setObject:a forKey:@"params"];
-        [d setObject:n forKey:@"time"];
-        [udp transmitOpcode:ESP_OPCODE_OSCFUTURE withDictionary:d burst:8];
-        [udp transmitOpcodeToSelf:ESP_OPCODE_OSCFUTURE withDictionary:d];
+        [self sendMessageFutureStamped:params];
         return YES;
     }
     return NO;

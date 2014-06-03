@@ -20,8 +20,8 @@
 #define EspGrid_EspGridDefs_h
 
 #define ESPGRID_MAJORVERSION 0
-#define ESPGRID_MINORVERSION 50 // changes to external/internal protocol MUST increment MINORVERSION
-#define ESPGRID_SUBVERSION 5
+#define ESPGRID_MINORVERSION 51 // changes to external/internal protocol MUST increment MINORVERSION
+#define ESPGRID_SUBVERSION 0
 
 #define ESP_NUMBER_OF_OPCODES 10
 #define ESP_OPCODE_BEACON 0
@@ -39,15 +39,15 @@
 
 #define VALIDATE_OPCODE_NSSTRING(vx) \
  do { \
-    if(vx == nil) { postWarning(@"opcode with no " #vx,self); return NO; } \
-    if(![vx isKindOfClass:[NSString class]]) { postWarning(@"opcode with " #vx " not NSString",self); return NO; } \
-    if([vx length]==0){ postWarning(@"opcode with zero length " #vx,self); return NO; } \
+    if(vx == nil) { postWarning(@"opcode with no " #vx,self); return; } \
+    if(![vx isKindOfClass:[NSString class]]) { postWarning(@"opcode with " #vx " not NSString",self); return; } \
+    if([vx length]==0){ postWarning(@"opcode with zero length " #vx,self); return; } \
  } while(0)
 
 #define VALIDATE_OPCODE_NSNUMBER(vx) \
  do { \
-    if(vx == nil) { postWarning(@"opcode with no " #vx,self); return NO; } \
-    if(![vx isKindOfClass:[NSNumber class]]) { postWarning(@"opcode with " #vx " not NSString",self); return NO; } \
+    if(vx == nil) { postWarning(@"opcode with no " #vx,self); return; } \
+    if(![vx isKindOfClass:[NSNumber class]]) { postWarning(@"opcode with " #vx " not NSString",self); return; } \
  } while(0)
 
 

@@ -18,34 +18,26 @@
 
 #import <Foundation/Foundation.h>
 #import "EspOsc.h"
-#import "EspInternalProtocol.h"
+#import "EspNetwork.h"
 #import "EspClock.h"
 #import "EspCodeShareItem.h"
 
 
-@interface EspCodeShare : NSObject <EspHandleOpcode,EspHandleOsc>
+@interface EspCodeShare : NSObject <EspNetworkDelegate,EspHandleOsc>
 {
   EspOsc* osc;
-  EspInternalProtocol* udp;
+  EspNetwork* network;
   EspClock* clock;
   NSMutableArray* items;
-    NSLock* itemsLock;
-//  EspCodeShareItem* requestedShare;
+  NSLock* itemsLock;
 }
-@property (nonatomic,assign) EspOsc* osc;
-@property (nonatomic,assign) EspInternalProtocol* udp;
-@property (nonatomic,assign) EspClock* clock;
 @property (readonly) NSMutableArray* items;
 @property (nonatomic,assign) EspCodeShareItem* requestedShare;
 
-
 -(void) shareCode:(NSString*)code withTitle:(NSString*)title;
-// -(void) grabShare:(EspCodeShareItem*)item; // this is being factored out...
--(NSString*) getOrRequestItem:(EspCodeShareItem*)item; // ... in favour of this instead
-
+-(NSString*) getOrRequestItem:(EspCodeShareItem*)item;
 -(NSUInteger) countOfShares;
-
-
++(EspCodeShare*) codeShare;
 @end
 
 

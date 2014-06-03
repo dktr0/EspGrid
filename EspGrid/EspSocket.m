@@ -99,7 +99,7 @@
 
 -(void) udpReceiveLoop
 {
-    [NSThread setThreadPriority:0.5]; // calling class method since instance method seems to not exist on GNUstep
+    [NSThread setThreadPriority:0.5];
     for(;;)
     {
     #ifdef GNUSTEP

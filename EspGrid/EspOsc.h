@@ -29,6 +29,8 @@
     NSMutableArray* handlers;
 }
 
++(EspOsc*) osc;
+
 -(void) addHandler:(id<EspHandleOsc>)handler forAddress:(NSString*)address;
 
 // stuff for sending OSC

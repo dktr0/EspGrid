@@ -23,7 +23,7 @@
 
 -(void) setUp
 {
-    udp = [[MockEspInternalProtocol alloc] init];
+    udp = [[MockEspNetwork alloc] init];
     osc = [[EspOsc alloc] init];
     peerList = [[EspPeerList alloc] init];
     clock = [[EspClock alloc] init];

@@ -20,13 +20,26 @@
 #import "EspGridDefs.h"
 
 @implementation EspChat
-@synthesize udp;
-@synthesize osc;
+
++(EspChat*) chat
+{
+    static EspChat* sharedObject = nil;
+    if(!sharedObject)sharedObject = [[EspChat alloc] init];
+    return sharedObject;
+}
+
+-(id) init
+{
+    self = [super init];
+    network = [EspNetwork network];
+    osc = [EspOsc osc];
+    return self;
+}
 
 -(void) sendMessage:(NSString*)msg
 {
     NSDictionary* d = [NSDictionary dictionaryWithObject:msg forKey:@"msg"];
-    [udp transmitOpcode:ESP_OPCODE_CHATSEND withDictionary:d burst:64];
+    [network sendOpcode:ESP_OPCODE_CHATSEND withDictionary:d];
     NSString* from = [[NSUserDefaults standardUserDefaults] stringForKey:@"name"];
     NSArray* a = [NSArray arrayWithObjects:@"/esp/chat/receive",from,msg,nil];
     [osc transmit:a log:YES];
@@ -34,7 +47,7 @@
     postChat(m);
 }
 
--(BOOL) handleOpcode:(NSDictionary*)d;
+-(void) handleOpcode:(NSDictionary*)d;
 {
     int opcode = [[d objectForKey:@"opcode"] intValue];
     
@@ -46,9 +59,7 @@
         // and send it to all registered OSC clients
         NSArray* a = [NSArray arrayWithObjects:@"/esp/chat/receive",name,msg,nil];
         [osc transmit:a log:YES];
-        return YES;
     }
-    return NO;
 }
 
 -(BOOL) handleOsc:(NSString*)address withParameters:(NSArray*)d fromHost:(NSString*)h port:(int)p

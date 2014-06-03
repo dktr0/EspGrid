@@ -21,6 +21,13 @@
 
 @implementation EspOsc
 
++(EspOsc*) osc
+{
+    static EspOsc* theSharedObject = nil;
+    if(!theSharedObject) theSharedObject = [[super alloc] init];
+    return theSharedObject;
+}
+
 -(id) init
 {
     self = [super init];
@@ -136,6 +143,7 @@
             postWarning(@"unable to parse OSC parameters (parsing beyond limit)", self);
             return;
         }
+        
     
         // call any registered handler, passing the address and params
         int c = 0;
@@ -143,7 +151,18 @@
         {
             if([[x objectAtIndex:0] isEqual:address])
             {
-                [[x objectAtIndex:1] handleOsc:address withParameters:params fromHost:h port:port];
+                NSMethodSignature * signature = [NSMutableArray instanceMethodSignatureForSelector:
+                                                 @selector(handleOsc:withParameters:fromHost:port:)];
+                NSInvocation* invocation = [NSInvocation invocationWithMethodSignature:signature];
+                [invocation setSelector:@selector(handleOsc:withParameters:fromHost:port:)];
+                [invocation setArgument:&address atIndex:0];
+                [invocation setArgument:&params atIndex:1];
+                [invocation setArgument:&h atIndex:2];
+                [invocation setArgument:&port atIndex:3];
+                [invocation performSelectorOnMainThread:@selector(invokeWithTarget:)
+                                             withObject:[x objectAtIndex:1]
+                                          waitUntilDone:YES];
+                // [[x objectAtIndex:1] handleOsc:address withParameters:params fromHost:h port:port];
                 c++;
             }
         }

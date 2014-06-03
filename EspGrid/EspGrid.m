@@ -22,21 +22,8 @@
 @implementation EspGrid
 @synthesize versionString;
 @synthesize title;
-@synthesize internal;
-@synthesize bridge;
-@synthesize osc;
-@synthesize peerList;
-@synthesize clock;
-@synthesize beat;
-@synthesize chat;
-@synthesize kvc;
-@synthesize codeShare;
-@synthesize message;
-@synthesize queue;
 @synthesize highVolumePosts;
 
-EspGrid* currentGrid;
- 
 +(void) initialize
 {
     NSMutableDictionary* defs = [NSMutableDictionary dictionary];
@@ -55,6 +42,7 @@ EspGrid* currentGrid;
     [[NSUserDefaults standardUserDefaults] registerDefaults:defs];
 }
 
+
 -(void) logUserDefaults
 {
     NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
@@ -70,102 +58,68 @@ EspGrid* currentGrid;
     // *** need to add custom connections here...
 }
 
++(EspGrid*) grid
+{
+    static EspGrid* sharedGrid = nil;
+    if(!sharedGrid) sharedGrid = [[EspGrid alloc] init];
+    {
+        sharedGrid = [EspGrid alloc];
+        [sharedGrid init];
+    }
+    return sharedGrid;
+}
+
 -(id) init
 {
-    currentGrid = self = [super init];
+    self = [super init];
     highVolumePosts = NO;
-    
-    [self setVersionString:[NSString stringWithFormat:@"version %d.%2d.%d",
-                            ESPGRID_MAJORVERSION,ESPGRID_MINORVERSION,ESPGRID_SUBVERSION]];
+    versionString = [NSString stringWithFormat:@"version %d.%2d.%d",
+                     ESPGRID_MAJORVERSION,ESPGRID_MINORVERSION,ESPGRID_SUBVERSION];
     postLog(versionString,nil);
-    [self setTitle:[NSString stringWithFormat:@"by David Ogborn"]];
+    title = [NSString stringWithFormat:@"by David Ogborn"];
     postLog(title,nil);
     
     [self logUserDefaults];
 
-    peerList = [[EspPeerList alloc] init];
-
-    internal = [[EspInternalProtocol alloc] init];
-    [internal setPeerList:peerList];
-    
-    bridge = [[EspBridge alloc] init];
-    [bridge setUdp:internal];
-    [internal setBridge:bridge];
-    
-    osc = [[EspOsc alloc] init];
-    
-    clock = [[EspClock alloc] init];
-    [clock setOsc:osc];
-    [clock setUdp:internal];
-    [clock setPeerList:peerList];
-    
-    kvc = [[EspKeyValueController alloc] init];
+    EspKeyValueController* kvc = [EspKeyValueController keyValueController];
     [kvc setModel:self];
-    [kvc setUdp:internal];
-    [kvc setOsc:osc];
-    [kvc setClock:clock];
-    [kvc setPeerList:peerList];
-    
-    beat = [[EspBeat alloc] init];
-    [beat setOsc:osc];
-    [beat setUdp:internal];
-    [beat setClock:clock];
-    [beat setKvc:kvc];
-    
-    chat = [[EspChat alloc] init];
-    [chat setOsc:osc];
-    [chat setUdp:internal];
-        
-    codeShare = [[EspCodeShare alloc] init];
-    [codeShare setOsc:osc];
-    [codeShare setUdp:internal];
-    [codeShare setClock:clock];
-    
-    queue = [[EspQueue alloc] init];
-    [queue setClock:clock];
-    
-    message = [[EspMessage alloc] init];
-    [message setClock:clock];
-    [message setUdp:internal];
-    [message setOsc:osc];
-    [queue setDelegate:message];
-    [message setQueue:queue];
-    [message setPeerList:peerList];
-    
     [kvc addKeyPath:@"beat.on"];
     [kvc addKeyPath:@"beat.tempo"];
     [kvc addKeyPath:@"beat.cycleLength"];
     [kvc addKeyPath:@"beat.downbeatTime"];
     [kvc addKeyPath:@"beat.downbeatNumber"];
+    // ***note*** will need to make sure there is a getter in EspGrid for [EspBeat beat]
     
-    [internal setHandler:clock forOpcode:ESP_OPCODE_BEACON];
-    [internal setHandler:clock forOpcode:ESP_OPCODE_ACK];
-    [internal setHandler:chat forOpcode:ESP_OPCODE_CHATSEND];
-    [internal setHandler:kvc forOpcode:ESP_OPCODE_KVC];
-    [internal setHandler:codeShare forOpcode:ESP_OPCODE_ANNOUNCESHARE];
-    [internal setHandler:codeShare forOpcode:ESP_OPCODE_REQUESTSHARE];
-    [internal setHandler:codeShare forOpcode:ESP_OPCODE_DELIVERSHARE];
-    [internal setHandler:message forOpcode:ESP_OPCODE_OSCNOW];
-    [internal setHandler:message forOpcode:ESP_OPCODE_OSCFUTURE];
+    EspNetwork* network = [EspNetwork network];
+    [network setHandler:[EspClock clock] forOpcode:ESP_OPCODE_BEACON];
+    [network setHandler:[EspClock clock] forOpcode:ESP_OPCODE_ACK];
+    [network setHandler:[EspChat chat] forOpcode:ESP_OPCODE_CHATSEND];
+    [network setHandler:[EspKeyValueController keyValueController] forOpcode:ESP_OPCODE_KVC];
+    [network setHandler:[EspCodeShare codeShare] forOpcode:ESP_OPCODE_ANNOUNCESHARE];
+    [network setHandler:[EspCodeShare codeShare] forOpcode:ESP_OPCODE_REQUESTSHARE];
+    [network setHandler:[EspCodeShare codeShare] forOpcode:ESP_OPCODE_DELIVERSHARE];
+    [network setHandler:[EspMessage message] forOpcode:ESP_OPCODE_OSCNOW];
+    [network setHandler:[EspMessage message] forOpcode:ESP_OPCODE_OSCFUTURE];
     
-    [osc addHandler:beat forAddress:@"/esp/beat/on"];
-    [osc addHandler:beat forAddress:@"/esp/beat/tempo"];
-    [osc addHandler:beat forAddress:@"/esp/beat/cycleLength"];
-    [osc addHandler:chat forAddress:@"/esp/chat/send"];
-    [osc addHandler:codeShare forAddress:@"/esp/codeShare/post"];
+    EspOsc* osc = [EspOsc osc];
     
-    [osc addHandler:message forAddress:@"/esp/msg/now"];
-    [osc addHandler:message forAddress:@"/esp/msg/soon"];
-    [osc addHandler:message forAddress:@"/esp/msg/future"];
-    [osc addHandler:message forAddress:@"/esp/msg/nowStamp"];
-    [osc addHandler:message forAddress:@"/esp/msg/soonStamp"];
-    [osc addHandler:message forAddress:@"/esp/msg/futureStamp"];
+    [osc addHandler:[EspBeat beat] forAddress:@"/esp/beat/on"];
+    [osc addHandler:[EspBeat beat] forAddress:@"/esp/beat/tempo"];
+    [osc addHandler:[EspBeat beat] forAddress:@"/esp/beat/cycleLength"];
+    [osc addHandler:[EspChat chat] forAddress:@"/esp/chat/send"];
+    [osc addHandler:[EspCodeShare codeShare] forAddress:@"/esp/codeShare/post"];
+    [osc addHandler:[EspMessage message] forAddress:@"/esp/msg/now"];
+    [osc addHandler:[EspMessage message] forAddress:@"/esp/msg/soon"];
+    [osc addHandler:[EspMessage message] forAddress:@"/esp/msg/future"];
+    [osc addHandler:[EspMessage message] forAddress:@"/esp/msg/nowStamp"];
+    [osc addHandler:[EspMessage message] forAddress:@"/esp/msg/soonStamp"];
+    [osc addHandler:[EspMessage message] forAddress:@"/esp/msg/futureStamp"];
     
-    [osc addHandler:bridge forAddress:@"/esp/bridge/localGroup"];
-    [osc addHandler:bridge forAddress:@"/esp/bridge/localAddress"];
-    [osc addHandler:bridge forAddress:@"/esp/bridge/localPort"];
-    [osc addHandler:bridge forAddress:@"/esp/bridge/remoteAddress"];
-    [osc addHandler:bridge forAddress:@"/esp/bridge/remotePort"];
+    [osc addHandler:self forAddress:@"/esp/bridge/localGroup"];
+    [osc addHandler:self forAddress:@"/esp/bridge/localAddress"];
+    [osc addHandler:self forAddress:@"/esp/bridge/localPort"];
+    [osc addHandler:self forAddress:@"/esp/bridge/remoteAddress"];
+    [osc addHandler:self forAddress:@"/esp/bridge/remotePort"];
     
     [osc addHandler:self forAddress:@"/esp/name"];
     [osc addHandler:self forAddress:@"/esp/machine"];
@@ -190,20 +144,34 @@ EspGrid* currentGrid;
     return self;
 }
 
--(void) dealloc
+-(EspBeat*) beat
 {
-    [message release];
-    [queue release];
-    [codeShare release];
-    [chat release];
-    [beat release];
-    [kvc release];
-    [clock release];
-    [osc release];
-    [bridge release];
-    [internal release];
-    [peerList release];
-    [super dealloc];
+    return [EspBeat beat];
+}
+
+-(EspCodeShare*) codeShare
+{
+    return [EspCodeShare codeShare];
+}
+
+-(EspPeerList*) peerList
+{
+    return [EspPeerList peerList];
+}
+
+-(EspBridge*) bridge
+{
+    return [[EspNetwork network] bridge];
+}
+
+-(EspClock*) clock
+{
+    return [EspClock clock];
+}
+
+-(EspChat*) chat
+{
+    return [EspChat chat];
 }
 
 -(BOOL) setDefault:(NSString*)key withParameters:(NSArray*)d
@@ -223,9 +191,10 @@ EspGrid* currentGrid;
 
 -(BOOL) handleOsc:(NSString*)address withParameters:(NSArray*)d fromHost:(NSString*)h port:(int)p
 {
-    
+    EspOsc* osc = [EspOsc osc];
     if([address isEqual:@"/esp/tempo/q"])
     {
+        EspBeat* beat = [EspBeat beat];
         BOOL on = [[beat on] boolValue];
         float tempo = [[beat tempo] floatValue];
         EspTimeType time = [beat adjustedDownbeatTime];
@@ -279,26 +248,73 @@ EspGrid* currentGrid;
     else if([address isEqual:@"/esp/customPort4"]) return [self setDefault:@"custom4port" withParameters:d];
     else if([address isEqual:@"/esp/clockMode"]) return [self setDefault:@"clockMode" withParameters:d];
     
+    // *** this was cut-and-paste from former EspBridge, needs to be reworked
+    if([address isEqual:@"/esp/bridge/localGroup"])
+    {
+        if([d count] != 1)
+        {
+            postProblem(@"received /esp/bridge/localGroup with wrong number of parameters", self);
+            return NO;
+        }
+        [self setLocalGroup:[d objectAtIndex:0]];
+        return YES;
+    }
+    if([address isEqual:@"/esp/bridge/localAddress"])
+    {
+        if([d count] != 1)
+        {
+            postProblem(@"received /esp/bridge/localAddress with wrong number of parameters", self);
+            return NO;
+        }
+        [self setLocalAddress:[d objectAtIndex:0]];
+        return YES;
+    }
+    if([address isEqual:@"/esp/bridge/localPort"])
+    {
+        if([d count] != 1)
+        {
+            postProblem(@"received /esp/bridge/localPort with wrong number of parameters", self);
+            return NO;
+        }
+        [self changeLocalPort:[[d objectAtIndex:0] intValue]];
+        return YES;
+    }
+    if([address isEqual:@"/esp/bridge/remoteAddress"])
+    {
+        if([d count] != 1)
+        {
+            postProblem(@"received /esp/bridge/remoteAddress with wrong number of parameters", self);
+            return NO;
+        }
+        [self setRemoteAddress:[d objectAtIndex:0]];
+        return YES;
+    }
+    if([address isEqual:@"/esp/bridge/remotePort"])
+    {
+        if([d count] != 1)
+        {
+            postProblem(@"received /esp/bridge/remotePort with wrong number of parameters", self);
+            return NO;
+        }
+        [self setRemotePort:[d objectAtIndex:0]];
+        return YES;
+    }
     return NO;
+
 }
 
 
--(void) postChat:(NSString*)m
++(void) postChat:(NSString*)m
 {
-    NSNotification* n = [NSNotification notificationWithName:@"chat" object:self userInfo:[NSDictionary dictionaryWithObject:m forKey:@"text"]];
+    NSNotification* n = [NSNotification notificationWithName:@"chat" object:nil userInfo:[NSDictionary dictionaryWithObject:m forKey:@"text"]];
     [[NSNotificationCenter defaultCenter] performSelectorOnMainThread:@selector(postNotification:) withObject:n waitUntilDone:NO];
 }
 
--(void) postLog:(NSString*)m
++(void) postLog:(NSString*)m
 {
     appendToLogFile(m);
-    NSNotification* n = [NSNotification notificationWithName:@"log" object:self userInfo:[NSDictionary dictionaryWithObject:m forKey:@"text"]];
+    NSNotification* n = [NSNotification notificationWithName:@"log" object:nil userInfo:[NSDictionary dictionaryWithObject:m forKey:@"text"]];
     [[NSNotificationCenter defaultCenter] performSelectorOnMainThread:@selector(postNotification:) withObject:n waitUntilDone:NO];
-}
-
-+(EspGrid*) currentGrid
-{
-    return currentGrid;
 }
 
 void appendToLogFile(NSString* s)
@@ -321,7 +337,7 @@ void appendToLogFile(NSString* s)
 void postChat(NSString* s)
 {
     NSLog(@"%@",s);
-    [[EspGrid currentGrid] postChat:s];
+    [EspGrid postChat:s];
 }
 
 void postWarning(NSString* s,id sender)
@@ -331,8 +347,8 @@ void postWarning(NSString* s,id sender)
     if(sender) x = [NSString stringWithFormat:@"%lld %@: %@",monotonicTime(),className,s];
     else x = [NSString stringWithFormat:@"%lld %@",monotonicTime(),s];
     NSLog(@"%@",x);
-    [[EspGrid currentGrid] postChat:x];
-    [[EspGrid currentGrid] postLog:x];
+    [EspGrid postChat:x];
+    [EspGrid postLog:x];
 }
 
 void postProblem(NSString* s,id sender)
@@ -342,8 +358,8 @@ void postProblem(NSString* s,id sender)
     if(sender) x = [NSString stringWithFormat:@"%lld %@: %@",monotonicTime(),className,s];
     else x = [NSString stringWithFormat:@"%lld %@",monotonicTime(),s];
     NSLog(@"%@",x);
-    [[EspGrid currentGrid] postChat:x];
-    [[EspGrid currentGrid] postLog:x];
+    [EspGrid postChat:x];
+    [EspGrid postLog:x];
 }
 
 void postLog(NSString* s,id sender)
@@ -353,12 +369,12 @@ void postLog(NSString* s,id sender)
     if(sender) x = [NSString stringWithFormat:@"%lld %@: %@",monotonicTime(),className,s];
     else x = [NSString stringWithFormat:@"%lld %@",monotonicTime(),s];
     NSLog(@"%@",x);
-    [[EspGrid currentGrid] postLog:x];
+    [EspGrid postLog:x];
 }
 
 void postLogHighVolume(NSString* s,id sender)
 {
-    if(![[EspGrid currentGrid] highVolumePosts])return;
+    if(![[EspGrid grid] highVolumePosts])return;
     postLog(s,sender);
 }
 

@@ -17,7 +17,7 @@
 //  along with EspGrid.  If not, see <http://www.gnu.org/licenses/>.
 
 #import <Foundation/Foundation.h>
-#import "EspInternalProtocol.h"
+#import "EspNetwork.h"
 #import "EspOsc.h"
 #import "EspClock.h"
 #import "EspKeyValueController.h"
@@ -25,7 +25,7 @@
 @interface EspBeat : NSObject <EspHandleOsc>
 {
     EspOsc* osc;
-    EspInternalProtocol* udp;
+    EspNetwork* network;
     EspClock* clock;
     EspKeyValueController* kvc;
     NSNumber* on;
@@ -36,10 +36,6 @@
     NSNumber* tempNumber;
     unsigned long beatsIssued;
 }
-@property (nonatomic,assign) EspOsc* osc;
-@property (nonatomic,assign) EspInternalProtocol* udp;
-@property (nonatomic,assign) EspClock* clock;
-@property (nonatomic,assign) EspKeyValueController* kvc;
 @property (retain) NSNumber* on;
 @property (retain) NSNumber* tempo;
 @property (retain) NSNumber* downbeatTime;
@@ -51,6 +47,7 @@
 -(void) changeTempo:(double)newBpm;
 -(void) changeCycleLength:(int)newLength;
 -(EspTimeType) adjustedDownbeatTime;
++(EspBeat*) beat;
 
 -(bool) startTicking; // for testing, returns YES if successful or already ticking
 -(void) stopTicking; // for testing

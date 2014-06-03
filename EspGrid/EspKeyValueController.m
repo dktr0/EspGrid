@@ -20,15 +20,22 @@
 #import "EspGridDefs.h"
 
 @implementation EspKeyValueController
-@synthesize udp;
-@synthesize osc;
-@synthesize clock;
 @synthesize model;
-@synthesize peerList;
+
++(EspKeyValueController*) keyValueController
+{
+    static EspKeyValueController* sharedObject = nil;
+    if(!sharedObject)sharedObject = [[EspKeyValueController alloc] init];
+    return sharedObject;
+}
 
 -(id) init
 {
     self = [super init];
+    osc = [EspOsc osc];
+    network = [EspNetwork network];
+    clock = [EspClock clock];
+    peerList = [EspPeerList peerList];
     lock = [[NSLock alloc] init];
     keyPaths = [[NSMutableArray alloc] init];
     authorityNames = [[NSMutableDictionary alloc] init];
@@ -115,7 +122,7 @@
     [d setObject:[authorityMachines objectForKey:keyPath] forKey:@"authorityMachine"];
     [d setObject:[[timeStamps objectForKey:keyPath] copy] forKey:@"timeStamp"];
     [d setObject:[[values objectForKey:keyPath] copy] forKey:@"value"];
-    [udp transmitOpcode:ESP_OPCODE_KVC withDictionary:d burst:1];
+    [network sendOpcode:ESP_OPCODE_KVC withDictionary:d];
     [lock unlock];
 }
 
@@ -127,7 +134,7 @@
     return x;
 }
 
--(BOOL) handleOpcode:(NSDictionary*)d 
+-(void) handleOpcode:(NSDictionary*)d
 {
     int opcode = [[d objectForKey:@"opcode"] intValue];
     
@@ -135,10 +142,10 @@
     {
         [lock lock];
         NSNumber* timeStamp = [d objectForKey:@"timeStamp"]; VALIDATE_OPCODE_NSNUMBER(timeStamp);
-        if([timeStamp longLongValue] == 0) return NO; // ignore initial, non-actioned settings
+        if([timeStamp longLongValue] == 0) return; // ignore initial, non-actioned settings
         NSString* keyPath = [d objectForKey:@"keyPath"]; VALIDATE_OPCODE_NSSTRING(keyPath);
         id value = [d objectForKey:@"value"];
-        if(value == nil) { postWarning(@"received KVC with value==nil",self); return NO; }
+        if(value == nil) { postWarning(@"received KVC with value==nil",self); return; }
         NSString* name = [d objectForKey:@"authorityName"]; VALIDATE_OPCODE_NSSTRING(name);
         NSString* machine = [d objectForKey:@"authorityMachine"]; VALIDATE_OPCODE_NSSTRING(machine);
         EspPeer* newAuthority = [peerList findPeerWithName:name andMachine:machine];
@@ -147,7 +154,6 @@
             postLog([NSString stringWithFormat:@"dropping KVC (unknown authority): %@-%@",
                      name,machine], self);
             [lock unlock];
-            return NO;
         }
         EspTimeType t2 = [timeStamp longLongValue] + [clock adjustmentForPeer:newAuthority];
         EspPeer* oldAuthority = [authorities objectForKey:keyPath];
@@ -164,10 +170,7 @@
             postLog([NSString stringWithFormat:@"new value %@ for key %@",keyPath,value],self);
         }
         [lock unlock];
-        return YES;
     }
-    
-    return NO;
 }
 
 @end

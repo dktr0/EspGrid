@@ -18,11 +18,11 @@
 
 #import <Foundation/Foundation.h>
 #import "EspOsc.h"
-#import "EspInternalProtocol.h" 
+#import "EspNetwork.h" 
 #import "EspClock.h"
 #import "EspPeerList.h"
 
-@interface EspKeyValueController : NSObject <EspHandleOpcode>
+@interface EspKeyValueController : NSObject <EspNetworkDelegate>
 {
     NSMutableArray* keyPaths;
     NSMutableDictionary* authorityNames;
@@ -34,17 +34,14 @@
     int broadcastIndex;
     NSObject* model;
     EspOsc* osc;
-    EspInternalProtocol* udp;
+    EspNetwork* network;
     EspClock* clock;
     EspPeerList* peerList;
 }
 @property (nonatomic,assign) NSObject* model;
-@property (nonatomic,assign) EspOsc* osc;
-@property (nonatomic,assign) EspInternalProtocol* udp;
-@property (nonatomic,assign) EspClock* clock;
-@property (nonatomic,assign) EspPeerList* peerList;
 -(void) addKeyPath:(NSString*)keyPath;
 -(void) broadcastKeyPath:(NSString*)keyPath;
 -(EspTimeType) clockAdjustmentForAuthority:(NSString*)keyPath;
++(EspKeyValueController*) keyValueController;
 @end
 

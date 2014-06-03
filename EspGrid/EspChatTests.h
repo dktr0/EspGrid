@@ -18,13 +18,13 @@
 
 #import <SenTestingKit/SenTestingKit.h>
 
-#import "MockEspInternalProtocol.h"
+#import "MockEspNetwork.h"
 #import "EspOsc.h"
 #import "EspChat.h"
 
 @interface EspChatTests : SenTestCase
 {
-    MockEspInternalProtocol* udp;
+    MockEspNetwork* udp;
     EspOsc* osc;
     EspChat* chat;
     NSMutableDictionary* chatopc;

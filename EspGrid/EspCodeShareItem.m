@@ -127,17 +127,17 @@
     return YES;
 }
 
--(void) announceOnUdp:(EspInternalProtocol*)udp
+-(void) announceOnUdp:(EspNetwork*)udp
 {
     NSDictionary* o = [NSDictionary dictionaryWithObjectsAndKeys:title,@"title",
                         [NSNumber numberWithDouble:timeStamp],@"timeStamp",
                        [NSNumber numberWithLong:contentLength],@"length",
                        sourceName,@"sourceName",
                        sourceMachine,@"sourceMachine",nil];
-    [udp transmitOpcode:ESP_OPCODE_ANNOUNCESHARE withDictionary:o burst:8];
+    [udp sendOpcode:ESP_OPCODE_ANNOUNCESHARE withDictionary:o];
 }
 
--(void) requestAllOnUdp:(EspInternalProtocol*)udp
+-(void) requestAllOnUdp:(EspNetwork*)udp
 {
     NSAssert( !complete, @"attempt to REQUEST_SHARE for complete item");
     NSDictionary* o = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -146,15 +146,15 @@
                        [NSNumber numberWithDouble:timeStamp], @"timeStamp", nil];
     NSString* l = [NSString stringWithFormat:@"sending REQUEST_SHARE (opcode 6) for %lld on %@-%@",timeStamp,sourceName,sourceMachine];
     postLog(l, self);
-    [udp transmitOpcode:ESP_OPCODE_REQUESTSHARE withDictionary:o burst:8];
+    [udp sendOpcode:ESP_OPCODE_REQUESTSHARE withDictionary:o];
 }
 
--(void) deliverAllOnUdp:(EspInternalProtocol*)udp
+-(void) deliverAllOnUdp:(EspNetwork*)udp
 {
     for(int x=0;x<nFragments;x++)[self deliverFragment:x onUdp:udp];
 }
 
--(void) deliverFragment:(unsigned long)i onUdp:(EspInternalProtocol*)udp
+-(void) deliverFragment:(unsigned long)i onUdp:(EspNetwork*)udp
 {
     NSAssert(i < nFragments, @"index of fragment to be added to EspCodeShareItem is too high");
     
@@ -178,11 +178,11 @@
                        [NSNumber numberWithLong:i],@"index",f,@"fragment",nil];
     NSString* l = [NSString stringWithFormat:@"sending DELIVER_SHARE (opcode 7) for %lld on %@-%@ (%ld of %ld)",timeStamp,sourceName,sourceMachine,i+1,nFragments];
     postLog(l,self);
-    [udp transmitOpcode:ESP_OPCODE_DELIVERSHARE withDictionary:o burst:1];
+    [udp sendOpcode:ESP_OPCODE_DELIVERSHARE withDictionary:o];
     [f release];
 }
 
--(NSString*) getOrRequestContentOnUdp:(EspInternalProtocol*)udp
+-(NSString*) getOrRequestContentOnUdp:(EspNetwork*)udp
 {
     if(complete)
     {

@@ -17,7 +17,7 @@
 //  along with EspGrid.  If not, see <http://www.gnu.org/licenses/>.
 
 #import <Foundation/Foundation.h>
-#import "EspInternalProtocol.h"
+#import "EspNetwork.h"
 #import "EspBridge.h"
 #import "EspOsc.h"
 #import "EspClock.h"
@@ -31,34 +31,22 @@
 
 @interface EspGrid: NSObject <EspHandleOsc>
 {
-  EspPeerList* peerList;
-  EspKeyValueController* kvc;
-  EspInternalProtocol* internal;
-  EspBridge* bridge;
-  EspOsc* osc;
-  EspClock* clock;
-  EspBeat* beat;
-  EspChat* chat;
-  EspCodeShare* codeShare;
-  EspMessage* message;
-  EspQueue* queue;
-  NSString* versionString;
-  NSString* title;
-  BOOL highVolumePosts;
+    NSString* versionString;
+    NSString* title;
+    BOOL highVolumePosts;
 }
-@property (assign) EspPeerList* peerList;
-@property (assign) EspKeyValueController* kvc;
-@property (assign) EspInternalProtocol* internal;
-@property (assign) EspBridge* bridge;
-@property (assign) EspOsc* osc;
-@property (assign) EspClock* clock;
-@property (assign) EspBeat* beat;
-@property (assign) EspChat* chat;
-@property (assign) EspCodeShare* codeShare;
-@property (assign) EspMessage* message;
-@property (assign) EspQueue* queue;
-@property (assign) NSString* versionString;
-@property (assign) NSString* title;
+@property (readonly) NSString* versionString;
+@property (readonly) NSString* title;
 @property (assign) BOOL highVolumePosts;
+
++(EspGrid*) grid;
++(void) postChat:(NSString*)m;
++(void) postLog:(NSString*)m;
+-(EspBeat*) beat;
+-(EspCodeShare*) codeShare;
+-(EspPeerList*) peerList;
+-(EspBridge*) bridge;
+-(EspClock*) clock;
+-(EspChat*) chat;
 
 @end

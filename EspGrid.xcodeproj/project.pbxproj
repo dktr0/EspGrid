@@ -63,9 +63,9 @@
 		068B283F182C6E2500EA2990 /* EspSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283A182C6E2500EA2990 /* EspSocket.m */; };
 		068B2840182C6E2500EA2990 /* EspSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283A182C6E2500EA2990 /* EspSocket.m */; };
 		068B2841182C6E2500EA2990 /* EspSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283A182C6E2500EA2990 /* EspSocket.m */; };
-		068B2842182C6E2500EA2990 /* EspInternalProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283B182C6E2500EA2990 /* EspInternalProtocol.m */; };
-		068B2843182C6E2500EA2990 /* EspInternalProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283B182C6E2500EA2990 /* EspInternalProtocol.m */; };
-		068B2844182C6E2500EA2990 /* EspInternalProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283B182C6E2500EA2990 /* EspInternalProtocol.m */; };
+		068B2842182C6E2500EA2990 /* EspNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283B182C6E2500EA2990 /* EspNetwork.m */; };
+		068B2843182C6E2500EA2990 /* EspNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283B182C6E2500EA2990 /* EspNetwork.m */; };
+		068B2844182C6E2500EA2990 /* EspNetwork.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283B182C6E2500EA2990 /* EspNetwork.m */; };
 		068B2845182C6E2500EA2990 /* EspOsc.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283D182C6E2500EA2990 /* EspOsc.m */; };
 		068B2846182C6E2500EA2990 /* EspOsc.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283D182C6E2500EA2990 /* EspOsc.m */; };
 		068B2847182C6E2500EA2990 /* EspOsc.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283D182C6E2500EA2990 /* EspOsc.m */; };
@@ -106,6 +106,8 @@
 		06E932621642DCE800D3D4DA /* Esp Grid Icon V2.icns in Resources */ = {isa = PBXBuildFile; fileRef = 06E932611642DCE800D3D4DA /* Esp Grid Icon V2.icns */; };
 		06ED1A49172AAAE3003401A6 /* COPYING.txt in Resources */ = {isa = PBXBuildFile; fileRef = 06ED1A48172AAAE3003401A6 /* COPYING.txt */; };
 		06F9206A168370DA005EDCDF /* EspOpcodeReceiveTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F92069168370DA005EDCDF /* EspOpcodeReceiveTests.m */; };
+		06FAAF49193146680074D753 /* notes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 06FAAF48193146680074D753 /* notes.txt */; };
+		06FE7D6F18E8A24E000131C3 /* EspChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FE7D6E18E8A24E000131C3 /* EspChannel.m */; };
 		06FED5341631DDEF00BF393B /* EspQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FED5331631DDEF00BF393B /* EspQueue.m */; };
 /* End PBXBuildFile section */
 
@@ -178,15 +180,14 @@
 		064EF37615CB889800005A16 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/EspFirstViewController_iPad.xib; sourceTree = "<group>"; };
 		064EF37915CB889800005A16 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/EspSecondViewController_iPhone.xib; sourceTree = "<group>"; };
 		064EF37C15CB889800005A16 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/EspSecondViewController_iPad.xib; sourceTree = "<group>"; };
-		065343DD182C1E6600B16732 /* EspHandleOpcode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspHandleOpcode.h; sourceTree = "<group>"; };
 		065F7040162B16B6008D0CB7 /* EspGridDefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspGridDefs.h; sourceTree = "<group>"; };
 		0676AF751637A2610082B57D /* Help */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Help; path = EspGridOSX/Help; sourceTree = "<group>"; };
 		068B2839182C6E2500EA2990 /* EspSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspSocket.h; sourceTree = "<group>"; };
 		068B283A182C6E2500EA2990 /* EspSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspSocket.m; sourceTree = "<group>"; };
-		068B283B182C6E2500EA2990 /* EspInternalProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspInternalProtocol.m; sourceTree = "<group>"; };
+		068B283B182C6E2500EA2990 /* EspNetwork.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspNetwork.m; sourceTree = "<group>"; };
 		068B283C182C6E2500EA2990 /* EspOsc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspOsc.h; sourceTree = "<group>"; };
 		068B283D182C6E2500EA2990 /* EspOsc.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspOsc.m; sourceTree = "<group>"; };
-		068B283E182C6E2500EA2990 /* EspInternalProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspInternalProtocol.h; sourceTree = "<group>"; };
+		068B283E182C6E2500EA2990 /* EspNetwork.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspNetwork.h; sourceTree = "<group>"; };
 		0698E8A61722AF1700FCE1AA /* EspDetailedPeerList.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EspDetailedPeerList.xib; sourceTree = "<group>"; };
 		0698E8A81722B2D900FCE1AA /* EspDetailedPeerListController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspDetailedPeerListController.h; sourceTree = "<group>"; };
 		0698E8A91722B2D900FCE1AA /* EspDetailedPeerListController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspDetailedPeerListController.m; sourceTree = "<group>"; };
@@ -230,6 +231,9 @@
 		06ED1A48172AAAE3003401A6 /* COPYING.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = COPYING.txt; sourceTree = "<group>"; };
 		06F92068168370DA005EDCDF /* EspOpcodeReceiveTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspOpcodeReceiveTests.h; sourceTree = "<group>"; };
 		06F92069168370DA005EDCDF /* EspOpcodeReceiveTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspOpcodeReceiveTests.m; sourceTree = "<group>"; };
+		06FAAF48193146680074D753 /* notes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = notes.txt; sourceTree = "<group>"; };
+		06FE7D6D18E8A24E000131C3 /* EspChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspChannel.h; sourceTree = "<group>"; };
+		06FE7D6E18E8A24E000131C3 /* EspChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspChannel.m; sourceTree = "<group>"; };
 		06FED5321631DDEF00BF393B /* EspQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspQueue.h; sourceTree = "<group>"; };
 		06FED5331631DDEF00BF393B /* EspQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspQueue.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -282,11 +286,12 @@
 				065F7040162B16B6008D0CB7 /* EspGridDefs.h */,
 				068B2839182C6E2500EA2990 /* EspSocket.h */,
 				068B283A182C6E2500EA2990 /* EspSocket.m */,
-				065343DD182C1E6600B16732 /* EspHandleOpcode.h */,
+				06FE7D6D18E8A24E000131C3 /* EspChannel.h */,
+				06FE7D6E18E8A24E000131C3 /* EspChannel.m */,
 				0603F50F17DD562D009943C3 /* EspBridge.h */,
 				0603F51017DD562D009943C3 /* EspBridge.m */,
-				068B283E182C6E2500EA2990 /* EspInternalProtocol.h */,
-				068B283B182C6E2500EA2990 /* EspInternalProtocol.m */,
+				068B283E182C6E2500EA2990 /* EspNetwork.h */,
+				068B283B182C6E2500EA2990 /* EspNetwork.m */,
 				068B283C182C6E2500EA2990 /* EspOsc.h */,
 				068B283D182C6E2500EA2990 /* EspOsc.m */,
 				06AFD1A418970E0A00A3958B /* EspMovingAverage.h */,
@@ -393,6 +398,7 @@
 			isa = PBXGroup;
 			children = (
 				06ED1A48172AAAE3003401A6 /* COPYING.txt */,
+				06FAAF48193146680074D753 /* notes.txt */,
 				0676AF751637A2610082B57D /* Help */,
 				06A352B817665486000B66DE /* EspGrid-helpful-code */,
 				06B51764163080E10036A44B /* Default-568h@2x.png */,
@@ -602,6 +608,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06FAAF49193146680074D753 /* notes.txt in Resources */,
 				060A262315C90E2E00BC5E8D /* EspPreferencesPanel.xib in Resources */,
 				060A262415C90E2E00BC5E8D /* InfoPlist.strings in Resources */,
 				060A262515C90E2E00BC5E8D /* MainMenu.xib in Resources */,
@@ -648,7 +655,7 @@
 				060ABC3E17E0C1200031AE8F /* EspGrid.m in Sources */,
 				060ABC3F17E0C1290031AE8F /* EspMessage.m in Sources */,
 				068B2847182C6E2500EA2990 /* EspOsc.m in Sources */,
-				068B2844182C6E2500EA2990 /* EspInternalProtocol.m in Sources */,
+				068B2844182C6E2500EA2990 /* EspNetwork.m in Sources */,
 				060ABC4017E0C12D0031AE8F /* EspQueue.m in Sources */,
 				060ABC4117E0C1300031AE8F /* EspBeat.m in Sources */,
 				060ABC4217E0C1330031AE8F /* EspChat.m in Sources */,
@@ -695,7 +702,8 @@
 				060A261815C90E2E00BC5E8D /* EspCodeShare.m in Sources */,
 				060A261915C90E2E00BC5E8D /* EspGrid.m in Sources */,
 				060A261B15C90E2E00BC5E8D /* EspKeyValueController.m in Sources */,
-				068B2842182C6E2500EA2990 /* EspInternalProtocol.m in Sources */,
+				068B2842182C6E2500EA2990 /* EspNetwork.m in Sources */,
+				06FE7D6F18E8A24E000131C3 /* EspChannel.m in Sources */,
 				063BE058182738BA00B31C18 /* main.m in Sources */,
 				06AFD1A618970E0A00A3958B /* EspMovingAverage.m in Sources */,
 				060A261E15C90E2E00BC5E8D /* EspPeerList.m in Sources */,
@@ -724,7 +732,7 @@
 				06C34381163F724C00F72BE8 /* EspClock.m in Sources */,
 				06C34382163F724C00F72BE8 /* EspCodeShare.m in Sources */,
 				06C34383163F724C00F72BE8 /* EspKeyValueController.m in Sources */,
-				068B2843182C6E2500EA2990 /* EspInternalProtocol.m in Sources */,
+				068B2843182C6E2500EA2990 /* EspNetwork.m in Sources */,
 				06C34386163F724C00F72BE8 /* EspPeerList.m in Sources */,
 				06D31E9B164ADFCA002CCCAF /* EspCodeShareItem.m in Sources */,
 				06D31E9F164AE078002CCCAF /* EspCodeShareItemTests.m in Sources */,
