@@ -80,8 +80,8 @@
     [self setVersion:[NSString stringWithFormat:@"%d.%d.%d",majorVersion,minorVersion,subVersion]];
     [self setSyncMode:[[d objectForKey:@"syncMode"] intValue]];
     [self setBeaconCount:[[d objectForKey:@"beaconCount"] intValue]];
-    [self setLastBeaconMonotonic:[[d objectForKey:@"packetReceiveTime"] longLongValue]];
-    [self setLastBeaconSystem:[[d objectForKey:@"packetReceiveTimeSystem"] longLongValue]];
+    [self setLastBeaconMonotonic:[[d objectForKey:@"receiveTime"] longLongValue]];
+    [self setLastBeaconSystem:[[d objectForKey:@"receiveTimeSystem"] longLongValue]];
     [self setLastBeaconStatus:@"<10s"];
 }
 
