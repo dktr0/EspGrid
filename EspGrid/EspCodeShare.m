@@ -33,7 +33,6 @@
 {
     self = [super init];
     items = [[NSMutableArray alloc] init];
-    itemsLock = [[NSLock alloc] init];
     network = [EspNetwork network];
     osc = [EspOsc osc];
     clock = [EspClock clock];
@@ -51,9 +50,7 @@
     // *** NOTE: we have stamped codeshare items with local monotonic time
     // but we have not reworked codeshare system to adjust local times based on measured differences
     [self willChangeValueForKey:@"items"];
-    [itemsLock lock];
     [items addObject:item];
-    [itemsLock unlock];
     [self didChangeValueForKey:@"items"];
     [item announceOnUdp:network];
 }
@@ -92,7 +89,6 @@
 
     // 2. see if this item is already in local array - if it is, ignore...
     EspCodeShareItem* item = nil;
-    [itemsLock lock];
     for(EspCodeShareItem* x in items)
     {
         if([x isEqualToName:name machine:machine timeStamp:timeStamp])
@@ -116,7 +112,6 @@
         NSString *log = [NSString stringWithFormat:@"received ANNOUNCE_SHARE from %@-%@ for timeStamp %@",name,machine,timeStamp];
         postLog(log, self);
     }
-    [itemsLock unlock];
 }
 
 
@@ -125,7 +120,6 @@
     NSString* sourceName = [d objectForKey:@"sourceName"];
     NSString* sourceMachine = [d objectForKey:@"sourceMachine"];
     EspTimeType timeStamp = [[d objectForKey:@"timeStamp"] doubleValue];
-    [itemsLock lock];
     for(EspCodeShareItem* x in items)
     {
         if([[x sourceName] isEqualToString:sourceName] &&
@@ -133,11 +127,9 @@
            [x timeStamp] == timeStamp)
         {
             [x deliverAllOnUdp:network];
-            [itemsLock unlock];
             return;
         }
     }
-    [itemsLock unlock];
 }
 
 
@@ -148,7 +140,6 @@
     EspTimeType timeStamp = [[d objectForKey:@"timeStamp"] doubleValue];
 
     EspCodeShareItem* item;
-    [itemsLock lock];
     for(EspCodeShareItem* x in items)
     {
         if([[x sourceName] isEqualToString:sourceName] &&
@@ -159,15 +150,11 @@
             break;
         }
     }
-    if(item == nil)
-    {
-        [itemsLock unlock];
-        return; // ? for now... later, receiving delivery of unknown items should start an entry for those items
-    }
+    if(item == nil) return; // ? for now... later, receiving delivery of unknown items should start an entry
+    
     NSString* fragment = [d objectForKey:@"fragment"];
     unsigned long index = [[d objectForKey:@"index"] longValue];
     [item addFragment:fragment index:index];
-    [itemsLock unlock];
     // [self copyShareToClipboardIfRequested:item]; // factoring this out for cross-platform dvpmt
     NSLog(@"receiving DELIVER_SHARE for %@-%@ with timeStamp %lld (%ld of %ld)",
           sourceName,sourceMachine,timeStamp,index+1,[item nFragments]);

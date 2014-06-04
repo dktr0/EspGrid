@@ -49,8 +49,13 @@
     [handlers addObject:x];
 }
 
-- (void)dataReceived:(NSData*)d fromHost:(NSString*)h fromPort:(int)port systemTime:(EspTimeType)timestamp monotonicTime:(EspTimeType)monotonic
+-(void)packetReceived:(NSDictionary *)packet
 {
+    NSAssert([[NSThread currentThread] isMainThread],@"attempt to process packet outside main thread");
+    NSData* d = [packet objectForKey:@"data"];
+    NSString* h = [packet objectForKey:@"host"];
+    int p = [[packet objectForKey:@"port"] intValue];
+    
     @try
     {
         NSAssert(d!=nil, @"d is nil in EspOsc dataReceived");
@@ -151,18 +156,7 @@
         {
             if([[x objectAtIndex:0] isEqual:address])
             {
-                NSMethodSignature * signature = [NSMutableArray instanceMethodSignatureForSelector:
-                                                 @selector(handleOsc:withParameters:fromHost:port:)];
-                NSInvocation* invocation = [NSInvocation invocationWithMethodSignature:signature];
-                [invocation setSelector:@selector(handleOsc:withParameters:fromHost:port:)];
-                [invocation setArgument:&address atIndex:0];
-                [invocation setArgument:&params atIndex:1];
-                [invocation setArgument:&h atIndex:2];
-                [invocation setArgument:&port atIndex:3];
-                [invocation performSelectorOnMainThread:@selector(invokeWithTarget:)
-                                             withObject:[x objectAtIndex:1]
-                                          waitUntilDone:YES];
-                // [[x objectAtIndex:1] handleOsc:address withParameters:params fromHost:h port:port];
+                [[x objectAtIndex:1] handleOsc:address withParameters:params fromHost:h port:p];
                 c++;
             }
         }

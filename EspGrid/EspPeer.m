@@ -46,7 +46,6 @@
     self = [super init];
     adjustments = malloc(sizeof(EspTimeType)*15);
     memset(adjustments,0,sizeof(EspTimeType)*15);
-    adjustmentsLock = [[NSLock alloc] init];
     averageLatencyMMobj = [[EspMovingAverage alloc] initWithLength:12];
     averageLatencyMSobj = [[EspMovingAverage alloc] initWithLength:12];
     averageLatencySMobj = [[EspMovingAverage alloc] initWithLength:12];
@@ -62,7 +61,6 @@
 -(void) dealloc
 {
     free(adjustments);
-    [adjustmentsLock release];
     [averageLatencyMMobj release];
     [averageLatencyMSobj release];
     [averageLatencySMobj release];
@@ -123,7 +121,6 @@
     averageLatencySM = [averageLatencySMobj push:recentLatencySM];
     averageLatencySS = [averageLatencySSobj push:recentLatencySS];
     
-    [adjustmentsLock lock];
     adjustments[1] = ackReceiveMonotonic - (ackSendMonotonic + recentLatencyMM);
     adjustments[2] = ackReceiveMonotonic - (ackSendMonotonic + lowestLatencyMM);
     adjustments[3] = ackReceiveMonotonic - (ackSendMonotonic + averageLatencyMM);
@@ -143,7 +140,6 @@
         adjustments[4] = adjustments[1];
         adjustments[5] = adjustments[3];
     }
-    [adjustmentsLock unlock];
 }
 
 -(void) dumpAdjustments
@@ -166,10 +162,10 @@
     {
         EspTimeType incomingBeaconTime = [[d objectForKey:@"beaconReceiveMonotonic"] longLongValue];
         EspTimeType storedBeaconTime = [other lastBeaconMonotonic];
-        [adjustmentsLock lock];
+        // [adjustmentsLock lock];
         adjustments[4] = refBeaconMonotonic = storedBeaconTime - incomingBeaconTime;
         adjustments[5] = refBeaconMonotonicAverage = [refBeaconMonotonicAverageObj push:refBeaconMonotonic];
-        [adjustmentsLock unlock];
+        // [adjustmentsLock unlock];
         NSLog(@"confirming reference beacon calculations");
     }
     else NSLog(@"mismatched beacon counts - stored = %d, received = %d",storedBeaconCount,incomingBeaconCount);
@@ -177,10 +173,7 @@
 
 -(EspTimeType) adjustmentForSyncMode:(int)mode
 {
-    [adjustmentsLock lock];
-    EspTimeType x = adjustments[mode];
-    [adjustmentsLock unlock];
-    return x;
+    return adjustments[mode];
 }
 
 -(void) updateLastBeaconStatus

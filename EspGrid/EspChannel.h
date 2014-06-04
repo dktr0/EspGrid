@@ -20,7 +20,7 @@
     int port;
     NSString* host;
     EspSocket* socket;
-    NSLock* lock;
+//    NSLock* lock;
     id delegate;
 }
 @property (nonatomic,assign) int port;

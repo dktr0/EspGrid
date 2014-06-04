@@ -40,7 +40,6 @@
   EspTimeType refBeaconMonotonic,refBeaconMonotonicAverage;
     // instance variables
     EspTimeType* adjustments;
-    NSLock* adjustmentsLock;
     EspMovingAverage* averageLatencyMMobj;
     EspMovingAverage* averageLatencyMSobj;
     EspMovingAverage* averageLatencySMobj;

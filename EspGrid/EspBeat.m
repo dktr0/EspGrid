@@ -128,7 +128,8 @@
 
 -(EspTimeType) adjustedDownbeatTime
 {
-    return [downbeatTime longLongValue] + [kvc clockAdjustmentForAuthority:@"beat.downbeatTime"];
+    if([on boolValue]) return [downbeatTime longLongValue] + [kvc clockAdjustmentForAuthority:@"beat.downbeatTime"];
+    else return 0;
 }
 
 -(BOOL) handleOsc:(NSString*)address withParameters:(NSArray*)d fromHost:(NSString*)h port:(int)p

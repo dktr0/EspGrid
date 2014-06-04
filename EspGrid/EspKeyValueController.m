@@ -36,7 +36,6 @@
     network = [EspNetwork network];
     clock = [EspClock clock];
     peerList = [EspPeerList peerList];
-    lock = [[NSLock alloc] init];
     keyPaths = [[NSMutableArray alloc] init];
     authorityNames = [[NSMutableDictionary alloc] init];
     authorityMachines = [[NSMutableDictionary alloc] init];
@@ -53,7 +52,6 @@
 
 -(void) dealloc
 {
-    [lock release];
     [keyPaths release];
     [authorityNames release];
     [authorityMachines release];
@@ -65,15 +63,12 @@
 
 -(void)addKeyPath:(NSString*)keyPath
 {
-    [lock lock];
     [keyPaths addObject:[keyPath copy]];
     [timeStamps setObject:[NSNumber numberWithLongLong:0] forKey:keyPath];
-    [lock unlock];
 }
 
 -(void) setValue:(id)value forKeyPath:(NSString *)keyPath
 {
-    [lock lock];
     [model setValue:value forKeyPath:keyPath];
     [values setObject:value forKey:keyPath];
     [timeStamps setObject:[NSNumber numberWithLongLong:monotonicTime()] forKey:keyPath];
@@ -81,7 +76,6 @@
     [authorityNames setObject:[selfInPeerList name] forKey:keyPath];
     [authorityMachines setObject:[selfInPeerList machine] forKey:keyPath];
     [authorities setObject:selfInPeerList forKey:keyPath];
-    [lock unlock];
     [self broadcastKeyPath:keyPath];
 }
 
@@ -94,14 +88,9 @@
 
 -(void) broadcastKeyPath:(NSString*)keyPath
 {
-    [lock lock];
     // don't broadcast values that haven't been changed/set yet (no authority)
     EspTimeType t = [[timeStamps objectForKey:keyPath] longLongValue];
-    if(t == 0)
-    {
-        [lock unlock];
-        return;
-    }
+    if(t == 0) return;
     // also: don't broadcast values when we aren't the authority, unless authority is AWOL...
     NSString* authorityName = [authorityNames objectForKey:keyPath];
     NSString* authorityMachine = [authorityMachines objectForKey:keyPath];
@@ -109,11 +98,7 @@
     if(authority != [peerList selfInPeerList])
     {
         EspTimeType t = monotonicTime() - [authority lastBeaconMonotonic];
-        if(t < 10000000000)
-        {
-            [lock unlock];
-            return; // authority considered AWOL if more than 10s since beacon
-        }
+        if(t < 10000000000) return;
     }
     // all conditions have been met: so broadcast the opcode
     NSMutableDictionary* d = [[[NSMutableDictionary alloc] init] autorelease];
@@ -123,15 +108,11 @@
     [d setObject:[[timeStamps objectForKey:keyPath] copy] forKey:@"timeStamp"];
     [d setObject:[[values objectForKey:keyPath] copy] forKey:@"value"];
     [network sendOpcode:ESP_OPCODE_KVC withDictionary:d];
-    [lock unlock];
 }
 
 -(EspTimeType) clockAdjustmentForAuthority:(NSString*)keyPath
 {
-    [lock lock];
-    EspTimeType x = [clock adjustmentForPeer:[authorities objectForKey:keyPath]];
-    [lock unlock];
-    return x;
+    return [clock adjustmentForPeer:[authorities objectForKey:keyPath]];
 }
 
 -(void) handleOpcode:(NSDictionary*)d
@@ -140,7 +121,6 @@
     
     if(opcode == ESP_OPCODE_KVC) // a broadcast dictionary value from somewhere 
     {
-        [lock lock];
         NSNumber* timeStamp = [d objectForKey:@"timeStamp"]; VALIDATE_OPCODE_NSNUMBER(timeStamp);
         if([timeStamp longLongValue] == 0) return; // ignore initial, non-actioned settings
         NSString* keyPath = [d objectForKey:@"keyPath"]; VALIDATE_OPCODE_NSSTRING(keyPath);
@@ -153,7 +133,6 @@
         {
             postLog([NSString stringWithFormat:@"dropping KVC (unknown authority): %@-%@",
                      name,machine], self);
-            [lock unlock];
         }
         EspTimeType t2 = [timeStamp longLongValue] + [clock adjustmentForPeer:newAuthority];
         EspPeer* oldAuthority = [authorities objectForKey:keyPath];
@@ -169,7 +148,6 @@
             [authorities setObject:newAuthority forKey:keyPath];
             postLog([NSString stringWithFormat:@"new value %@ for key %@",keyPath,value],self);
         }
-        [lock unlock];
     }
 }
 

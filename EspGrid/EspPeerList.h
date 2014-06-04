@@ -23,7 +23,6 @@
 @interface EspPeerList : NSObject
 {
     NSMutableArray* peers;
-    NSLock* peersLock;
     NSString* status;
     EspPeer* selfInPeerList;
 }

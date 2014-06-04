@@ -29,8 +29,8 @@
 #import <netdb.h>
 #endif
 
-@protocol EspSocketDelegate
-- (void)dataReceived:(NSData*)d fromHost:(NSString*)h fromPort:(int)port systemTime:(EspTimeType)timestamp monotonicTime:(EspTimeType)monotonic;
+@protocol EspSocketDelegate <NSObject>
+-(void)packetReceived:(NSDictionary*)packet;
 @end
 
 #define ESP_SOCKET_BUFFER_SIZE 2048
@@ -41,8 +41,7 @@
     struct sockaddr_in us;
     NSThread* thread;
     struct sockaddr_in them;
-    id<EspSocketDelegate> delegate;
-    NSLock* transmitLock;
+    NSObject<EspSocketDelegate>* delegate;
     void* transmitBuffer;
     NSMutableData* transmitData;
     void* receiveBuffer;

@@ -32,7 +32,6 @@
     self = [super init];
     transmitData = [[NSMutableData alloc] initWithLength:ESP_SOCKET_BUFFER_SIZE];
     if(!transmitData) { postProblem(@"unable to allocate transmitData", self); }
-    transmitLock = [[NSLock alloc] init];
     transmitBuffer = (void*)[transmitData bytes];
     receiveData = [[NSMutableData alloc] initWithLength:ESP_SOCKET_BUFFER_SIZE];
     if(!receiveData) { postProblem(@"unable to allocate receiveData", self); }
@@ -59,7 +58,6 @@
 -(void) dealloc
 {
     close(socketRef);
-    [transmitLock release];
     [receiveData release];
     free(receiveBuffer);
     [transmitData release];
@@ -93,7 +91,8 @@
         close(socketRef);
         return NO;
     }
-    NSLog(@"bound to port %d",p);
+    NSString* l = [NSString stringWithFormat:@"bound to UDP port %d",p];
+    postLog(l,self);
     return YES;
 }
 
@@ -149,7 +148,12 @@
             NSData* d = [[NSData alloc] initWithBytesNoCopy:receiveBuffer length:n freeWhenDone:NO];
             them.sin_port = ntohs(them.sin_port);
             @try {
-                [delegate dataReceived:d fromHost:h fromPort:them.sin_port systemTime:timeStamp monotonicTime:monotonic];
+                // [delegate dataReceived:d fromHost:h fromPort:them.sin_port systemTime:timeStamp monotonicTime:monotonic];
+                NSDictionary* packet = [NSDictionary dictionaryWithObjectsAndKeys:
+                                        d,@"data",h,@"host",[NSNumber numberWithInt:them.sin_port],@"port",
+                                        [NSNumber numberWithUnsignedLongLong:timeStamp],@"systemTime",
+                                        [NSNumber numberWithUnsignedLongLong:monotonic],@"monotonicTime",nil];
+                [delegate performSelectorOnMainThread:@selector(packetReceived:) withObject:packet waitUntilDone:YES];
             }
             @catch (NSException* exception) {
                 NSString* msg = [NSString stringWithFormat:@"EXCEPTION in udpReceiveLoop: %@: %@",[exception name],[exception  reason]];
@@ -170,6 +174,8 @@
 
 static void sendData(int socketRef,const void* data,size_t length,NSString* host,int port)
 {
+    assert([[NSThread currentThread] isMainThread]); // don't allow transmission other than from main thread
+    
     if(host == nil) { postProblem(@"can't send when host==nil",nil); return; }
     if(port == 0) { postProblem(@"can't send when port==0",nil); return; }
     struct sockaddr_in address;
@@ -188,36 +194,28 @@ static void sendData(int socketRef,const void* data,size_t length,NSString* host
 
 -(void)sendData: (NSData*)data toHost:(NSString*)host port:(int)p
 {
-    [transmitLock lock];
     sendData(socketRef, [data bytes], [data length], host, p); // a specific port indicated by argument p
-    [transmitLock unlock];
 }
 
 -(void)sendData: (NSData*)data toHost:(NSString*)host
 {
-    [transmitLock lock];
     sendData(socketRef, [data bytes], [data length], host, port); // use the port on which we listen
-    [transmitLock unlock];
 }
 
 -(void)sendDataWithTimes:(NSData*)data toHost:(NSString*)host port:(int)p
 {
-    [transmitLock lock];
     *((EspTimeType*)transmitBuffer) = monotonicTime();
     *((EspTimeType*)transmitBuffer+1) = systemTime();
     memcpy(transmitBuffer+16, [data bytes], [data length]);
     sendData(socketRef, transmitBuffer, [data length]+16, host, p);
-    [transmitLock unlock];
 }
 
 -(void)sendDataWithTimes:(NSData*)data toHost:(NSString*)host
 {
-    [transmitLock lock];
     *((EspTimeType*)transmitBuffer) = monotonicTime();
     *((EspTimeType*)transmitBuffer+1) = systemTime();
     memcpy(transmitBuffer+16, [data bytes], [data length]);
     sendData(socketRef, transmitBuffer, [data length]+16, host, port);
-    [transmitLock unlock];
 }
 
 @end

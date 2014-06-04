@@ -29,7 +29,6 @@
   EspNetwork* network;
   EspClock* clock;
   NSMutableArray* items;
-  NSLock* itemsLock;
 }
 @property (readonly) NSMutableArray* items;
 @property (nonatomic,assign) EspCodeShareItem* requestedShare;

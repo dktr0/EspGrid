@@ -97,6 +97,7 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
 // when a packet comes in on any EspChannel, process it locally and forward to other channels
 -(void) packetReceived:(NSDictionary*)packet fromChannel:(EspChannel*)channel
 {
+    NSAssert([[NSThread currentThread] isMainThread],@"attempt to process packet outside of main thread");
     NSMutableDictionary* d = [NSMutableDictionary dictionaryWithDictionary:packet];
     if([packet objectForKey:@"sendTime"] == nil) // hasn't been rebroadcast yet
     {

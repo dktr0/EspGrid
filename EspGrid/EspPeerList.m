@@ -33,7 +33,6 @@
 -(id) init {
     self = [super init];
     peers = [[NSMutableArray alloc] init];
-    peersLock = [[NSLock alloc] init];
     NSUserDefaults* x = [NSUserDefaults standardUserDefaults];
     [x addObserver:self forKeyPath:@"name" options:NSKeyValueObservingOptionNew context:nil];
     [x addObserver:self forKeyPath:@"machine" options:NSKeyValueObservingOptionNew context:nil];
@@ -44,7 +43,6 @@
 
 -(void) dealloc
 {
-    [peersLock release];
     [peers release];
     [super dealloc];
 }
@@ -137,9 +135,7 @@
     // add new peer to peerlist
     [self willChangeValueForKey:@"peers"];
     EspPeer* x = [[EspPeer alloc] init];
-    [peersLock lock];
     [peers addObject:x];
-    [peersLock unlock];
     [self didChangeValueForKey:@"peers"];
     postLog([NSString stringWithFormat:@"adding %@-%@ at %@",name,machine,ip], self);
     [self updateStatus];
@@ -148,23 +144,18 @@
 
 -(void) updateStatus
 {
-    [peersLock lock];
     long c = [peers count];
     for(EspPeer* x in peers) [x updateLastBeaconStatus];
-    [peersLock unlock];
     if(c>1) [self setStatus:[NSString stringWithFormat:@"%ld peers on grid",c]];
     else [self setStatus:@"no peers found yet"];
 }
 
 -(EspPeer*) findPeerWithName:(NSString*)name andMachine:(NSString*)machine
 {
-    [peersLock lock];
     for(EspPeer* x in peers) if([[x name] isEqualToString:name] && [[x machine] isEqualToString:machine])
     {
-        [peersLock unlock];
         return x;
     }
-    [peersLock unlock];
     return nil;
 }
 
