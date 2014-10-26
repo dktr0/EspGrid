@@ -36,6 +36,11 @@
 		060ABC4F17E0C15C0031AE8F /* EspBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 0603F51017DD562D009943C3 /* EspBridge.m */; };
 		063BE05618259F1000B31C18 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 063BE05518259F1000B31C18 /* main.m */; };
 		063BE058182738BA00B31C18 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A261415C90E2E00BC5E8D /* main.m */; };
+		0640A21419FD38DC00A41A1E /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0640A21219FD38DC00A41A1E /* AudioUnit.framework */; };
+		0640A21519FD38DC00A41A1E /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0640A21319FD38DC00A41A1E /* CoreAudio.framework */; };
+		0640A21619FD391B00A41A1E /* EspChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FE7D6E18E8A24E000131C3 /* EspChannel.m */; };
+		0640A21719FD392900A41A1E /* EspPeer.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CC287518957C9200A55DB5 /* EspPeer.m */; };
+		0640A21819FD393900A41A1E /* EspMovingAverage.m in Sources */ = {isa = PBXBuildFile; fileRef = 06AFD1A518970E0A00A3958B /* EspMovingAverage.m */; };
 		0649463816A1C26600FCC2F2 /* EspChatTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0649463716A1C26600FCC2F2 /* EspChatTests.m */; };
 		064EF35315CB889700005A16 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 064EF35215CB889700005A16 /* UIKit.framework */; };
 		064EF35515CB889700005A16 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 064EF35415CB889700005A16 /* Foundation.framework */; };
@@ -155,6 +160,8 @@
 		060ABC3817E0C0830031AE8F /* espgridd.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = espgridd.1; sourceTree = "<group>"; };
 		063BE05518259F1000B31C18 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		063BE05718259F2200B31C18 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
+		0640A21219FD38DC00A41A1E /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/AudioUnit.framework; sourceTree = DEVELOPER_DIR; };
+		0640A21319FD38DC00A41A1E /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk/System/Library/Frameworks/CoreAudio.framework; sourceTree = DEVELOPER_DIR; };
 		0649463616A1C26600FCC2F2 /* EspChatTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; name = EspChatTests.h; path = ../EspGrid/EspChatTests.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		0649463716A1C26600FCC2F2 /* EspChatTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EspChatTests.m; path = ../EspGrid/EspChatTests.m; sourceTree = "<group>"; };
 		064EF35015CB889700005A16 /* EspGridTouchTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EspGridTouchTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -241,6 +248,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0640A21419FD38DC00A41A1E /* AudioUnit.framework in Frameworks */,
+				0640A21519FD38DC00A41A1E /* CoreAudio.framework in Frameworks */,
 				060ABC3217E0C0830031AE8F /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -423,6 +432,8 @@
 		0699369D15C90761002F64AF /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0640A21219FD38DC00A41A1E /* AudioUnit.framework */,
+				0640A21319FD38DC00A41A1E /* CoreAudio.framework */,
 				06B190E91892CA1400CB7389 /* CoreAudioKit.framework */,
 				06B190E71892C9CF00CB7389 /* CoreAudio.framework */,
 				06B190E51892C9B100CB7389 /* AudioToolbox.framework */,
@@ -655,12 +666,15 @@
 				060ABC4017E0C12D0031AE8F /* EspQueue.m in Sources */,
 				060ABC4117E0C1300031AE8F /* EspBeat.m in Sources */,
 				060ABC4217E0C1330031AE8F /* EspChat.m in Sources */,
+				0640A21619FD391B00A41A1E /* EspChannel.m in Sources */,
 				060ABC4317E0C1360031AE8F /* EspClock.m in Sources */,
 				060ABC4417E0C1390031AE8F /* EspCodeShareItem.m in Sources */,
 				060ABC4517E0C13E0031AE8F /* EspCodeShare.m in Sources */,
 				060ABC4617E0C1450031AE8F /* EspKeyValueController.m in Sources */,
 				060ABC4917E0C14C0031AE8F /* EspPeerList.m in Sources */,
+				0640A21719FD392900A41A1E /* EspPeer.m in Sources */,
 				063BE05618259F1000B31C18 /* main.m in Sources */,
+				0640A21819FD393900A41A1E /* EspMovingAverage.m in Sources */,
 				060ABC4D17E0C15A0031AE8F /* EspBridge.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -834,9 +848,9 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "espgridd/espgridd-Prefix.pch";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
+				SDKROOT = macosx10.8;
 			};
 			name = Debug;
 		};
@@ -853,9 +867,9 @@
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "espgridd/espgridd-Prefix.pch";
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = macosx;
+				SDKROOT = macosx10.8;
 			};
 			name = Release;
 		};

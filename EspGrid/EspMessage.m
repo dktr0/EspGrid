@@ -42,7 +42,6 @@
 
 -(void) respondToQueuedItem:(id)item
 {
-    NSLog(@"respondToQueuedItem");
     [osc transmit:(NSArray*)item log:YES];
 }
 
@@ -59,9 +58,11 @@
 -(void) sendMessageNowStamped:(NSArray*)params
 {
     EspTimeType t = monotonicTime();
-    NSNumber* n = [NSNumber numberWithLongLong:t];
+    NSNumber* nSecs = [NSNumber numberWithLongLong:t/1000000000];
+    NSNumber* nNanos = [NSNumber numberWithDouble:t%1000000000];
     NSMutableArray* a = [NSMutableArray arrayWithArray:params];
-    [a insertObject:n atIndex:1]; // insert time stamp into parameters
+    [a insertObject:nSecs atIndex:1]; // insert time stamp (seconds) into parameters // NOT RIGHT: needs to be translated
+    [a insertObject:nNanos atIndex:2]; // insert time stamp (nanoseconds) into parameters
     NSMutableDictionary* d = [[NSMutableDictionary alloc] init];
     [d setObject:a forKey:@"params"];
     [d setObject:[NSNumber numberWithLongLong:t] forKey:@"time"];
@@ -115,14 +116,18 @@
 -(void) sendMessageFutureStamped:(NSArray*)params
 {
     EspTimeType t = monotonicTime();
-    EspTimeType i = [[params objectAtIndex:0] floatValue];
-    NSNumber* n = [NSNumber numberWithLongLong:t+i];
+    EspTimeType iSecs = [[params objectAtIndex:0] floatValue];
+    EspTimeType iNanos = [[params objectAtIndex:1] longLongValue];
+    EspTimeType i = iSecs*1000000000+iNanos;
+    NSNumber* nSecs = [NSNumber numberWithLongLong:(t+i)/1000000000];
+    NSNumber* nNanos = [NSNumber numberWithLongLong:(t+i)%1000000000];
     NSMutableArray* a = [NSMutableArray arrayWithArray:params];
     [a removeObjectAtIndex:0]; // remove time increment parameter
-    [a insertObject:n atIndex:1]; // insert time stamp into parameters
+    [a insertObject:nSecs atIndex:1]; // insert time stamp (seconds) into parameters
+    [a insertObject:nNanos atIndex:2]; // insert time stamp (nanoseconds) into parameters
     NSMutableDictionary* d = [[NSMutableDictionary alloc] init];
     [d setObject:a forKey:@"params"];
-    [d setObject:n forKey:@"time"];
+    [d setObject:[NSNumber numberWithLongLong:t+i] forKey:@"time"];
     [network sendOpcode:ESP_OPCODE_OSCFUTURE withDictionary:d];
     [queue addItem:a atTime:t+i];
 }
