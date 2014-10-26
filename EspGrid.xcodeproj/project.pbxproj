@@ -106,7 +106,6 @@
 		06E932621642DCE800D3D4DA /* Esp Grid Icon V2.icns in Resources */ = {isa = PBXBuildFile; fileRef = 06E932611642DCE800D3D4DA /* Esp Grid Icon V2.icns */; };
 		06ED1A49172AAAE3003401A6 /* COPYING.txt in Resources */ = {isa = PBXBuildFile; fileRef = 06ED1A48172AAAE3003401A6 /* COPYING.txt */; };
 		06F9206A168370DA005EDCDF /* EspOpcodeReceiveTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06F92069168370DA005EDCDF /* EspOpcodeReceiveTests.m */; };
-		06FAAF49193146680074D753 /* notes.txt in Resources */ = {isa = PBXBuildFile; fileRef = 06FAAF48193146680074D753 /* notes.txt */; };
 		06FE7D6F18E8A24E000131C3 /* EspChannel.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FE7D6E18E8A24E000131C3 /* EspChannel.m */; };
 		06FED5341631DDEF00BF393B /* EspQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FED5331631DDEF00BF393B /* EspQueue.m */; };
 /* End PBXBuildFile section */
@@ -231,7 +230,6 @@
 		06ED1A48172AAAE3003401A6 /* COPYING.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = COPYING.txt; sourceTree = "<group>"; };
 		06F92068168370DA005EDCDF /* EspOpcodeReceiveTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspOpcodeReceiveTests.h; sourceTree = "<group>"; };
 		06F92069168370DA005EDCDF /* EspOpcodeReceiveTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspOpcodeReceiveTests.m; sourceTree = "<group>"; };
-		06FAAF48193146680074D753 /* notes.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = notes.txt; sourceTree = "<group>"; };
 		06FE7D6D18E8A24E000131C3 /* EspChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspChannel.h; sourceTree = "<group>"; };
 		06FE7D6E18E8A24E000131C3 /* EspChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspChannel.m; sourceTree = "<group>"; };
 		06FED5321631DDEF00BF393B /* EspQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspQueue.h; sourceTree = "<group>"; };
@@ -398,7 +396,6 @@
 			isa = PBXGroup;
 			children = (
 				06ED1A48172AAAE3003401A6 /* COPYING.txt */,
-				06FAAF48193146680074D753 /* notes.txt */,
 				0676AF751637A2610082B57D /* Help */,
 				06A352B817665486000B66DE /* EspGrid-helpful-code */,
 				06B51764163080E10036A44B /* Default-568h@2x.png */,
@@ -608,7 +605,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				06FAAF49193146680074D753 /* notes.txt in Resources */,
 				060A262315C90E2E00BC5E8D /* EspPreferencesPanel.xib in Resources */,
 				060A262415C90E2E00BC5E8D /* InfoPlist.strings in Resources */,
 				060A262515C90E2E00BC5E8D /* MainMenu.xib in Resources */,

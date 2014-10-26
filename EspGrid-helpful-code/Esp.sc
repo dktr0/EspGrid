@@ -1,7 +1,7 @@
 /*
 Esp -- SuperCollider classes to connect with EspGrid (classes Esp and EspClock)
 by David Ogborn <ogbornd@mcmaster.ca>
-Version-date: 10 April 2014 (EspGrid 0.50.5)
+Version-date: 7 June 2014 (EspGrid 0.51.1)
 
 Installation Instructions:
 1. Place this file in your SuperCollider extensions folder
@@ -28,7 +28,7 @@ Esp {
 	*chat { |x| send.sendMsg("/esp/chat/send",x); }
 
 	*initClass {
-		version = "10 April 2014 (EspGrid 0.50.5)";
+		version = "7 June 2014 (EspGrid 0.51.1)";
 		("Esp.sc: " + version).postln;
 		gridAddress = "127.0.0.1";
 		send = NetAddr(gridAddress,5510);
@@ -93,7 +93,7 @@ EspClock : TempoClock {
 						{ // if tempo is on
 							var target = (SystemClock.seconds - refTime + clockDiff) * refFreq + refBeat;
 							var adjust = (target - this.beats * 40);
-							var freq = (refFreq + adjust).clip(0.000000001,1000000);
+							var freq = (refFreq + adjust).clip(0.000000001,200); // ***
 							if(adjust != 0) {
 								{
 									this.setTempoAtSec(freq,SystemClock.seconds);

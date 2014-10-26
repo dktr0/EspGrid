@@ -36,11 +36,13 @@
     clock = [EspClock clock];
     peerList = [EspPeerList peerList];
     queue = [[EspQueue alloc] init];
+    [queue setDelegate:self];
     return self;
 }
 
 -(void) respondToQueuedItem:(id)item
 {
+    NSLog(@"respondToQueuedItem");
     [osc transmit:(NSArray*)item log:YES];
 }
 
@@ -96,10 +98,14 @@
 -(void) sendMessageFuture:(NSArray*)params
 {
     EspTimeType t = monotonicTime();
-    EspTimeType i = [[params objectAtIndex:0] floatValue];
+    EspTimeType iSecs = [[params objectAtIndex:0] longLongValue];
+    EspTimeType iNanos = [[params objectAtIndex:1] longLongValue];
+    EspTimeType i = iSecs*1000000000+iNanos;
+    NSLog(@"%lld",i+t);
     NSMutableDictionary* d = [[NSMutableDictionary alloc] init];
     NSMutableArray* a = [NSMutableArray arrayWithArray:params];
-    [a removeObjectAtIndex:0]; // remove time increment parameter
+    [a removeObjectAtIndex:0]; // remove time increment parameter (seconds)
+    [a removeObjectAtIndex:0]; // remove time increment parameter (nanoseconds)
     [d setObject:a forKey:@"params"];
     [d setObject:[NSNumber numberWithLongLong:t+i] forKey:@"time"];
     [network sendOpcode:ESP_OPCODE_OSCFUTURE withDictionary:d];

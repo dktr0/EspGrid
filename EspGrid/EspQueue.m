@@ -64,7 +64,6 @@
             [delegate performSelectorOnMainThread:@selector(respondToQueuedItem:)
                                        withObject:[a objectAtIndex:1]
                                     waitUntilDone:YES];
-            // [delegate respondToQueuedItem:[a objectAtIndex:1]];
             [items removeObject:a];
         }
     }
