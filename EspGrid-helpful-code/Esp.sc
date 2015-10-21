@@ -1,7 +1,6 @@
 /*
 Esp -- SuperCollider classes to connect with EspGrid (classes Esp and EspClock)
 by David Ogborn <ogbornd@mcmaster.ca>
-Version-date: 7 June 2014 (EspGrid 0.51.1)
 
 Installation Instructions:
 1. Place this file in your SuperCollider extensions folder
@@ -28,7 +27,7 @@ Esp {
 	*chat { |x| send.sendMsg("/esp/chat/send",x); }
 
 	*initClass {
-		version = "7 June 2014 (EspGrid 0.51.1)";
+		version = "21 October 2015 (EspGrid 0.51.3)";
 		("Esp.sc: " + version).postln;
 		gridAddress = "127.0.0.1";
 		send = NetAddr(gridAddress,5510);
@@ -52,12 +51,10 @@ EspClock : TempoClock {
 
 	// private variables:
 	var clockDiff; // difference between SystemClock.seconds and EspGrid time
-    var refOn,refFreq,refTime,refBeat;
 
 	// public methods:
 	pause { Esp.send.sendMsg("/esp/beat/on",0); }
 	start { Esp.send.sendMsg("/esp/beat/on",1); }
-	tempo { ^if(refOn==1,refFreq,0); }
 	tempo_ {|t| if(t<10,{Esp.send.sendMsg("/esp/beat/tempo", t * 60);},{"tempo too high".postln;});}
 
  	init {
@@ -75,37 +72,22 @@ EspClock : TempoClock {
 				// Synchronization accuracy would be improved if there were a method like:
 				// SystemClock.startTime (returning the monotonic startup time SC uses to
 				// generate SystemClock.seconds as something where 0 is startup time)
+                // see comment below line below that starts var target = ...
  			},
 			"/esp/clock/r").permanent_(true);
 
 		OSCdef(\espTempo,
 			{
 				| msg,time,addr,port |
-                refOn = msg[1];
-                refFreq = msg[2]/60;
-                refTime = msg[3] + (msg[4]*0.000000001);
-                refBeat = msg[5];
-				if(clockDiff.notNil) { // synchronize only if system clock adjustment known
-					if(refOn==0,
-						{ // if tempo is off
-							this.setTempoAtSec(0.000000001,SystemClock.seconds); // SC doesn't pause...
-						},
-						{ // if tempo is on
-							var target = (SystemClock.seconds - refTime + clockDiff) * refFreq + refBeat;
-							var adjust = (target - this.beats * 40);
-							var freq = (refFreq + adjust).clip(0.000000001,200); // ***
-							if(adjust != 0) {
-								{
-									this.setTempoAtSec(freq,SystemClock.seconds);
-									0.025.wait;
-									this.setTempoAtSec(refFreq,SystemClock.seconds);
-								}.fork(SystemClock);
-							};
-						}
-					);
-				};
-			},
-			"/esp/tempo/r").permanent_(true);
+				if(clockDiff.notNil,{
+					var on = msg[1];
+					var freq = if(on==1,msg[2]/60,0.000000001);
+					var time = msg[3] + (msg[4]*0.000000001);
+					var beat = msg[5];
+					super.beats_((SystemClock.seconds - time + clockDiff) * freq + beat);
+					super.tempo_(freq);
+				});
+			},"/esp/tempo/r").permanent_(true);
 
 		Esp.send.sendMsg("/esp/clock/q");
         SkipJack.new( {Esp.send.sendMsg("/esp/tempo/q");}, 0.05, clock: SystemClock);
