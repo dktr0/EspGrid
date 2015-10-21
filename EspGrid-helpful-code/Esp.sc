@@ -11,7 +11,7 @@ Esp.version; // display version of this code (and verify that it is installed!)
 Esp.chat("hi there"); // send a chat message with EspGrid
 TempoClock.default = EspClock.new; // make the default clock a new EspClock
 TempoClock.default.start; // if the beat is paused/was-never-started, make it go
-TempoClock.default.tempo = 1.8; // change tempo in normal SC way (all changes shared via EspGrid)
+TempoClock.tempo = 1.8; // change tempo in normal SC way (all changes shared via EspGrid)
 TempoClock.default.pause; // pause the beat
 */
 
@@ -29,6 +29,9 @@ Esp {
 	*initClass {
 		version = "21 October 2015 (EspGrid 0.51.3)";
 		("Esp.sc: " + version).postln;
+		if(Main.scVersionMajor<3 || (Main.scVersionMajor==3 && Main.scVersionMinor<7),{
+			" WARNING: SuperCollider 3.7 or higher is required".postln;
+		});
 		gridAddress = "127.0.0.1";
 		send = NetAddr(gridAddress,5510);
         clockAdjust = 0.0;
@@ -65,12 +68,11 @@ EspClock : TempoClock {
 		if(Main.respondsTo(\monotonicClockTime),
 			{
 				clockDiff = Main.monotonicClockTime - SystemClock.seconds;
-				"SuperCollider has Main.monotonicClockTime so using that in EspClock".postln;
 				// Note: what we really need is access to the logical difference between
 				// SuperCollider's logical SystemClock time and the monotonicClockTime
 				// but having Main.monotonicClockTime should be a big improvement for now!
 			},{
-				"SuperCollider does NOT have Main.monotonicClockTime so using /esp/clock/q".postln;
+				" WARNING: SuperCollider does NOT have Main.monotonicClockTime, using /esp/clock/q".postln;
 				OSCdef(\espClock,
 					{
 						| msg,time,addr,port |
