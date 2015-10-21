@@ -50,7 +50,7 @@ Esp {
 EspClock : TempoClock {
 
 	// private variables:
-	var clockDiff; // difference between SystemClock.seconds and EspGrid time
+	var clockDiff; // difference between SystemClock.seconds and Main.monotonicClockTime
 
 	// public methods:
 	pause { Esp.send.sendMsg("/esp/beat/on",0); }
@@ -62,19 +62,24 @@ EspClock : TempoClock {
 		super.init(0.000000001,beats,seconds,queueSize);
 		permanent = true;
 
-		OSCdef(\espClock,
+		if(Main.respondsTo(\monotonicClockTime),
 			{
-				| msg,time,addr,port |
-				clockDiff = msg[1]+(msg[2]*0.000000001) + Esp.clockAdjust - SystemClock.seconds;
-				// Note: this is an estimate of the difference between the monotonic machine clock
-				// and SuperCollider's SystemClock.  Internally, SuperCollider has an exact unchanging
-				// value for this, but there seems to be no way of accessing it at the moment.
-				// Synchronization accuracy would be improved if there were a method like:
-				// SystemClock.startTime (returning the monotonic startup time SC uses to
-				// generate SystemClock.seconds as something where 0 is startup time)
-                // see comment below line below that starts var target = ...
- 			},
-			"/esp/clock/r").permanent_(true);
+				clockDiff = Main.monotonicClockTime - SystemClock.seconds;
+				"SuperCollider has Main.monotonicClockTime so using that in EspClock".postln;
+				// Note: what we really need is access to the logical difference between
+				// SuperCollider's logical SystemClock time and the monotonicClockTime
+				// but having Main.monotonicClockTime should be a big improvement for now!
+			},{
+				"SuperCollider does NOT have Main.monotonicClockTime so using /esp/clock/q".postln;
+				OSCdef(\espClock,
+					{
+						| msg,time,addr,port |
+						clockDiff = msg[1]+(msg[2]*0.000000001) - SystemClock.seconds;
+					},
+					"/esp/clock/r").permanent_(true);
+				Esp.send.sendMsg("/esp/clock/q");
+				SkipJack.new( {Esp.send.sendMsg("/esp/clock/q");}, 10.0, clock: SystemClock);
+		});
 
 		OSCdef(\espTempo,
 			{
@@ -84,14 +89,11 @@ EspClock : TempoClock {
 					var freq = if(on==1,msg[2]/60,0.000000001);
 					var time = msg[3] + (msg[4]*0.000000001);
 					var beat = msg[5];
-					super.beats_((SystemClock.seconds - time + clockDiff) * freq + beat);
+					super.beats_((SystemClock.seconds - time + clockDiff + Esp.clockAdjust) * freq + beat);
 					super.tempo_(freq);
 				});
 			},"/esp/tempo/r").permanent_(true);
-
-		Esp.send.sendMsg("/esp/clock/q");
         SkipJack.new( {Esp.send.sendMsg("/esp/tempo/q");}, 0.05, clock: SystemClock);
-        SkipJack.new( {Esp.send.sendMsg("/esp/clock/q");}, 10.0, clock: SystemClock);
 	}
 
 }
