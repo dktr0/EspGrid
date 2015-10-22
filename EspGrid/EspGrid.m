@@ -1,7 +1,7 @@
 //
 //  EspGrid.m
 //
-//  This file is part of EspGrid.  EspGrid is (c) 2012,2013 by David Ogborn.
+//  This file is part of EspGrid.  EspGrid is (c) 2012-2015 by David Ogborn.
 //
 //  EspGrid is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -319,6 +319,8 @@
 
 void appendToLogFile(NSString* s)
 {
+#ifndef _WIN32
+	// this doesn't work on Windows for the time being...
     NSString* directory = [(NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,NSUserDomainMask,YES)) objectAtIndex:0];
     NSString* path = [directory stringByAppendingPathComponent:@"espgridLog.txt"];
     NSString* s2 = [NSString stringWithFormat:@"%@\n",s];
@@ -332,6 +334,7 @@ void appendToLogFile(NSString* s)
         [handle seekToEndOfFile];
         [handle writeData:[s2 dataUsingEncoding:NSUTF8StringEncoding]];
     }
+#endif
 }
 
 void postChat(NSString* s)

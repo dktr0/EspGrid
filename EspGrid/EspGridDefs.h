@@ -1,7 +1,7 @@
 //
 //  EspGridDefs.h
 //
-//  This file is part of EspGrid.  EspGrid is (c) 2012,2013 by David Ogborn.
+//  This file is part of EspGrid.  EspGrid is (c) 2012-2015 by David Ogborn.
 //
 //  EspGrid is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 
 #define ESPGRID_MAJORVERSION 0
 #define ESPGRID_MINORVERSION 51 // changes to external/internal protocol MUST increment MINORVERSION
-#define ESPGRID_SUBVERSION 3
+#define ESPGRID_SUBVERSION 4
 
 #define ESP_NUMBER_OF_OPCODES 10
 #define ESP_OPCODE_BEACON 0
@@ -50,17 +50,18 @@
     if(![vx isKindOfClass:[NSNumber class]]) { postWarning(@"opcode with " #vx " not NSString",self); return; } \
  } while(0)
 
-
+	 
 void postChat(NSString* s);
 void postWarning(NSString* s,id sender);
 void postProblem(NSString* s,id sender);
 void postLog(NSString* s,id sender);
 void postLogHighVolume(NSString* s,id sender);
 
-// uncomment the next line to compile on Windows (MINGW+GNUstep)
-// #define MINGW 1
-
 #import <sys/time.h>
+
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 
 #ifndef GNUSTEP
 #import <mach/mach_time.h>
@@ -77,17 +78,29 @@ inline static EspTimeType systemTime(void) {
 
 inline static EspTimeType monotonicTime(void) {
 #ifndef GNUSTEP
+	// OS X
     return mach_absolute_time();
 #else
+#ifdef _WIN32
+	// Windows (MINGW/GNUSTEP)
+	LARGE_INTEGER frequency;
+	LARGE_INTEGER t;
+	QueryPerformanceFrequency(&frequency);
+	// note: apparently function above is slow so we should probably do this differently
+	QueryPerformanceCounter(&t);
+	return t.QuadPart * 1000000000L / frequency.QuadPart;
+#else	
+	// Linux (GNUSTEP)
     struct timespec t;
     clock_gettime(CLOCK_MONOTONIC,&t);
     return (t.tv_sec*1000000000) + (t.tv_nsec);
+#endif
 #endif
 }
 
 #ifdef GNUSTEP
 
-#ifdef MINGW
+#ifdef _WIN32
 // GNUSTEP/MINGW (Windows)
 #include <stdlib.h>
 typedef uint32_t UInt32;
@@ -98,7 +111,7 @@ inline static Float32 EspSwapFloat32(Float32 x) { return htonl(x); }
 inline static Float64 EspSwapFloat64(double x) { return __builtin_bswap64(x); }
 #endif
 
-#ifndef MINGW
+#ifndef _WIN32
 // GNUSTEP/Linux
 #include <endian.h>
 typedef uint32_t UInt32;

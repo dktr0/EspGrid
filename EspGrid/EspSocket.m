@@ -20,7 +20,7 @@
 #import "EspGridDefs.h"
 #import <unistd.h>
 
-#ifdef MINGW
+#ifdef _WIN32
 #import <Ws2tcpip.h>
 #endif
 
@@ -39,7 +39,7 @@
     if(!receiveData) { postProblem(@"unable to allocate receiveData", self); }
     socketRef = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if(socketRef == -1) { postProblem(@"unable to create socket",self); }
-    #ifndef MINGW
+    #ifndef _WIN32
     int reuseOn = 1;
     #else
     const char reuseOn = 1;
@@ -67,14 +67,14 @@
 
 -(BOOL) bindToPort:(unsigned int)p
 {
-    #ifndef MINGW
+    #ifndef _WIN32
     int reuseOn = 1;
     #else
     const char reuseOn = 1;
     #endif
     setsockopt(socketRef, SOL_SOCKET, SO_REUSEADDR, &reuseOn, sizeof(reuseOn)); // maybe this isn't necessary?
 
-    #ifndef MINGW
+    #ifndef _WIN32
     int timestamp = 1;
     int r = setsockopt(socketRef, SOL_SOCKET, SO_TIMESTAMP, &timestamp, sizeof(timestamp));
     if(r!=0) postProblem(@"unable to set socket option", self);
@@ -104,7 +104,7 @@
     #ifdef GNUSTEP
         NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init]; // was this necessary for GNUstep,or...? it produces a segfault on OSX sometimes
     #endif
-    #ifndef MINGW
+    #ifndef _WIN32
         struct msghdr msg;
         struct iovec entry;
         struct { struct cmsghdr cm; char control[512]; } control;
@@ -131,7 +131,7 @@
         }
         if(n>0) {
             // parse kernel level timestamp, if available
-#ifndef MINGW
+#ifndef _WIN32
             struct timeval *kernelTimeStamp = (struct timeval *)nil;
             for (struct cmsghdr* cmsg = CMSG_FIRSTHDR(&msg); cmsg; cmsg = CMSG_NXTHDR(&msg, cmsg))
             {
@@ -182,10 +182,10 @@ static void sendData(int socketRef,const void* data,size_t length,NSString* host
     // address.sin_len = sizeof(struct sockaddr_in); // this line needs to be commented out for GNUstep, apparently ok without on cocoa
     address.sin_family = AF_INET;
     address.sin_port = htons(port);
-#ifndef MINGW
+#ifndef _WIN32
     inet_pton(AF_INET, [host UTF8String], &(address.sin_addr.s_addr));
 #else
-    InetPton(AF_INET, [host UTF8String], &(address.sin_addr.s_addr));
+    inet_pton(AF_INET, [host UTF8String], &(address.sin_addr.s_addr));
 #endif
     memset(&(address.sin_zero), 0, sizeof(address.sin_zero));
     ssize_t r = sendto(socketRef, data, length, 0, (struct sockaddr*)&address, (socklen_t)sizeof(address));

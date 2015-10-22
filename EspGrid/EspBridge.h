@@ -1,7 +1,7 @@
 //
 //  EspBridge.h
 //
-//  This file is part of EspGrid.  EspGrid is (c) 2012,2013 by David Ogborn.
+//  This file is part of EspGrid.  EspGrid is (c) 2012-2015 by David Ogborn.
 //
 //  EspGrid is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -29,10 +29,19 @@
     NSString* remotePackets;
     unsigned long remotePacketsLong;
 }
+#ifdef _WIN32
+// atomic not available on WIN32/MINGW?
+@property (copy) NSString* localGroup;
+@property (copy) NSString* localAddress;
+@property (copy) NSString* remoteClaimedAddress;
+@property (copy) NSString* remoteClaimedPort;
+@property (copy) NSString* remotePackets;
+#else
 @property (atomic,copy) NSString* localGroup;
 @property (atomic,copy) NSString* localAddress;
 @property (atomic,copy) NSString* remoteClaimedAddress;
 @property (atomic,copy) NSString* remoteClaimedPort;
 @property (atomic,copy) NSString* remotePackets;
+#endif
 
 @end
