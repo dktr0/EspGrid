@@ -562,7 +562,7 @@
 			name = EspGridUnitTests;
 			productName = EspGridUnitTests;
 			productReference = 06C34368163F664000F72BE8 /* EspGridUnitTests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productType = "com.apple.product-type.bundle.ocunit-test";
 		};
 /* End PBXNativeTarget section */
 
