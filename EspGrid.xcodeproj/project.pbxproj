@@ -79,7 +79,6 @@
 		069BA8D61684F24500377CED /* MockEspInternalProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 069BA8D51684F24500377CED /* MockEspInternalProtocol.m */; };
 		06A17BEA16A39CE900F798D5 /* EspClockTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06A17BE916A39CE900F798D5 /* EspClockTests.m */; };
 		06A17BED16A3C0DF00F798D5 /* EspKeyValueControllerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06A17BEC16A3C0DF00F798D5 /* EspKeyValueControllerTests.m */; };
-		06A352B917665486000B66DE /* EspGrid-helpful-code in Resources */ = {isa = PBXBuildFile; fileRef = 06A352B817665486000B66DE /* EspGrid-helpful-code */; };
 		06AFD1A618970E0A00A3958B /* EspMovingAverage.m in Sources */ = {isa = PBXBuildFile; fileRef = 06AFD1A518970E0A00A3958B /* EspMovingAverage.m */; };
 		06B190EB1892CA2E00CB7389 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06B190E21892C95C00CB7389 /* AudioUnit.framework */; };
 		06B190EC1892CA3E00CB7389 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0699369E15C90761002F64AF /* Cocoa.framework */; };
@@ -208,7 +207,6 @@
 		06A17BE916A39CE900F798D5 /* EspClockTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspClockTests.m; sourceTree = "<group>"; };
 		06A17BEB16A3C0DE00F798D5 /* EspKeyValueControllerTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspKeyValueControllerTests.h; sourceTree = "<group>"; };
 		06A17BEC16A3C0DF00F798D5 /* EspKeyValueControllerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspKeyValueControllerTests.m; sourceTree = "<group>"; };
-		06A352B817665486000B66DE /* EspGrid-helpful-code */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "EspGrid-helpful-code"; sourceTree = "<group>"; };
 		06AFD1A418970E0A00A3958B /* EspMovingAverage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspMovingAverage.h; sourceTree = "<group>"; };
 		06AFD1A518970E0A00A3958B /* EspMovingAverage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspMovingAverage.m; sourceTree = "<group>"; };
 		06B190E21892C95C00CB7389 /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = System/Library/Frameworks/AudioUnit.framework; sourceTree = SDKROOT; };
@@ -406,7 +404,6 @@
 			children = (
 				06ED1A48172AAAE3003401A6 /* COPYING.txt */,
 				0676AF751637A2610082B57D /* Help */,
-				06A352B817665486000B66DE /* EspGrid-helpful-code */,
 				06B51764163080E10036A44B /* Default-568h@2x.png */,
 				060A25EC15C90E2E00BC5E8D /* EspGrid */,
 				060A260715C90E2E00BC5E8D /* EspGridOSX */,
@@ -623,7 +620,6 @@
 				06E932621642DCE800D3D4DA /* Esp Grid Icon V2.icns in Resources */,
 				0698E8A71722AF1700FCE1AA /* EspDetailedPeerList.xib in Resources */,
 				06ED1A49172AAAE3003401A6 /* COPYING.txt in Resources */,
-				06A352B917665486000B66DE /* EspGrid-helpful-code in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
