@@ -33,11 +33,14 @@
     self = [super init];
     udp = [[EspSocket alloc] initWithPort:5510 andDelegate:self];
     handlers = [[NSMutableArray alloc] init];
+    subscribers = [[EspOscSubscribers alloc] init];
+    [subscribers setSocket:udp];
     return self;
 }
 
 -(void) dealloc
 {
+    [subscribers release];
     [udp release];
     [handlers release];
     [super dealloc];
@@ -285,19 +288,12 @@
 
 -(void) transmitData: (NSData*)data
 {
-    NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
-    if([defs boolForKey:@"connectToMax"]) [udp sendData:data toHost:@"127.0.0.1" port:5511];
-    if([defs boolForKey:@"connectToChuck"]) [udp sendData:data toHost:@"127.0.0.1" port:5512];
-    if([defs boolForKey:@"connectToPD"]) [udp sendData:data toHost:@"127.0.0.1" port:5513];
-    if([defs boolForKey:@"connectToSupercollider"])[udp sendData:data toHost:@"127.0.0.1" port:57120];
-    if([[defs stringForKey:@"custom1address"] length]>0 && [defs integerForKey:@"custom1port"] > 0)
-        [udp sendData:data toHost:[defs stringForKey:@"custom1address"] port:[[defs valueForKey:@"custom1port"] intValue]];
-    if([[defs stringForKey:@"custom2address"] length]>0 && [defs integerForKey:@"custom2port"] > 0)
-        [udp sendData:data toHost:[defs stringForKey:@"custom2address"] port:[[defs valueForKey:@"custom2port"] intValue]];
-    if([[defs stringForKey:@"custom3address"] length]>0 && [defs integerForKey:@"custom3port"] > 0)
-        [udp sendData:data toHost:[defs stringForKey:@"custom3address"] port:[[defs valueForKey:@"custom3port"] intValue]];
-    if([[defs stringForKey:@"custom4address"] length]>0 && [defs integerForKey:@"custom4port"] > 0)
-        [udp sendData:data toHost:[defs stringForKey:@"custom4address"] port:[[defs valueForKey:@"custom4port"] intValue]];
+    [subscribers sendData:data];
+}
+
+-(BOOL) handleOsc:(NSString*)address withParameters:(NSArray*)d fromHost:(NSString*)h port:(int)p
+{
+    return [subscribers handleOsc:address withParameters:d fromHost:h port:p];
 }
 
 -(void) logReceivedMessage:(NSString*)address fromHost:(NSString*)h port:(int)p
@@ -305,6 +301,5 @@
     NSString* s = [NSString stringWithFormat:@"received %@ from %@:%d",address,h,p];
     postLog(s,nil);
 }
-
 
 @end

@@ -103,6 +103,9 @@
     
     EspOsc* osc = [EspOsc osc];
     
+    [osc addHandler:osc forAddress:@"/esp/subscribe"];
+    [osc addHandler:osc forAddress:@"/esp/unsubscribe"];
+    
     [osc addHandler:[EspBeat beat] forAddress:@"/esp/beat/on"];
     [osc addHandler:[EspBeat beat] forAddress:@"/esp/beat/tempo"];
     [osc addHandler:[EspBeat beat] forAddress:@"/esp/beat/cycleLength"];

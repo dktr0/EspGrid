@@ -64,6 +64,10 @@
 		064EF38B15CB8E0C00005A16 /* EspChat.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25F015C90E2E00BC5E8D /* EspChat.m */; };
 		064EF38C15CB8E1200005A16 /* EspBeat.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25EE15C90E2E00BC5E8D /* EspBeat.m */; };
 		064EF38D15CB8E2700005A16 /* EspGrid.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25F615C90E2E00BC5E8D /* EspGrid.m */; };
+		06534E861BDBD8620051E388 /* EspOscSubscribers.m in Sources */ = {isa = PBXBuildFile; fileRef = 06534E851BDBD8620051E388 /* EspOscSubscribers.m */; };
+		06534E871BDBD8620051E388 /* EspOscSubscribers.m in Sources */ = {isa = PBXBuildFile; fileRef = 06534E851BDBD8620051E388 /* EspOscSubscribers.m */; };
+		06534E881BDBD8620051E388 /* EspOscSubscribers.m in Sources */ = {isa = PBXBuildFile; fileRef = 06534E851BDBD8620051E388 /* EspOscSubscribers.m */; };
+		06534E8B1BDC0DA30051E388 /* EspOscSubscribersTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06534E8A1BDC0DA30051E388 /* EspOscSubscribersTest.m */; };
 		0676AF761637A2610082B57D /* Help in Resources */ = {isa = PBXBuildFile; fileRef = 0676AF751637A2610082B57D /* Help */; };
 		068B283F182C6E2500EA2990 /* EspSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283A182C6E2500EA2990 /* EspSocket.m */; };
 		068B2840182C6E2500EA2990 /* EspSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283A182C6E2500EA2990 /* EspSocket.m */; };
@@ -185,6 +189,11 @@
 		064EF37615CB889800005A16 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/EspFirstViewController_iPad.xib; sourceTree = "<group>"; };
 		064EF37915CB889800005A16 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/EspSecondViewController_iPhone.xib; sourceTree = "<group>"; };
 		064EF37C15CB889800005A16 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/EspSecondViewController_iPad.xib; sourceTree = "<group>"; };
+		06534E841BDBD8620051E388 /* EspOscSubscribers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspOscSubscribers.h; sourceTree = "<group>"; };
+		06534E851BDBD8620051E388 /* EspOscSubscribers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspOscSubscribers.m; sourceTree = "<group>"; };
+		06534E891BDBD9510051E388 /* EspHandleOsc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EspHandleOsc.h; sourceTree = "<group>"; };
+		06534E8A1BDC0DA30051E388 /* EspOscSubscribersTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspOscSubscribersTest.m; sourceTree = "<group>"; };
+		06534E8C1BDC0DEA0051E388 /* EspOscSubscribersTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EspOscSubscribersTest.h; sourceTree = "<group>"; };
 		065F7040162B16B6008D0CB7 /* EspGridDefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspGridDefs.h; sourceTree = "<group>"; };
 		0676AF751637A2610082B57D /* Help */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Help; path = EspGridOSX/Help; sourceTree = "<group>"; };
 		068B2839182C6E2500EA2990 /* EspSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspSocket.h; sourceTree = "<group>"; };
@@ -297,6 +306,9 @@
 				0603F51017DD562D009943C3 /* EspBridge.m */,
 				068B283E182C6E2500EA2990 /* EspNetwork.h */,
 				068B283B182C6E2500EA2990 /* EspNetwork.m */,
+				06534E891BDBD9510051E388 /* EspHandleOsc.h */,
+				06534E841BDBD8620051E388 /* EspOscSubscribers.h */,
+				06534E851BDBD8620051E388 /* EspOscSubscribers.m */,
 				068B283C182C6E2500EA2990 /* EspOsc.h */,
 				068B283D182C6E2500EA2990 /* EspOsc.m */,
 				06AFD1A418970E0A00A3958B /* EspMovingAverage.h */,
@@ -462,6 +474,8 @@
 				06A17BE916A39CE900F798D5 /* EspClockTests.m */,
 				06A17BEB16A3C0DE00F798D5 /* EspKeyValueControllerTests.h */,
 				06A17BEC16A3C0DF00F798D5 /* EspKeyValueControllerTests.m */,
+				06534E8C1BDC0DEA0051E388 /* EspOscSubscribersTest.h */,
+				06534E8A1BDC0DA30051E388 /* EspOscSubscribersTest.m */,
 				0649463616A1C26600FCC2F2 /* EspChatTests.h */,
 				0649463716A1C26600FCC2F2 /* EspChatTests.m */,
 				069BA8D41684F24500377CED /* MockEspInternalProtocol.h */,
@@ -568,6 +582,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = Esp;
+				LastTestingUpgradeCheck = 0640;
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "";
 			};
@@ -671,6 +686,7 @@
 				0640A21719FD392900A41A1E /* EspPeer.m in Sources */,
 				063BE05618259F1000B31C18 /* main.m in Sources */,
 				0640A21819FD393900A41A1E /* EspMovingAverage.m in Sources */,
+				06534E881BDBD8620051E388 /* EspOscSubscribers.m in Sources */,
 				060ABC4D17E0C15A0031AE8F /* EspBridge.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -702,6 +718,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				060A261515C90E2E00BC5E8D /* EspBeat.m in Sources */,
+				06534E861BDBD8620051E388 /* EspOscSubscribers.m in Sources */,
 				060A261615C90E2E00BC5E8D /* EspChat.m in Sources */,
 				060A261715C90E2E00BC5E8D /* EspClock.m in Sources */,
 				068B283F182C6E2500EA2990 /* EspSocket.m in Sources */,
@@ -734,8 +751,10 @@
 				068B2840182C6E2500EA2990 /* EspSocket.m in Sources */,
 				06C3437E163F724C00F72BE8 /* EspQueue.m in Sources */,
 				06C3437F163F724C00F72BE8 /* EspBeat.m in Sources */,
+				06534E8B1BDC0DA30051E388 /* EspOscSubscribersTest.m in Sources */,
 				06C34380163F724C00F72BE8 /* EspChat.m in Sources */,
 				06C34381163F724C00F72BE8 /* EspClock.m in Sources */,
+				06534E871BDBD8620051E388 /* EspOscSubscribers.m in Sources */,
 				06C34382163F724C00F72BE8 /* EspCodeShare.m in Sources */,
 				06C34383163F724C00F72BE8 /* EspKeyValueController.m in Sources */,
 				068B2843182C6E2500EA2990 /* EspNetwork.m in Sources */,

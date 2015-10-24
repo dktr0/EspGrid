@@ -18,15 +18,14 @@
 
 #import <Foundation/Foundation.h>
 #import "EspSocket.h"
+#import "EspHandleOsc.h"
+#import "EspOscSubscribers.h"
 
-@protocol EspHandleOsc <NSObject>
--(BOOL) handleOsc:(NSString*)address withParameters:(NSArray*)d fromHost:(NSString*)h port:(int)p;
-@end
- 
-@interface EspOsc : NSObject <EspSocketDelegate>
+@interface EspOsc : NSObject <EspSocketDelegate, EspHandleOsc>
 {
     EspSocket* udp;
     NSMutableArray* handlers;
+    EspOscSubscribers* subscribers;
 }
 
 +(EspOsc*) osc;
