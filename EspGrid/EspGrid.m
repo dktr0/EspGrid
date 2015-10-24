@@ -30,14 +30,6 @@
     [defs setObject:@"unknown" forKey:@"name"];
     [defs setObject:@"unknown" forKey:@"machine"];
     [defs setObject:@"255.255.255.255" forKey:@"broadcast"];
-    [defs setObject:[NSNumber numberWithBool:YES] forKey:@"connectToMax"];
-    [defs setObject:[NSNumber numberWithBool:YES] forKey:@"connectToChuck"];
-    [defs setObject:[NSNumber numberWithBool:YES] forKey:@"connectToPD"];
-    [defs setObject:[NSNumber numberWithBool:YES] forKey:@"connectToSupercollider"];
-    [defs setObject:[NSNumber numberWithBool:NO] forKey:@"connectToCustom1"];
-    [defs setObject:[NSNumber numberWithBool:NO] forKey:@"connectToCustom2"];
-    [defs setObject:[NSNumber numberWithBool:NO] forKey:@"connectToCustom3"];
-    [defs setObject:[NSNumber numberWithBool:NO] forKey:@"connectToCustom4"];
     [defs setObject:[NSNumber numberWithInt:5] forKey:@"clockMode"]; // average reference beacon difference
     [[NSUserDefaults standardUserDefaults] registerDefaults:defs];
 }
@@ -51,11 +43,6 @@
           [defs objectForKey:@"machine"],
           [defs objectForKey:@"broadcast"],
           [defs objectForKey:@"clockMode"]);
-    if([[defs objectForKey:@"connectToMax"] boolValue]) NSLog(@" connecting/sending to Max on port 5511");
-    if([[defs objectForKey:@"connectToChuck"] boolValue]) NSLog(@" connecting/sending to ChucK on port 5512");
-    if([[defs objectForKey:@"connectToPD"] boolValue]) NSLog(@" connecting/sending to PD on port 5513");
-    if([[defs objectForKey:@"connectToSupercollider"] boolValue]) NSLog(@" connecting/sending to SuperCollider on port 57120");
-    // *** need to add custom connections here...
 }
 
 +(EspGrid*) grid
@@ -127,19 +114,6 @@
     [osc addHandler:self forAddress:@"/esp/name"];
     [osc addHandler:self forAddress:@"/esp/machine"];
     [osc addHandler:self forAddress:@"/esp/broadcast"];
-    [osc addHandler:self forAddress:@"/esp/clockMode"];
-    [osc addHandler:self forAddress:@"/esp/connectToMax"];
-    [osc addHandler:self forAddress:@"/esp/connectToChuck"];
-    [osc addHandler:self forAddress:@"/esp/connectToPD"];
-    [osc addHandler:self forAddress:@"/esp/connectToSupercollider"];
-    [osc addHandler:self forAddress:@"/esp/customAddress1"];
-    [osc addHandler:self forAddress:@"/esp/customPort1"];
-    [osc addHandler:self forAddress:@"/esp/customAddress2"];
-    [osc addHandler:self forAddress:@"/esp/customPort2"];
-    [osc addHandler:self forAddress:@"/esp/customAddress3"];
-    [osc addHandler:self forAddress:@"/esp/customPort3"];
-    [osc addHandler:self forAddress:@"/esp/customAddress4"];
-    [osc addHandler:self forAddress:@"/esp/customPort4"];
     [osc addHandler:self forAddress:@"/esp/clockMode"];
     [osc addHandler:self forAddress:@"/esp/tempo/q"]; // response will be /esp/tempo/r
     [osc addHandler:self forAddress:@"/esp/clock/q"]; // response will be /esp/clock/r
@@ -236,19 +210,6 @@
     if([address isEqual:@"/esp/name"]) return [self setDefault:@"name" withParameters:d];
     else if([address isEqual:@"/esp/machine"]) return [self setDefault:@"machine" withParameters:d];
     else if([address isEqual:@"/esp/broadcast"]) return [self setDefault:@"broadcast" withParameters:d];
-    else if([address isEqual:@"/esp/clockMode"]) return [self setDefault:@"clockMode" withParameters:d];
-    else if([address isEqual:@"/esp/connectToMax"]) return [self setDefault:@"connectToMax" withParameters:d];
-    else if([address isEqual:@"/esp/connectToChuck"]) return [self setDefault:@"connectToChuck" withParameters:d];
-    else if([address isEqual:@"/esp/connectToPD"]) return [self setDefault:@"connectToPD" withParameters:d];
-    else if([address isEqual:@"/esp/connectToSupercollider"]) return [self setDefault:@"connectToSupercollider" withParameters:d];
-    else if([address isEqual:@"/esp/customAddress1"]) return [self setDefault:@"custom1address" withParameters:d];
-    else if([address isEqual:@"/esp/customPort1"]) return [self setDefault:@"custom1port" withParameters:d];
-    else if([address isEqual:@"/esp/customAddress2"]) return [self setDefault:@"custom2address" withParameters:d];
-    else if([address isEqual:@"/esp/customPort2"]) return [self setDefault:@"custom2port" withParameters:d];
-    else if([address isEqual:@"/esp/customAddress3"]) return [self setDefault:@"custom3address" withParameters:d];
-    else if([address isEqual:@"/esp/customPort3"]) return [self setDefault:@"custom3port" withParameters:d];
-    else if([address isEqual:@"/esp/customAddress4"]) return [self setDefault:@"custom4address" withParameters:d];
-    else if([address isEqual:@"/esp/customPort4"]) return [self setDefault:@"custom4port" withParameters:d];
     else if([address isEqual:@"/esp/clockMode"]) return [self setDefault:@"clockMode" withParameters:d];
     
     // *** this was cut-and-paste from former EspBridge, needs to be reworked
