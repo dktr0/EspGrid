@@ -38,7 +38,7 @@
 -(void) logUserDefaults
 {
     NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
-    NSLog(@" name=%@ machine=%@ broadcast=%@ clockMode=%@",
+    NSLog(@" person=%@ machine=%@ broadcast=%@ clockMode=%@",
           [defs objectForKey:@"name"],
           [defs objectForKey:@"machine"],
           [defs objectForKey:@"broadcast"],
