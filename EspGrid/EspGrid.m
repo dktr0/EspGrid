@@ -58,6 +58,10 @@
 
 -(id) init
 {
+	LARGE_INTEGER frequency;
+	QueryPerformanceFrequency(&frequency);
+	NSLog(@"%lld",frequency.QuadPart);
+
     self = [super init];
     highVolumePosts = NO;
     versionString = [NSString stringWithFormat:@"version %d.%2d.%d",

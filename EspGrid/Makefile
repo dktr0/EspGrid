@@ -6,7 +6,7 @@ OBJECTS = EspBeat.o EspBridge.o EspChat.o EspChannel.o EspClock.o EspCodeShareIt
 espgridd: $(OBJECTS)
 	$(COMPILE) $(OBJECTS) $(LDFLAGS) -o $@
 
-%.o: %.m
+%.o: %.m EspGridDefs.h
 	$(COMPILE) $(FLAGS) $< -o $@
 
 all: espgridd

@@ -88,7 +88,9 @@ inline static EspTimeType monotonicTime(void) {
 	QueryPerformanceFrequency(&frequency);
 	// note: apparently function above is slow so we should probably do this differently
 	QueryPerformanceCounter(&t);
-	return t.QuadPart * 1000000000L / frequency.QuadPart;
+	EspTimeType x = t.QuadPart / frequency.QuadPart * 1000000000L; // whole seconds in nanoseconds
+	EspTimeType y = t.QuadPart % frequency.QuadPart * 1000000000L / frequency.QuadPart; // remainder
+	return x+y;
 #else	
 	// Linux (GNUSTEP)
     struct timespec t;
