@@ -38,6 +38,8 @@
 -(void) transmit:(NSArray*)msg toHost:(NSString*)h port:(int)p log:(BOOL)log; // transmit OSC a specific host and port
 -(void) transmitData:(NSData*)d;
 
+-(void) response:(NSString*)address value:(NSObject*)v toQuery:(NSArray*)d fromHost:(NSString*)h port:(int)p; // helper for responding to standard ../q messages with ../r messages
+
 // generates a standard log message for a received message (use in handleOsc of handler classes)
 -(void) logReceivedMessage:(NSString*)address fromHost:(NSString*)h port:(int)p;
 

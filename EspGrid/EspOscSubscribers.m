@@ -119,12 +119,10 @@
 
 -(void) sendData:(NSData *)data
 {
-    NSLog(@"EspOscSubscribers sendData");
     for(NSArray *x in subscribers)
     {
         NSString* host = [x objectAtIndex:0];
         int port = [[x objectAtIndex:1] intValue];
-        NSLog(@" sending to %@:%d",host,port);
         NSAssert(socket!=nil,@"socket is nil in EspOscSubscribers sendData");
         [socket sendData:data toHost:host port:port];
     }

@@ -93,11 +93,25 @@
     [osc addHandler:osc forAddress:@"/esp/subscribe"];
     [osc addHandler:osc forAddress:@"/esp/unsubscribe"];
     
+    [osc addHandler:self forAddress:@"/esp/person/s"]; // set name of person
+    [osc addHandler:self forAddress:@"/esp/person/q"]; // query name, response: /esp/person/r
+    [osc addHandler:self forAddress:@"/esp/machine/s"]; // etc...
+    [osc addHandler:self forAddress:@"/esp/machine/q"];
+    [osc addHandler:self forAddress:@"/esp/broadcast/s"];
+    [osc addHandler:self forAddress:@"/esp/broadcast/q"];
+    [osc addHandler:self forAddress:@"/esp/clockMode/s"];
+    [osc addHandler:self forAddress:@"/esp/clockMode/q"];
+    [osc addHandler:self forAddress:@"/esp/version/q"];
+    
+    [osc addHandler:self forAddress:@"/esp/clock/q"];
+    [osc addHandler:self forAddress:@"/esp/tempo/q"];
     [osc addHandler:[EspBeat beat] forAddress:@"/esp/beat/on"];
     [osc addHandler:[EspBeat beat] forAddress:@"/esp/beat/tempo"];
     [osc addHandler:[EspBeat beat] forAddress:@"/esp/beat/cycleLength"];
     [osc addHandler:[EspChat chat] forAddress:@"/esp/chat/send"];
+    
     [osc addHandler:[EspCodeShare codeShare] forAddress:@"/esp/codeShare/post"];
+    
     [osc addHandler:[EspMessage message] forAddress:@"/esp/msg/now"];
     [osc addHandler:[EspMessage message] forAddress:@"/esp/msg/soon"];
     [osc addHandler:[EspMessage message] forAddress:@"/esp/msg/future"];
@@ -110,13 +124,6 @@
     [osc addHandler:self forAddress:@"/esp/bridge/localPort"];
     [osc addHandler:self forAddress:@"/esp/bridge/remoteAddress"];
     [osc addHandler:self forAddress:@"/esp/bridge/remotePort"];
-    
-    [osc addHandler:self forAddress:@"/esp/name"];
-    [osc addHandler:self forAddress:@"/esp/machine"];
-    [osc addHandler:self forAddress:@"/esp/broadcast"];
-    [osc addHandler:self forAddress:@"/esp/clockMode"];
-    [osc addHandler:self forAddress:@"/esp/tempo/q"]; // response will be /esp/tempo/r
-    [osc addHandler:self forAddress:@"/esp/clock/q"]; // response will be /esp/clock/r
     
     return self;
 }
@@ -193,7 +200,7 @@
         return YES;
     }
     
-    if([address isEqual:@"/esp/clock/q"])
+    else if([address isEqual:@"/esp/clock/q"])
     {
         EspTimeType time = monotonicTime();
         int seconds = (int)(time / 1000000000);
@@ -207,13 +214,65 @@
         return YES;
     }
     
-    if([address isEqual:@"/esp/name"]) return [self setDefault:@"name" withParameters:d];
-    else if([address isEqual:@"/esp/machine"]) return [self setDefault:@"machine" withParameters:d];
-    else if([address isEqual:@"/esp/broadcast"]) return [self setDefault:@"broadcast" withParameters:d];
-    else if([address isEqual:@"/esp/clockMode"]) return [self setDefault:@"clockMode" withParameters:d];
+    else if([address isEqual:@"/esp/person/s"])
+        return [self setDefault:@"name" withParameters:d];
+    else if([address isEqual:@"/esp/person/q"])
+    {
+        [osc response:@"/esp/person/r"
+                value:[[NSUserDefaults standardUserDefaults] stringForKey:@"name"]
+              toQuery:d
+             fromHost:h
+                 port:p];
+    }
+    
+    else if([address isEqual:@"/esp/machine/s"])
+        return [self setDefault:@"machine" withParameters:d];
+    else if([address isEqual:@"/esp/machine/q"])
+    {
+        [osc response:@"/esp/machine/r"
+                value:[[NSUserDefaults standardUserDefaults] stringForKey:@"machine"]
+              toQuery:d
+             fromHost:h
+                 port:p];
+    }
+    
+    else if([address isEqual:@"/esp/broadcast/s"])
+        return [self setDefault:@"broadcast" withParameters:d];
+    else if([address isEqual:@"/esp/broadcast/q"])
+    {
+        [osc response:@"/esp/broadcast/r"
+                value:[[NSUserDefaults standardUserDefaults] stringForKey:@"broadcast"]
+              toQuery:d
+             fromHost:h
+                 port:p];
+    }
+    
+    else if([address isEqual:@"/esp/clockMode/s"])
+        return [self setDefault:@"clockMode" withParameters:d];
+    else if([address isEqual:@"/esp/clockMode/q"])
+    {
+        [osc response:@"/esp/clockMode/r"
+                value:[[NSUserDefaults standardUserDefaults] objectForKey:@"clockMode"]
+              toQuery:d
+             fromHost:h
+                 port:p];
+    }
+    
+    else if([address isEqual:@"/esp/version/q"])
+    {
+        NSString* version = [NSString stringWithFormat:@"%d.%d.%d",
+                             ESPGRID_MAJORVERSION,ESPGRID_MINORVERSION,ESPGRID_SUBVERSION,nil];
+        [osc response:@"/esp/version/r"
+                value:version
+              toQuery:d
+             fromHost:h
+                 port:p];
+    }
+        
+    
     
     // *** this was cut-and-paste from former EspBridge, needs to be reworked
-    if([address isEqual:@"/esp/bridge/localGroup"])
+    else if([address isEqual:@"/esp/bridge/localGroup"])
     {
         if([d count] != 1)
         {
@@ -223,7 +282,7 @@
         [self setLocalGroup:[d objectAtIndex:0]];
         return YES;
     }
-    if([address isEqual:@"/esp/bridge/localAddress"])
+    else if([address isEqual:@"/esp/bridge/localAddress"])
     {
         if([d count] != 1)
         {
@@ -233,7 +292,7 @@
         [self setLocalAddress:[d objectAtIndex:0]];
         return YES;
     }
-    if([address isEqual:@"/esp/bridge/localPort"])
+    else if([address isEqual:@"/esp/bridge/localPort"])
     {
         if([d count] != 1)
         {
@@ -243,7 +302,7 @@
         [self changeLocalPort:[[d objectAtIndex:0] intValue]];
         return YES;
     }
-    if([address isEqual:@"/esp/bridge/remoteAddress"])
+    else if([address isEqual:@"/esp/bridge/remoteAddress"])
     {
         if([d count] != 1)
         {
@@ -253,7 +312,7 @@
         [self setRemoteAddress:[d objectAtIndex:0]];
         return YES;
     }
-    if([address isEqual:@"/esp/bridge/remotePort"])
+    else if([address isEqual:@"/esp/bridge/remotePort"])
     {
         if([d count] != 1)
         {

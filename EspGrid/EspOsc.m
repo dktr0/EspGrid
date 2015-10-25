@@ -296,6 +296,16 @@
     return [subscribers handleOsc:address withParameters:d fromHost:h port:p];
 }
 
+
+-(void) response:(NSString*)address value:(NSObject*)v toQuery:(NSArray*)d fromHost:(NSString*)h port:(int)p
+{
+    NSArray* msg = [NSArray arrayWithObjects:address,v,nil];
+    if([d count] == 0) [self transmit:msg toHost:h port:p log:NO]; // respond to query source
+    else if([d count] == 1) [self transmit:msg toHost:h port:[[d objectAtIndex:0] intValue] log:NO]; // explicit port, deduced host
+    else if([d count] == 2) [self transmit:msg toHost:[d objectAtIndex:1] port:[[d objectAtIndex:0] intValue] log:NO]; // explicit port+host
+    else postProblem([NSString stringWithFormat:@"received %@ with too many params",address,nil], self);
+}
+
 -(void) logReceivedMessage:(NSString*)address fromHost:(NSString*)h port:(int)p
 {
     NSString* s = [NSString stringWithFormat:@"received %@ from %@:%d",address,h,p];
