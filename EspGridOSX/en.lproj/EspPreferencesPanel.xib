@@ -39,7 +39,7 @@
                             <color key="backgroundColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
                         </textFieldCell>
                         <connections>
-                            <binding destination="118" name="value" keyPath="values.name" id="422"/>
+                            <binding destination="118" name="value" keyPath="values.person" id="qCw-sf-gxh"/>
                         </connections>
                     </textField>
                     <textField verticalHuggingPriority="750" id="213">
