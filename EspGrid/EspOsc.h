@@ -26,7 +26,9 @@
     EspSocket* udp;
     NSMutableArray* handlers;
     EspOscSubscribers* subscribers;
+    BOOL echoToLog;
 }
+@property (nonatomic) BOOL echoToLog;
 
 +(EspOsc*) osc;
 

@@ -20,6 +20,7 @@
 #import "EspGridDefs.h"
 
 @implementation EspOsc
+@synthesize echoToLog;
 
 +(EspOsc*) osc
 {
@@ -35,6 +36,7 @@
     handlers = [[NSMutableArray alloc] init];
     subscribers = [[EspOscSubscribers alloc] init];
     [subscribers setSocket:udp];
+    echoToLog = FALSE;
     return self;
 }
 
@@ -152,7 +154,11 @@
             return;
         }
         
-    
+        if(echoToLog)
+        {
+            [self logReceivedMessage:address fromHost:h port:p];
+        }
+        
         // call any registered handler, passing the address and params
         int c = 0;
         for(NSArray* x in handlers)
@@ -261,6 +267,12 @@
     {
         NSMutableData* d = [EspOsc createOscMessage:msg log:log];
         if(d != nil) [udp sendData:d toHost:h port:p];
+        if(echoToLog)
+        {
+            NSString* address = [msg objectAtIndex:0];
+            NSString* s = [NSString stringWithFormat:@"sending %@ to %@:%d",address,h,p,nil];
+            postLog(s,nil);
+        }
     }
     @catch (NSException* exception)
     {
@@ -277,6 +289,11 @@
     {
         NSMutableData* d = [EspOsc createOscMessage:msg log:log];
         if(d != nil) [self transmitData:d];
+        {
+            NSString* address = [msg objectAtIndex:0];
+            NSString* s = [NSString stringWithFormat:@"sent %@ to all subscribers",address,nil];
+            postLog(s,nil);
+        }
     }
     @catch (NSException *exception) {
         NSString* msg = [NSString stringWithFormat:@"EXCEPTION in transmit:log %@: %@",[exception name],[exception reason]];
