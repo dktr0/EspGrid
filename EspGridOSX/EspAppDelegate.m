@@ -67,7 +67,6 @@
     if([keyPath isEqualToString:@"beat.on"]) [beatOn setState:[nv boolValue]];
     else if([keyPath isEqualToString:@"beat.tempo"])[beatTempo setStringValue:nv];
     else if([keyPath isEqualToString:@"beat.cycleLength"]) [beatCycleLength setStringValue:nv];      
-    else if([keyPath isEqualToString:@"clockMode"]) [[esp clock] changeSyncMode:[[[NSUserDefaults standardUserDefaults] valueForKey:@"clockMode"] intValue]];
     else if([keyPath isEqualToString:@"bridge.localGroup"]) [espBridgeLocalGroup setStringValue:nv];
     else if([keyPath isEqualToString:@"bridge.remoteAddress"]) [espBridgeRemoteAddress setStringValue:nv];
     else if([keyPath isEqualToString:@"bridge.remoteGroup"]) [espBridgeRemoteGroup setStringValue:nv];
@@ -89,10 +88,6 @@
     [esp addObserver:self forKeyPath:@"bridge.remoteClaimedAddress" options:NSKeyValueObservingOptionNew context:nil];
     [esp addObserver:self forKeyPath:@"bridge.remoteClaimedPort" options:NSKeyValueObservingOptionNew context:nil];
     [esp addObserver:self forKeyPath:@"bridge.remotePackets" options:NSKeyValueObservingOptionNew context:nil];
-    
-    NSUserDefaults* def = [NSUserDefaults standardUserDefaults];
-    [[esp clock] changeSyncMode:[[def valueForKey:@"clockMode"] intValue]];
-    [def addObserver:self forKeyPath:@"clockMode" options:NSKeyValueObservingOptionNew context:nil];
     
     [esp setValue:[esp valueForKeyPath:@"beat.on"] forKeyPath:@"beat.on"];
     [esp setValue:[esp valueForKeyPath:@"beat.tempo"] forKeyPath:@"beat.tempo"];

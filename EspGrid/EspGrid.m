@@ -125,6 +125,10 @@
     [osc addHandler:self forAddress:@"/esp/bridge/remoteAddress"];
     [osc addHandler:self forAddress:@"/esp/bridge/remotePort"];
     
+    NSUserDefaults* def = [NSUserDefaults standardUserDefaults];
+    [[self clock] changeSyncMode:[[def valueForKey:@"clockMode"] intValue]];
+    [def addObserver:self forKeyPath:@"clockMode" options:NSKeyValueObservingOptionNew context:nil];
+    [def addObserver:self forKeyPath:@"broadcast" options:NSKeyValueObservingOptionNew context:nil];
     return self;
 }
 
@@ -325,6 +329,14 @@
     return NO;
 
 }
+
+-(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
+{
+    if([keyPath isEqualToString:@"broadcast"]) [[EspNetwork network] broadcastAddressChanged];
+    else if([keyPath isEqualToString:@"clockMode"]) [[self clock] changeSyncMode:[[[NSUserDefaults standardUserDefaults] valueForKey:@"clockMode"] intValue]];
+    else NSLog(@"PROBLEM: received KVO notification for unexpected keyPath %@",keyPath);
+}
+
 
 
 +(void) postChat:(NSString*)m

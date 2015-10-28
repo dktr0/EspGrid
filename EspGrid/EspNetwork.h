@@ -47,5 +47,7 @@
 -(void) handleOpcode:(NSDictionary*)d;
 -(BOOL) isDuplicateMessage:(NSDictionary*)msg;
 -(void) setHandler:(id)h forOpcode:(int)o;
+-(void) broadcastAddressChanged; // signal that the broadcast address may have been changed
+
 
 @end

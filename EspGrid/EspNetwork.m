@@ -68,6 +68,11 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
     [super dealloc];
 }
 
+-(void) broadcastAddressChanged
+{
+    NSLog(@"method broadcastAddressChanged");
+    [broadcast setHost:[[NSUserDefaults standardUserDefaults] objectForKey:@"broadcast"]];
+}
 
 -(void) sendOpcode:(int)opcode withDictionary:(NSDictionary*)d
 {
