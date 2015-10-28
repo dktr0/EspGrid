@@ -25,14 +25,10 @@ int main(int argc, const char * argv[])
     if(argc == 2 && (!strcmp(argv[1],"-h") || !strcmp(argv[1],"--help")))
     {
         NSLog(@" --help (gets help, run without this in order to launch grid)");
-        NSLog(@" --name [name] (sets performer name on grid, only needed when changing)");
-        NSLog(@" --machine [name] (sets machine name on grid, only needed when changing)");
-        NSLog(@" --broadcast [address] [(sets LAN broadcast address, only needed when changing)");
-        NSLog(@" --connectToMax [1 or 0]");
-        NSLog(@" --connectToChuck [1 or 0]");
-        NSLog(@" --connectToPD [1 or 0]");
-        NSLog(@" --connectToSupercollider [1 or 0]");
-        NSLog(@" --clockMode [value] (sets clock mode, possible values: 0 1 2)");
+        NSLog(@" -name [name] (sets performer name on grid, only needed when changing)");
+        NSLog(@" -machine [name] (sets machine name on grid, only needed when changing)");
+        NSLog(@" -broadcast [address] [(sets LAN broadcast address, only needed when changing)");
+        NSLog(@" -clockMode [value] (sets clock mode, possible values: 0 1 2)");
     }
     else
     {

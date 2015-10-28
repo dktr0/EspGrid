@@ -125,10 +125,19 @@
     [osc addHandler:self forAddress:@"/esp/bridge/remoteAddress"];
     [osc addHandler:self forAddress:@"/esp/bridge/remotePort"];
     
-    NSUserDefaults* def = [NSUserDefaults standardUserDefaults];
-    [[self clock] changeSyncMode:[[def valueForKey:@"clockMode"] intValue]];
-    [def addObserver:self forKeyPath:@"clockMode" options:NSKeyValueObservingOptionNew context:nil];
-    [def addObserver:self forKeyPath:@"broadcast" options:NSKeyValueObservingOptionNew context:nil];
+    NSUserDefaults* defs= [NSUserDefaults standardUserDefaults];
+    [[self clock] changeSyncMode:[[defs valueForKey:@"clockMode"] intValue]];
+    [defs addObserver:self forKeyPath:@"clockMode" options:NSKeyValueObservingOptionNew context:nil];
+    [defs addObserver:self forKeyPath:@"broadcast" options:NSKeyValueObservingOptionNew context:nil];
+	
+	// Note: on GNUSTEP/WIN32 preferences at the command-line don't seem to persist
+	// unless, as in the following, we set them to their current values
+	[defs setValue:[defs valueForKey:@"name"] forKey:@"name"];
+	[defs setValue:[defs valueForKey:@"machine"] forKey:@"machine"];
+	[defs setValue:[defs valueForKey:@"broadcast"] forKey:@"broadcast"];
+	[defs setValue:[defs valueForKey:@"clockMode"] forKey:@"clockMode"];
+	[defs synchronize];
+	
     return self;
 }
 
@@ -173,7 +182,11 @@
     id x = [d objectAtIndex:0];
     NSString* log = [NSString stringWithFormat:@"default %@ changed to %@",key,x];
     postLog(log, self);
-    [[NSUserDefaults standardUserDefaults] setObject:x forKey:key];
+	NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
+    [defs setObject:x forKey:key];
+	[defs synchronize];
+	log = [NSString stringWithFormat:@"verifying %@ is now %@",key,[[NSUserDefaults standardUserDefaults] objectForKey:key]];
+	postLog(log, self);
     return YES;
 }
 
@@ -332,6 +345,7 @@
 
 -(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
+    NSLog(@"observeValueForKeyPath"); // *** never called on WIN32 for some reason? ***
     if([keyPath isEqualToString:@"broadcast"]) [[EspNetwork network] broadcastAddressChanged];
     else if([keyPath isEqualToString:@"clockMode"]) [[self clock] changeSyncMode:[[[NSUserDefaults standardUserDefaults] valueForKey:@"clockMode"] intValue]];
     else NSLog(@"PROBLEM: received KVO notification for unexpected keyPath %@",keyPath);
