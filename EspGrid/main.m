@@ -38,9 +38,14 @@ int main(int argc, const char * argv[])
         BOOL echoToLog = FALSE;
         for(int x=1; x<argc; x++)
         {
-            if(strcmp(argv[x],"--logOSC")) echoToLog = TRUE;
+            if(!strcmp(argv[x],"--logOSC")) echoToLog = TRUE;
         }
-        [[NSRunLoop currentRunLoop] run];
+		if(echoToLog)
+		{
+			NSLog(@"echoing incoming/outgoing OSC messages to log");
+			[[EspOsc osc] setEchoToLog:TRUE];
+        }
+		[[NSRunLoop currentRunLoop] run];
         [grid release];
         [pool drain];
     }
