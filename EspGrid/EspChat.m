@@ -40,7 +40,7 @@
 {
     NSDictionary* d = [NSDictionary dictionaryWithObject:msg forKey:@"msg"];
     [network sendOpcode:ESP_OPCODE_CHATSEND withDictionary:d];
-    NSString* from = [[NSUserDefaults standardUserDefaults] stringForKey:@"name"];
+    NSString* from = [[NSUserDefaults standardUserDefaults] stringForKey:@"person"];
     NSArray* a = [NSArray arrayWithObjects:@"/esp/chat/receive",from,msg,nil];
     [osc transmit:a log:YES];
     NSString* m = [NSString stringWithFormat:@"%@: %@",from,msg];

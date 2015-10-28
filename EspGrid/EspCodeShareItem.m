@@ -53,7 +53,7 @@
     NSAssert(ts > 0.0, @"can't create local EspCodeShareItem with timeStamp < 0.0");
     [self setTimeStamp:ts];
     
-    [self setSourceName:[[NSUserDefaults standardUserDefaults] objectForKey:@"name"]];
+    [self setSourceName:[[NSUserDefaults standardUserDefaults] objectForKey:@"person"]];
     [self setSourceMachine:[[NSUserDefaults standardUserDefaults] objectForKey:@"machine"]];
     [self setComplete:YES];
 

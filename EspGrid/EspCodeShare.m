@@ -175,7 +175,7 @@
                        [d valueForKey:@"timeStamp"],[d valueForKey:@"sourceName"],[d valueForKey:@"sourceMachine"]];
         postLog(l,self);
         // we should change this so that any machine can respond to a request if it has the goods...
-        NSString* ourName = [[NSUserDefaults standardUserDefaults] stringForKey:@"name"];
+        NSString* ourName = [[NSUserDefaults standardUserDefaults] stringForKey:@"person"];
         if([[d valueForKey:@"sourceName"] isEqual:ourName]) 
         {
             NSString* ourMachine = [[NSUserDefaults standardUserDefaults] stringForKey:@"machine"];

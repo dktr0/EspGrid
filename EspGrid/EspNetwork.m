@@ -70,7 +70,7 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
 
 -(void) broadcastAddressChanged
 {
-    NSLog(@"method broadcastAddressChanged");
+    NSLog(@"broadcastAddressChanged");
     [broadcast setHost:[[NSUserDefaults standardUserDefaults] objectForKey:@"broadcast"]];
 }
 
@@ -83,7 +83,7 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
         // add some automatically generated entries to the dictionary before transmission
         NSMutableDictionary* e = [NSMutableDictionary dictionaryWithDictionary:d];
         [e setValue:[NSNumber numberWithInt:opcode] forKey:@"opcode"];
-        [e setValue:[[NSUserDefaults standardUserDefaults] objectForKey:@"name"] forKey:@"name"];
+        [e setValue:[[NSUserDefaults standardUserDefaults] objectForKey:@"person"] forKey:@"name"];
         [e setValue:[[NSUserDefaults standardUserDefaults] objectForKey:@"machine"] forKey:@"machine"];
         // [e setValue:[NSNumber numberWithLong:messageHash++] forKey:@"hash"];
         for(EspChannel* c in channels) [c sendDictionaryWithTimes:e]; // send on all channels
@@ -152,7 +152,7 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
     if(hash != nil) if([self isDuplicateMessage:d]) return; // don't process duplicate messages */
     // filter out messages from self (for example, receiving our own broadcast packets)
     // (would it be more efficient to do this in EspSocket based on host address, i.e. 127.0.0.1?
-    if([[d objectForKey:@"name"] isEqual:[[NSUserDefaults standardUserDefaults] stringForKey:@"name"]])
+    if([[d objectForKey:@"name"] isEqual:[[NSUserDefaults standardUserDefaults] stringForKey:@"person"]])
     {
         if([[d objectForKey:@"machine"] isEqual:[[NSUserDefaults standardUserDefaults] stringForKey:@"machine"]])
         {

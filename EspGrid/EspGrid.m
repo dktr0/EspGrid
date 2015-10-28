@@ -27,7 +27,7 @@
 +(void) initialize
 {
     NSMutableDictionary* defs = [NSMutableDictionary dictionary];
-    [defs setObject:@"unknown" forKey:@"name"];
+    [defs setObject:@"unknown" forKey:@"person"];
     [defs setObject:@"unknown" forKey:@"machine"];
     [defs setObject:@"255.255.255.255" forKey:@"broadcast"];
     [defs setObject:[NSNumber numberWithInt:5] forKey:@"clockMode"]; // average reference beacon difference
@@ -39,7 +39,7 @@
 {
     NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
     NSLog(@" person=%@ machine=%@ broadcast=%@ clockMode=%@",
-          [defs objectForKey:@"name"],
+          [defs objectForKey:@"person"],
           [defs objectForKey:@"machine"],
           [defs objectForKey:@"broadcast"],
           [defs objectForKey:@"clockMode"]);
@@ -132,7 +132,7 @@
 	
 	// Note: on GNUSTEP/WIN32 preferences at the command-line don't seem to persist
 	// unless, as in the following, we set them to their current values
-	[defs setValue:[defs valueForKey:@"name"] forKey:@"name"];
+	[defs setValue:[defs valueForKey:@"person"] forKey:@"person"];
 	[defs setValue:[defs valueForKey:@"machine"] forKey:@"machine"];
 	[defs setValue:[defs valueForKey:@"broadcast"] forKey:@"broadcast"];
 	[defs setValue:[defs valueForKey:@"clockMode"] forKey:@"clockMode"];
@@ -183,10 +183,14 @@
     NSString* log = [NSString stringWithFormat:@"default %@ changed to %@",key,x];
     postLog(log, self);
 	NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
-    [defs setObject:x forKey:key];
+	#ifdef GNUSTEP
+	[defs willChangeValueForKey:key]; 
+    #endif
+	[defs setObject:x forKey:key];
+	#ifdef GNUSTEP
+	[defs didChangeValueForKey:key]; 
+	#endif
 	[defs synchronize];
-	log = [NSString stringWithFormat:@"verifying %@ is now %@",key,[[NSUserDefaults standardUserDefaults] objectForKey:key]];
-	postLog(log, self);
     return YES;
 }
 
@@ -232,11 +236,11 @@
     }
     
     else if([address isEqual:@"/esp/person/s"])
-        return [self setDefault:@"name" withParameters:d];
+        return [self setDefault:@"person" withParameters:d];
     else if([address isEqual:@"/esp/person/q"])
     {
         [osc response:@"/esp/person/r"
-                value:[[NSUserDefaults standardUserDefaults] stringForKey:@"name"]
+                value:[[NSUserDefaults standardUserDefaults] stringForKey:@"person"]
               toQuery:d
              fromHost:h
                  port:p];
@@ -345,7 +349,6 @@
 
 -(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
-    NSLog(@"observeValueForKeyPath"); // *** never called on WIN32 for some reason? ***
     if([keyPath isEqualToString:@"broadcast"]) [[EspNetwork network] broadcastAddressChanged];
     else if([keyPath isEqualToString:@"clockMode"]) [[self clock] changeSyncMode:[[[NSUserDefaults standardUserDefaults] valueForKey:@"clockMode"] intValue]];
     else NSLog(@"PROBLEM: received KVO notification for unexpected keyPath %@",keyPath);

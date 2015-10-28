@@ -34,7 +34,7 @@
     self = [super init];
     peers = [[NSMutableArray alloc] init];
     NSUserDefaults* x = [NSUserDefaults standardUserDefaults];
-    [x addObserver:self forKeyPath:@"name" options:NSKeyValueObservingOptionNew context:nil];
+    [x addObserver:self forKeyPath:@"person" options:NSKeyValueObservingOptionNew context:nil];
     [x addObserver:self forKeyPath:@"machine" options:NSKeyValueObservingOptionNew context:nil];
     [self addSelfToPeerList];
     [self updateStatus];
@@ -51,7 +51,7 @@
 {
     NSUserDefaults* x = [NSUserDefaults standardUserDefaults];
     EspPeer* d = [[EspPeer alloc] init];
-    [d setName:[x stringForKey:@"name"]];
+    [d setName:[x stringForKey:@"person"]];
     [d setMachine:[x stringForKey:@"machine"]];
     [d setIp:@"unknown"];
     [d setMajorVersion:ESPGRID_MAJORVERSION];
@@ -69,7 +69,7 @@
 {
     // this is called when name/machine are changed in user defaults
     NSUserDefaults* x = [NSUserDefaults standardUserDefaults];
-    [selfInPeerList setName:[x stringForKey:@"name"]];
+    [selfInPeerList setName:[x stringForKey:@"person"]];
     [selfInPeerList setMachine:[x stringForKey:@"machine"]];
 }
 
@@ -98,7 +98,7 @@
     NSString* ackForName = [d objectForKey:@"nameRcvd"];
     NSString* ackForMachine = [d objectForKey:@"machineRcvd"];
     EspPeer* ackFor = [self findPeerWithName:ackForName andMachine:ackForMachine];
-    if(ackFor == nil) { NSLog(@"ACK for unknown peer"); return nil; } // note: we don't do anything with a given peer unless we have received a prior BEACON
+    if(ackFor == nil) { NSLog(@"ACK for unknown peer %@-%@",ackForName,ackForMachine); return nil; } // note: we don't do anything with a given peer unless we have received a prior BEACON
     
     // process the ACK within the pertinent EspPeer instance...
     [self willChangeValueForKey:@"peers"];
