@@ -47,7 +47,7 @@
     void* receiveBuffer;
     NSMutableData* receiveData;
 }
-@property (nonatomic,assign) id<EspSocketDelegate> delegate;
+@property (nonatomic,assign) NSObject<EspSocketDelegate> delegate;
 
 -(id) initWithPort:(int)p andDelegate:(id<EspSocketDelegate>)delegate;
 -(BOOL) bindToPort:(unsigned int)p;
