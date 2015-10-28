@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>FCC43F9A-8CD0-4A8D-9CED-E6A2A0BAA08C</string>
 	<key>IDESourceControlProjectName</key>
-	<string>EspGrid</string>
+	<string>project</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>CF2001AB9B0FB082F44521AE0B063F11E8DA0CDC</key>
 		<string>https://github.com/d0kt0r0/EspGrid.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>EspGrid.xcodeproj</string>
+	<string>EspGrid.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>CF2001AB9B0FB082F44521AE0B063F11E8DA0CDC</key>

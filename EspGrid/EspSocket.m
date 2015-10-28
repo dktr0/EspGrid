@@ -148,7 +148,6 @@
             NSData* d = [[NSData alloc] initWithBytesNoCopy:receiveBuffer length:n freeWhenDone:NO];
             them.sin_port = ntohs(them.sin_port);
             @try {
-                // [delegate dataReceived:d fromHost:h fromPort:them.sin_port systemTime:timeStamp monotonicTime:monotonic];
                 NSDictionary* packet = [NSDictionary dictionaryWithObjectsAndKeys:
                                         d,@"data",h,@"host",[NSNumber numberWithInt:them.sin_port],@"port",
                                         [NSNumber numberWithUnsignedLongLong:timeStamp],@"systemTime",
