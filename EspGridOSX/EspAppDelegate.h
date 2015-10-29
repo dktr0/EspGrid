@@ -42,7 +42,7 @@
     
     // Log tab
     IBOutlet NSTextView* espLogOutput;
-    IBOutlet NSButton* highVolumePosts;
+    IBOutlet NSButton* espLogOSC;
     
     // Bridge tab
     IBOutlet NSTextField* espBridgeLocalGroup;
@@ -78,7 +78,7 @@
 -(IBAction)shareClipboard:(id)sender;
 
 // Log tab
--(IBAction)highVolumePostsChanged:(id)sender;
+-(IBAction)logOSCChanged:(id)sender;
 
 // Bridge tab
 -(IBAction)bridgeLocalGroup:(id)sender;

@@ -605,14 +605,14 @@
                                             </connections>
                                         </button>
                                         <button id="4200">
-                                            <rect key="frame" x="210" y="18" width="148" height="18"/>
+                                            <rect key="frame" x="210" y="18" width="149" height="18"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="check" title=" High-volume posts" bezelStyle="regularSquare" imagePosition="left" inset="2" id="4201">
+                                            <buttonCell key="cell" type="check" title=" Log OSC messages" bezelStyle="regularSquare" imagePosition="left" inset="2" id="4201">
                                                 <behavior key="behavior" changeContents="YES" doesNotDimImage="YES" lightByContents="YES"/>
                                                 <font key="font" metaFont="system"/>
                                             </buttonCell>
                                             <connections>
-                                                <action selector="highVolumePostsChanged:" target="494" id="4205"/>
+                                                <action selector="logOSCChanged:" target="494" id="hnL-Je-A7q"/>
                                             </connections>
                                         </button>
                                     </subviews>
@@ -827,8 +827,8 @@
                 <outlet property="espChatMsg" destination="4017" id="4051"/>
                 <outlet property="espChatOutput" destination="4020" id="4055"/>
                 <outlet property="espClockFlux" destination="4111" id="4115"/>
+                <outlet property="espLogOSC" destination="4200" id="QZi-W0-mhi"/>
                 <outlet property="espLogOutput" destination="4043" id="4052"/>
-                <outlet property="highVolumePosts" destination="4200" id="4204"/>
                 <outlet property="tabView" destination="3777" id="3807"/>
                 <outlet property="tickOnBeats" destination="EtG-Xj-ObB" id="wo8-7B-eMZ"/>
                 <outlet property="window" destination="371" id="532"/>

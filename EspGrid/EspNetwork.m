@@ -70,7 +70,6 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
 
 -(void) broadcastAddressChanged
 {
-    NSLog(@"broadcastAddressChanged");
     [broadcast setHost:[[NSUserDefaults standardUserDefaults] objectForKey:@"broadcast"]];
 }
 

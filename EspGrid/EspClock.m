@@ -53,7 +53,6 @@
 
 -(void) changeSyncMode:(int)mode
 {
-	NSLog(@"changeSyncMode");
     [self setSyncMode:mode];
     [[peerList selfInPeerList] setSyncMode:mode];
 }

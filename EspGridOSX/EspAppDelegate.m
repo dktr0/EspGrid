@@ -29,10 +29,10 @@
 -(IBAction)bridgeRemoteAdddress:(id)sender { [[esp bridge] setRemoteAddress:[espBridgeRemoteAddress stringValue]]; }
 -(IBAction)bridgeRemotePort:(id)sender { [[esp bridge] setRemotePort:[espBridgeRemotePort stringValue]]; }
 
--(IBAction)highVolumePostsChanged:(id)sender
+-(IBAction)logOSCChanged:(id)sender
 {
-    if([highVolumePosts state]) [esp setHighVolumePosts:YES];
-    else [esp setHighVolumePosts:NO];
+    if([espLogOSC state]) [[EspOsc osc] setEchoToLog:YES];
+    else [[EspOsc osc] setEchoToLog:NO];
 }
 
 -(IBAction)beatOn:(id)sender
