@@ -42,7 +42,7 @@
 
 -(void) respondToQueuedItem:(id)item
 {
-    [osc transmit:(NSArray*)item log:YES];
+    [osc transmit:(NSArray*)item log:NO];
 }
 
 -(void) sendMessageNow:(NSArray*)params
@@ -52,7 +52,7 @@
     [d setObject:params forKey:@"params"];
     [d setObject:[NSNumber numberWithLongLong:t] forKey:@"time"];
     [network sendOpcode:ESP_OPCODE_OSCNOW withDictionary:d];
-    [osc transmit:params log:YES];
+    [osc transmit:params log:NO];
 }
 
 -(void) sendMessageNowStamped:(NSArray*)params
@@ -67,7 +67,7 @@
     [d setObject:a forKey:@"params"];
     [d setObject:[NSNumber numberWithLongLong:t] forKey:@"time"];
     [network sendOpcode:ESP_OPCODE_OSCNOW withDictionary:d];
-    [osc transmit:a log:YES];
+    [osc transmit:a log:NO];
 }
 
 -(void) sendMessageSoon:(NSArray*)params
@@ -139,7 +139,7 @@
     
     if(opcode==ESP_OPCODE_OSCNOW) {
         NSMutableArray* params = [NSMutableArray arrayWithArray:[d objectForKey:@"params"]];
-        [osc transmit:params log:YES];
+        [osc transmit:params log:NO];
         return;
     }
     if(opcode==ESP_OPCODE_OSCFUTURE) {
@@ -165,37 +165,31 @@
 {
     if([address isEqualToString:@"/esp/msg/now"])
     {
-        [osc logReceivedMessage:address fromHost:h port:p];
         [self sendMessageNow:params];
         return YES;
     }
     else if([address isEqualToString:@"/esp/msg/nowStamp"])
     {
-        [osc logReceivedMessage:address fromHost:h port:p];
         [self sendMessageNowStamped:params];
         return YES;
     }
     else if([address isEqualToString:@"/esp/msg/soon"])
     {
-        [osc logReceivedMessage:address fromHost:h port:p];
         [self sendMessageSoon:params];
         return YES;
     }
     else if([address isEqualToString:@"/esp/msg/soonStamp"])
     {
-        [osc logReceivedMessage:address fromHost:h port:p];
         [self sendMessageSoonStamped:params];
         return YES;
     }
     else if([address isEqualToString:@"/esp/msg/future"])
     {
-        [osc logReceivedMessage:address fromHost:h port:p];
         [self sendMessageFuture:params];
         return YES;
     }
     else if([address isEqualToString:@"/esp/msg/futureStamp"])
     {
-        [osc logReceivedMessage:address fromHost:h port:p];
         [self sendMessageFutureStamped:params];
         return YES;
     }

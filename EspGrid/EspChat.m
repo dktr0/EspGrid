@@ -67,7 +67,6 @@
     if([address isEqual:@"/esp/chat/send"])
     {
         if([d count]<1){postProblem(@"received /esp/chat/send with no parameters",self); return NO;}
-        else [osc logReceivedMessage:address fromHost:h port:p];
         NSMutableString* msg = [[NSMutableString alloc] init];
         for(int i=0;i<[d count];i++)
         {

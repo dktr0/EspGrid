@@ -196,7 +196,6 @@
     if([address isEqualToString:@"/esp/codeShare/post"])
     {
         if([d count]!=2){postProblem(@"received /esp/codeShare/post with wrong number of parameters",self); return NO;}
-        [osc logReceivedMessage:address fromHost:h port:p];
         [self shareCode:[d objectAtIndex:1] withTitle:[d objectAtIndex:0]];
         return YES;
     }

@@ -156,7 +156,12 @@
         
         if(echoToLog)
         {
-            [self logReceivedMessage:address fromHost:h port:p];
+            NSMutableString* s = [NSMutableString stringWithFormat:@"OSC received from %@:%d: %@ ",h,p,address];
+            for(id x in params)
+            {
+                [s appendString:[NSString stringWithFormat:@"%@ ",x,nil]];
+            }
+            postLog(s,nil);
         }
         
         // call any registered handler, passing the address and params
@@ -269,8 +274,11 @@
         if(d != nil) [udp sendData:d toHost:h port:p];
         if(echoToLog)
         {
-            NSString* address = [msg objectAtIndex:0];
-            NSString* s = [NSString stringWithFormat:@"sending %@ to %@:%d",address,h,p,nil];
+            NSMutableString* s = [NSMutableString stringWithFormat:@"OSC sent to %@:%d: ",h,p,nil];
+            for(id x in msg)
+            {
+                [s appendString:[NSString stringWithFormat:@"%@ ",x,nil]];
+            }
             postLog(s,nil);
         }
     }
@@ -290,8 +298,11 @@
         NSMutableData* d = [EspOsc createOscMessage:msg log:log];
         if(d != nil) [self transmitData:d];
         {
-            NSString* address = [msg objectAtIndex:0];
-            NSString* s = [NSString stringWithFormat:@"sent %@ to all subscribers",address,nil];
+            NSMutableString* s = [NSMutableString stringWithFormat:@"OSC sent to all subscribers: ",nil];
+            for(id x in msg)
+            {
+                [s appendString:[NSString stringWithFormat:@"%@ ",x,nil]];
+            }
             postLog(s,nil);
         }
     }
@@ -321,12 +332,6 @@
     else if([d count] == 1) [self transmit:msg toHost:h port:[[d objectAtIndex:0] intValue] log:NO]; // explicit port, deduced host
     else if([d count] == 2) [self transmit:msg toHost:[d objectAtIndex:1] port:[[d objectAtIndex:0] intValue] log:NO]; // explicit port+host
     else postProblem([NSString stringWithFormat:@"received %@ with too many params",address,nil], self);
-}
-
--(void) logReceivedMessage:(NSString*)address fromHost:(NSString*)h port:(int)p
-{
-    NSString* s = [NSString stringWithFormat:@"received %@ from %@:%d",address,h,p];
-    postLog(s,nil);
 }
 
 @end

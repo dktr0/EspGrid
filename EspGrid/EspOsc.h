@@ -42,7 +42,4 @@
 
 -(void) response:(NSString*)address value:(NSObject*)v toQuery:(NSArray*)d fromHost:(NSString*)h port:(int)p; // helper for responding to standard ../q messages with ../r messages
 
-// generates a standard log message for a received message (use in handleOsc of handler classes)
--(void) logReceivedMessage:(NSString*)address fromHost:(NSString*)h port:(int)p;
-
 @end

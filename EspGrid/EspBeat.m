@@ -137,7 +137,6 @@
     if([address isEqual:@"/esp/beat/on"]) 
     {
         if([d count]!=1){postProblem(@"received /esp/beat/on with wrong number of parameters",self); return NO;}
-        else [osc logReceivedMessage:address fromHost:h port:p];
         int x = [[d objectAtIndex:0] intValue];
         if(x)[self turnBeatOn]; else [self turnBeatOff];
         return YES;
@@ -145,7 +144,6 @@
     else if([address isEqual:@"/esp/beat/tempo"])
     {
         if([d count]!=1){postProblem(@"received /esp/beat/tempo with wrong number of parameters",self); return NO;}
-        else [osc logReceivedMessage:address fromHost:h port:p];
         float x = [[d objectAtIndex:0] floatValue];
         [self changeTempo:x];
         return YES;
@@ -153,7 +151,6 @@
     else if([address isEqual:@"/esp/beat/cycleLength"])
     {
         if([d count]!=1){postProblem(@"received /esp/beat/cycleLength with wrong number of parameters",self); return NO;}
-        else [osc logReceivedMessage:address fromHost:h port:p];
         int x = [[d objectAtIndex:0] intValue];
         if(x<=0)x=1;
         [self changeCycleLength:x];
