@@ -107,20 +107,19 @@
                 if(i>=limit) { postWarning(@"OSC message missing int parameter",self); return; }
                 int r = *((int*)(data+i));
                 int swapped = EspSwapInt32(r);
+				NSLog(@"int %d",swapped);
                 NSNumber* n = [NSNumber numberWithInt:swapped];
                 [params addObject:n];
-                // NSLog(@"Param %d at i=%d is int %d %@",x,i,swapped,n);
                 i+=4;
             }
             else if(c == 'f')
             {
                 if(i>=limit) { postWarning(@"OSC message missing float parameter",self); return; }
-                float r = *((float*)(data+i));
-                r = EspSwapFloat32(r);
+				UInt32 r = *((UInt32*)(data+i));
+				r = EspSwapInt32(r);
                 float f =   *((float *)(&r));
                 NSNumber* n = [NSNumber numberWithFloat:f];
                 [params addObject:n];
-                // NSLog(@"Param %d at i=%d is float %f %@",x,i,f,n);
                 i+=4;
             }
             else if(c == 's')
@@ -141,7 +140,6 @@
                     return;
                 }
                 [params addObject:s];
-                // NSLog(@"Param %d at i=%d is string %@",x,i,s);
                 while(data[i] != 0 && i<limit) i++;
                 i = i + (4-(i%4)); 
             }
