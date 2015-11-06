@@ -21,7 +21,7 @@
 
 #define ESPGRID_MAJORVERSION 0
 #define ESPGRID_MINORVERSION 53 // changes to external/internal protocol MUST increment MINORVERSION
-#define ESPGRID_SUBVERSION 5
+#define ESPGRID_SUBVERSION 6
 
 #define ESP_NUMBER_OF_OPCODES 10
 #define ESP_OPCODE_BEACON 0
@@ -109,7 +109,12 @@ typedef uint32_t UInt32;
 typedef float Float32;
 typedef double Float64;
 inline static UInt32 EspSwapInt32(UInt32 x) { return htonl(x); }
-inline static Float32 EspSwapFloat32(Float32 x) { return htonl(x); }
+inline static Float32 EspSwapFloat32(const Float32 x) {
+	unsigned char* c = (unsigned char*)&x;
+	uint32_t y = c[3] + (c[2] << 8) + (c[1] << 16) + (c[0] << 24);
+	float z = *((float*)&y);
+	return z;
+}
 inline static Float64 EspSwapFloat64(double x) { return __builtin_bswap64(x); }
 #endif
 
@@ -133,7 +138,6 @@ inline static Float32 EspSwapFloat32(Float32 x) {
     CFSwappedFloat32 y = CFConvertFloatHostToSwapped(x);
     return *((Float32*)(&y));
 }
-    // return CFSwapInt32(*((UInt32*)&x));
 inline static Float64 EspSwapFloat64(double x) { return CFSwapInt64(*((UInt64*)&x)); }
 #endif
 

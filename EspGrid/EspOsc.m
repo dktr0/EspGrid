@@ -194,7 +194,6 @@
     NSString* address = [msg objectAtIndex:0];
     [d appendData:[address dataUsingEncoding:NSUTF8StringEncoding]];
     [d increaseLengthBy: (4-([address length]%4))];
-    NSMutableString* logString = [NSMutableString stringWithFormat:@"sending %@ ",address];
     
     // append format string
     NSMutableString* formatString = [NSMutableString stringWithString:@","];
@@ -208,12 +207,12 @@
             NSNumber* n = (NSNumber*)o;
             const char* t = [n objCType];
             if(t[0] == 'i') [formatString appendFormat:@"i"];
-            else if(t[0] == 'q') [formatString appendFormat:@"i"];
             else if(t[0] == 'f') [formatString appendFormat:@"f"];
-            else if(t[0] == 'd') [formatString appendFormat:@"d"];
+            else if(t[0] == 'd') @throw [NSException exceptionWithName:@"problem" reason:@"value of type d in createOscMessage" userInfo:nil];
+			else if(t[0] == 'q') @throw [NSException exceptionWithName:@"problem" reason:@"value of type q in createOscMessage" userInfo:nil];
             else @throw [NSException exceptionWithName:@"problem" reason:@"unhandled NSNumber objCType in createOscMessage" userInfo:nil];
         }
-        else @throw [NSException exceptionWithName:@"problem" reason:@"unrecognized parameter " userInfo:nil];
+        else @throw [NSException exceptionWithName:@"problem" reason:@"unrecognized parameter type in createOscMessage" userInfo:nil];
     }
     [d appendData:[formatString dataUsingEncoding:NSUTF8StringEncoding]];
     [d increaseLengthBy:(4-([formatString length]%4))];
@@ -227,7 +226,6 @@
             NSString* str = (NSString*)o;
             [d appendData: [str dataUsingEncoding:NSUTF8StringEncoding]];
             [d increaseLengthBy:(4-([str length]%4))];
-            [logString appendFormat:@"%@ ",str];
         }
         else if([o isKindOfClass:[NSNumber class]])
         {
@@ -237,29 +235,14 @@
             { // append int data
                 int x = EspSwapInt32([n intValue]);
                 [d appendBytes:&x length:4];
-                [logString appendFormat:@"%d ",[n intValue]];
-            }
-            else if(t[0] == 'q')
-            { // append long long data as an int ???
-                int x = EspSwapInt32([n intValue]);
-                [d appendBytes:&x length:4];
-                [logString appendFormat:@"%d ",[n intValue]];
             }
             else if(t[0] == 'f') 
             { // append float data
                 float y = EspSwapFloat32([n floatValue]);
                 [d appendBytes:&y length:4];
-                [logString appendFormat:@"%f ",[n floatValue]];
-            }
-            else if(t[0] == 'd')
-            { // append double data (note: not part of OSC 1.0 required spec and unsupported by many OSC applications)
-                double y = EspSwapFloat64([n doubleValue]);
-                [d appendBytes:&y length:8];
-                [logString appendFormat:@"%lf ",[n doubleValue]];
-            }
-        }
+            } 
+	    }
     }
-    if(log)postLog(logString,nil);
     return d;
 }
 
