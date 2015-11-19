@@ -122,7 +122,8 @@
     NSNumber* nSecs = [NSNumber numberWithLongLong:(t+i)/1000000000];
     NSNumber* nNanos = [NSNumber numberWithLongLong:(t+i)%1000000000];
     NSMutableArray* a = [NSMutableArray arrayWithArray:params];
-    [a removeObjectAtIndex:0]; // remove time increment parameter
+    [a removeObjectAtIndex:0]; // remove time increment parameter (seconds)
+    [a removeObjectAtIndex:0]; // remove time increment parameter (nanoseconds)
     [a insertObject:nSecs atIndex:1]; // insert time stamp (seconds) into parameters
     [a insertObject:nNanos atIndex:2]; // insert time stamp (nanoseconds) into parameters
     NSMutableDictionary* d = [[NSMutableDictionary alloc] init];
