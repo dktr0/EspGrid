@@ -206,10 +206,9 @@
         {   // NSNumber could be an int or a float
             NSNumber* n = (NSNumber*)o;
             const char* t = [n objCType];
-            if(t[0] == 'i') [formatString appendFormat:@"i"];
+            if(t[0] == 'i' || t[0] =='q') [formatString appendFormat:@"i"];
             else if(t[0] == 'f') [formatString appendFormat:@"f"];
             else if(t[0] == 'd') @throw [NSException exceptionWithName:@"problem" reason:@"value of type d in createOscMessage" userInfo:nil];
-			else if(t[0] == 'q') @throw [NSException exceptionWithName:@"problem" reason:@"value of type q in createOscMessage" userInfo:nil];
             else @throw [NSException exceptionWithName:@"problem" reason:@"unhandled NSNumber objCType in createOscMessage" userInfo:nil];
         }
         else @throw [NSException exceptionWithName:@"problem" reason:@"unrecognized parameter type in createOscMessage" userInfo:nil];
@@ -231,7 +230,7 @@
         {
             NSNumber* n = (NSNumber*)o;
             const char* t = [n objCType];
-            if(t[0] == 'i')
+            if(t[0] == 'i' || t[0] =='q')
             { // append int data
                 int x = EspSwapInt32([n intValue]);
                 [d appendBytes:&x length:4];
