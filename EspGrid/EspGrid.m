@@ -70,12 +70,6 @@
 
     EspKeyValueController* kvc = [EspKeyValueController keyValueController];
     [kvc setModel:self];
-    // [kvc addKeyPath:@"beat.on"];
-    // [kvc addKeyPath:@"beat.tempo"];
-    // [kvc addKeyPath:@"beat.cycleLength"];
-    // [kvc addKeyPath:@"beat.downbeatTime"];
-    // [kvc addKeyPath:@"beat.downbeatNumber"];
-    // ***note*** will need to make sure there is a getter in EspGrid for [EspBeat beat]
     
     EspNetwork* network = [EspNetwork network];
     [network setHandler:[EspClock clock] forOpcode:ESP_OPCODE_BEACON];
@@ -202,6 +196,9 @@
         BOOL on = [[beat on] boolValue];
         float tempo = [[beat tempo] floatValue];
         EspTimeType time = [beat adjustedDownbeatTime];
+        EspTimeType monotonicToSystem = systemTime() - monotonicTime();
+        time += monotonicToSystem; // translate high performance time into epoch of normal system clock
+        // later there should be a variant of /esp/tempo/q that requests high performance time
         int seconds = (int)(time / 1000000000);
         int nanoseconds = (int)(time % 1000000000);
         long n = [[beat downbeatNumber] longValue];
