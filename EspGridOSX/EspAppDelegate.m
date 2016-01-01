@@ -46,11 +46,6 @@
     [[esp beat] changeTempo:beatTempo.doubleValue];
 }
 
--(IBAction)beatCycleLength:(id)sender
-{
-    [[esp beat] changeCycleLength:[beatCycleLength intValue]];
-}
-
 -(IBAction)sendChatMessage:(id)sender
 {
     NSString* msg = [sender stringValue];
@@ -66,7 +61,6 @@
     id nv = [change objectForKey:NSKeyValueChangeNewKey];
     if([keyPath isEqualToString:@"beat.on"]) [beatOn setState:[nv boolValue]];
     else if([keyPath isEqualToString:@"beat.tempo"])[beatTempo setStringValue:nv];
-    else if([keyPath isEqualToString:@"beat.cycleLength"]) [beatCycleLength setStringValue:nv];      
     else if([keyPath isEqualToString:@"bridge.localGroup"]) [espBridgeLocalGroup setStringValue:nv];
     else if([keyPath isEqualToString:@"bridge.remoteAddress"]) [espBridgeRemoteAddress setStringValue:nv];
     else if([keyPath isEqualToString:@"bridge.remoteGroup"]) [espBridgeRemoteGroup setStringValue:nv];
@@ -81,7 +75,6 @@
 {
     [esp addObserver:self forKeyPath:@"beat.on" options:NSKeyValueObservingOptionNew context:nil];
     [esp addObserver:self forKeyPath:@"beat.tempo" options:NSKeyValueObservingOptionNew context:nil];
-    [esp addObserver:self forKeyPath:@"beat.cycleLength" options:NSKeyValueObservingOptionNew context:nil];
     [esp addObserver:self forKeyPath:@"bridge.localGroup" options:NSKeyValueObservingOptionNew context:nil];
     [esp addObserver:self forKeyPath:@"bridge.remoteAddress" options:NSKeyValueObservingOptionNew context:nil];
     [esp addObserver:self forKeyPath:@"bridge.remoteGroup" options:NSKeyValueObservingOptionNew context:nil];
@@ -91,7 +84,6 @@
     
     [esp setValue:[esp valueForKeyPath:@"beat.on"] forKeyPath:@"beat.on"];
     [esp setValue:[esp valueForKeyPath:@"beat.tempo"] forKeyPath:@"beat.tempo"];
-    [esp setValue:[esp valueForKeyPath:@"beat.cycleLength"] forKeyPath:@"beat.cycleLength"];
     
     NSNotificationCenter* nc = [NSNotificationCenter defaultCenter];
     [nc addObserver:self selector:@selector(postChatNotification:) name:@"chat" object:nil];

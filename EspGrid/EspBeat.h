@@ -17,35 +17,27 @@
 //  along with EspGrid.  If not, see <http://www.gnu.org/licenses/>.
 
 #import <Foundation/Foundation.h>
-#import "EspNetwork.h"
-#import "EspOsc.h"
-#import "EspClock.h"
 #import "EspKeyValueController.h"
 
 @interface EspBeat : NSObject <EspHandleOsc>
 {
-    EspOsc* osc;
-    EspNetwork* network;
-    EspClock* clock;
     EspKeyValueController* kvc;
     NSNumber* on;
     NSNumber* tempo;
     NSNumber* downbeatTime;
     NSNumber* downbeatNumber;
-    NSNumber* cycleLength;
-    NSNumber* tempNumber;
+    NSDictionary* params;
     unsigned long beatsIssued;
 }
+@property (retain) NSDictionary* params;
 @property (retain) NSNumber* on;
 @property (retain) NSNumber* tempo;
 @property (retain) NSNumber* downbeatTime;
 @property (retain) NSNumber* downbeatNumber;
-@property (retain) NSNumber* cycleLength;
 
 -(void) turnBeatOn;
 -(void) turnBeatOff;
 -(void) changeTempo:(double)newBpm;
--(void) changeCycleLength:(int)newLength;
 -(EspTimeType) adjustedDownbeatTime;
 +(EspBeat*) beat;
 

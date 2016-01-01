@@ -70,11 +70,11 @@
 
     EspKeyValueController* kvc = [EspKeyValueController keyValueController];
     [kvc setModel:self];
-    [kvc addKeyPath:@"beat.on"];
-    [kvc addKeyPath:@"beat.tempo"];
-    [kvc addKeyPath:@"beat.cycleLength"];
-    [kvc addKeyPath:@"beat.downbeatTime"];
-    [kvc addKeyPath:@"beat.downbeatNumber"];
+    // [kvc addKeyPath:@"beat.on"];
+    // [kvc addKeyPath:@"beat.tempo"];
+    // [kvc addKeyPath:@"beat.cycleLength"];
+    // [kvc addKeyPath:@"beat.downbeatTime"];
+    // [kvc addKeyPath:@"beat.downbeatNumber"];
     // ***note*** will need to make sure there is a getter in EspGrid for [EspBeat beat]
     
     EspNetwork* network = [EspNetwork network];
@@ -107,7 +107,6 @@
     [osc addHandler:self forAddress:@"/esp/tempo/q"];
     [osc addHandler:[EspBeat beat] forAddress:@"/esp/beat/on"];
     [osc addHandler:[EspBeat beat] forAddress:@"/esp/beat/tempo"];
-    [osc addHandler:[EspBeat beat] forAddress:@"/esp/beat/cycleLength"];
     [osc addHandler:[EspChat chat] forAddress:@"/esp/chat/send"];
     
     [osc addHandler:[EspCodeShare codeShare] forAddress:@"/esp/codeShare/post"];
@@ -206,14 +205,12 @@
         int seconds = (int)(time / 1000000000);
         int nanoseconds = (int)(time % 1000000000);
         long n = [[beat downbeatNumber] longValue];
-        int length = [[beat cycleLength] intValue];
         NSArray* msg = [NSArray arrayWithObjects:@"/esp/tempo/r",
                         [NSNumber numberWithInt:on],
                         [NSNumber numberWithFloat:tempo],
                         [NSNumber numberWithInt:seconds],
                         [NSNumber numberWithInt:nanoseconds],
-                        [NSNumber numberWithInt:(int)n],
-                        [NSNumber numberWithInt:length],nil];
+                        [NSNumber numberWithInt:(int)n],nil];
         if([d count] == 0) [osc transmit:msg toHost:h port:p log:NO]; // respond directly to host and port of incoming msg
         else if([d count] == 1) [osc transmit:msg toHost:h port:[[d objectAtIndex:0] intValue] log:NO]; // explicit port, deduced host
         else if([d count] == 2) [osc transmit:msg toHost:[d objectAtIndex:1] port:[[d objectAtIndex:0] intValue] log:NO]; // explicit port+host

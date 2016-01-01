@@ -23,7 +23,6 @@ The following messages can be sent to EspGrid in order to change the parameters 
 
 - /esp/beat/on [on::int32, 1 or 0]
 - /esp/beat/tempo [tempo::float32 in beats per minute]
-- /esp/beat/cycleLength [length::int32, length of a cycle/bar]
 
 ## Subscriptions
 

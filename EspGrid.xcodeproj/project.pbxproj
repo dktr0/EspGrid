@@ -87,6 +87,7 @@
 		06B190EB1892CA2E00CB7389 /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06B190E21892C95C00CB7389 /* AudioUnit.framework */; };
 		06B190EC1892CA3E00CB7389 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0699369E15C90761002F64AF /* Cocoa.framework */; };
 		06B190ED1892F72400CB7389 /* CoreAudio.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06B190E71892C9CF00CB7389 /* CoreAudio.framework */; };
+		06B2A6001C35F8CC001FFCC2 /* OSC.md in Sources */ = {isa = PBXBuildFile; fileRef = 06B2A5FF1C35F8CC001FFCC2 /* OSC.md */; };
 		06B51765163080E10036A44B /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 06B51764163080E10036A44B /* Default-568h@2x.png */; };
 		06C3436A163F664000F72BE8 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C34369163F664000F72BE8 /* SenTestingKit.framework */; };
 		06C3436B163F664000F72BE8 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0699369E15C90761002F64AF /* Cocoa.framework */; };
@@ -222,6 +223,7 @@
 		06B190E51892C9B100CB7389 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		06B190E71892C9CF00CB7389 /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = System/Library/Frameworks/CoreAudio.framework; sourceTree = SDKROOT; };
 		06B190E91892CA1400CB7389 /* CoreAudioKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudioKit.framework; path = System/Library/Frameworks/CoreAudioKit.framework; sourceTree = SDKROOT; };
+		06B2A5FF1C35F8CC001FFCC2 /* OSC.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = OSC.md; sourceTree = "<group>"; };
 		06B51764163080E10036A44B /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		06C34368163F664000F72BE8 /* EspGridUnitTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EspGridUnitTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		06C34369163F664000F72BE8 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -415,6 +417,7 @@
 			isa = PBXGroup;
 			children = (
 				06ED1A48172AAAE3003401A6 /* COPYING.txt */,
+				06B2A5FF1C35F8CC001FFCC2 /* OSC.md */,
 				0676AF751637A2610082B57D /* Help */,
 				06B51764163080E10036A44B /* Default-568h@2x.png */,
 				060A25EC15C90E2E00BC5E8D /* EspGrid */,
@@ -582,7 +585,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = Esp;
-				LastTestingUpgradeCheck = 0640;
+				LastTestingUpgradeCheck = 0720;
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "";
 			};
@@ -733,6 +736,7 @@
 				060A262615C90E2E00BC5E8D /* EspAppDelegate.m in Sources */,
 				06D6C54B161F928700372D54 /* EspMessage.m in Sources */,
 				06CC287618957C9200A55DB5 /* EspPeer.m in Sources */,
+				06B2A6001C35F8CC001FFCC2 /* OSC.md in Sources */,
 				06FED5341631DDEF00BF393B /* EspQueue.m in Sources */,
 				068B2845182C6E2500EA2990 /* EspOsc.m in Sources */,
 				06D31E99164ADFCA002CCCAF /* EspCodeShareItem.m in Sources */,
