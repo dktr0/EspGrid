@@ -150,7 +150,13 @@
 -(EspTimeType) adjustmentForPeer:(EspPeer*)peer
 {
     if(peer) return [peer adjustmentForSyncMode:[self syncMode]];
-    else { NSLog(@"warning? nil peer in adjustmentForPeer"); return 0; }
+    else {
+        NSString* l = [NSString stringWithFormat:
+                       @"nil peer(%@,%@,%@) in [EspClock adjustmentForPeer]",
+                       [peer name],[peer machine],[peer ip],nil];
+        postWarning(l, self);
+        return 0;
+    }
 }
 
 -(void)updateflux:(EspTimeType)adjToAdj

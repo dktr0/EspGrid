@@ -74,7 +74,6 @@
 
 -(void) setParams:(NSDictionary *)p
 {
-    NSLog(@"setParams");
     if(params != NULL) [params release];
     params = [p copy];
     NSAssert(params != NULL,@"EspBeat params dictionary is null");
@@ -86,7 +85,6 @@
 
 -(void) atTime:(EspTimeType)t tempo:(double)bpm beatNumber:(long long)n on:(bool)o
 {
-    NSLog(@"atTime...");
     // this method creates a dictionary containing all tempo parameters and then
     // shares it to other EspGrid instances via the EspKeyValueController class
     NSDictionary* d = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -94,19 +92,13 @@
                        [NSNumber numberWithDouble:bpm],@"bpm",
                        [NSNumber numberWithLong:n],@"n",
                        [NSNumber numberWithBool:o],@"on",nil];
-    NSLog(@"about to call kvc setValue...");
     [kvc setValue:d forKeyPath:@"beat.params"];
-    //NSLog(@"about to call self setParams...");
-    //[self setParams:d];
-    NSLog(@"finished atTime.");
 }
 
 
 -(void) turnBeatOn
 {
-    NSLog(@"turnBeatOn");
     if([on boolValue]==YES) return;
-    postLog(@"turning beat on", self);
     EspTimeType t = monotonicTime() + 100000000; // fixed 100ms latency compensation for now
     double f = [[self tempo] doubleValue];
     [self atTime:t tempo:f beatNumber:beatsIssued on:YES];
@@ -115,7 +107,6 @@
 -(void) turnBeatOff
 {
     if([on boolValue]==NO) return;
-    postLog(@"turning beat off",self);
     EspTimeType elapsedTime = monotonicTime() - [self adjustedDownbeatTime];
     EspTimeType nanosPerBeat = 60000000000.0 / [tempo doubleValue];
     EspTimeType elapsedBeats = elapsedTime / nanosPerBeat;
@@ -129,7 +120,6 @@
 {
     if([tempo doubleValue]==newBpm)return;
     if(newBpm<=0.0)newBpm=0.000000060;
-    postLog([NSString stringWithFormat:@"changing tempo to %lf",newBpm],self);
     if(![on boolValue])
     {
         EspTimeType t = monotonicTime() + 100000000; // fixed 100ms latency compensation for now
@@ -150,7 +140,7 @@
 
 -(EspTimeType) adjustedDownbeatTime
 {
-    if([on boolValue]) return [downbeatTime longLongValue] + [kvc clockAdjustmentForAuthority:@"beat.downbeatTime"];
+    if([on boolValue]) return [downbeatTime longLongValue] + [kvc clockAdjustmentForAuthority:@"beat.params"];
     else return 0;
 }
 

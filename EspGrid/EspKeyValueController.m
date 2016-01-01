@@ -112,7 +112,8 @@
 
 -(EspTimeType) clockAdjustmentForAuthority:(NSString*)keyPath
 {
-    return [clock adjustmentForPeer:[authorities objectForKey:keyPath]];
+    EspPeer* auth = [authorities objectForKey:keyPath];
+    return [clock adjustmentForPeer:auth];
 }
 
 -(void) handleOpcode:(NSDictionary*)d
