@@ -65,12 +65,12 @@
     postLog(versionString,nil);
     title = [NSString stringWithFormat:@"by David Ogborn"];
     postLog(title,nil);
-    
+
     [self logUserDefaults];
 
     EspKeyValueController* kvc = [EspKeyValueController keyValueController];
     [kvc setModel:self];
-    
+
     EspNetwork* network = [EspNetwork network];
     [network setHandler:[EspClock clock] forOpcode:ESP_OPCODE_BEACON];
     [network setHandler:[EspClock clock] forOpcode:ESP_OPCODE_ACK];
@@ -81,12 +81,12 @@
     [network setHandler:[EspCodeShare codeShare] forOpcode:ESP_OPCODE_DELIVERSHARE];
     [network setHandler:[EspMessage message] forOpcode:ESP_OPCODE_OSCNOW];
     [network setHandler:[EspMessage message] forOpcode:ESP_OPCODE_OSCFUTURE];
-    
+
     EspOsc* osc = [EspOsc osc];
-    
+
     [osc addHandler:osc forAddress:@"/esp/subscribe"];
     [osc addHandler:osc forAddress:@"/esp/unsubscribe"];
-    
+
     [osc addHandler:self forAddress:@"/esp/person/s"]; // set name of person
     [osc addHandler:self forAddress:@"/esp/person/q"]; // query name, response: /esp/person/r
     [osc addHandler:self forAddress:@"/esp/machine/s"]; // etc...
@@ -96,33 +96,33 @@
     [osc addHandler:self forAddress:@"/esp/clockMode/s"];
     [osc addHandler:self forAddress:@"/esp/clockMode/q"];
     [osc addHandler:self forAddress:@"/esp/version/q"];
-    
+
     [osc addHandler:self forAddress:@"/esp/clock/q"];
     [osc addHandler:self forAddress:@"/esp/tempo/q"];
     [osc addHandler:[EspBeat beat] forAddress:@"/esp/beat/on"];
     [osc addHandler:[EspBeat beat] forAddress:@"/esp/beat/tempo"];
     [osc addHandler:[EspChat chat] forAddress:@"/esp/chat/send"];
-    
+
     [osc addHandler:[EspCodeShare codeShare] forAddress:@"/esp/codeShare/post"];
-    
+
     [osc addHandler:[EspMessage message] forAddress:@"/esp/msg/now"];
     [osc addHandler:[EspMessage message] forAddress:@"/esp/msg/soon"];
     [osc addHandler:[EspMessage message] forAddress:@"/esp/msg/future"];
     [osc addHandler:[EspMessage message] forAddress:@"/esp/msg/nowStamp"];
     [osc addHandler:[EspMessage message] forAddress:@"/esp/msg/soonStamp"];
     [osc addHandler:[EspMessage message] forAddress:@"/esp/msg/futureStamp"];
-    
+
     [osc addHandler:self forAddress:@"/esp/bridge/localGroup"];
     [osc addHandler:self forAddress:@"/esp/bridge/localAddress"];
     [osc addHandler:self forAddress:@"/esp/bridge/localPort"];
     [osc addHandler:self forAddress:@"/esp/bridge/remoteAddress"];
     [osc addHandler:self forAddress:@"/esp/bridge/remotePort"];
-    
+
     NSUserDefaults* defs= [NSUserDefaults standardUserDefaults];
     [[self clock] changeSyncMode:[[defs valueForKey:@"clockMode"] intValue]];
     [defs addObserver:self forKeyPath:@"clockMode" options:NSKeyValueObservingOptionNew context:nil];
     [defs addObserver:self forKeyPath:@"broadcast" options:NSKeyValueObservingOptionNew context:nil];
-	
+
 	// Note: on GNUSTEP/WIN32 preferences at the command-line don't seem to persist
 	// unless, as in the following, we set them to their current values
 	[defs setValue:[defs valueForKey:@"person"] forKey:@"person"];
@@ -130,7 +130,7 @@
 	[defs setValue:[defs valueForKey:@"broadcast"] forKey:@"broadcast"];
 	[defs setValue:[defs valueForKey:@"clockMode"] forKey:@"clockMode"];
 	[defs synchronize];
-	
+
     return self;
 }
 
@@ -177,11 +177,11 @@
     postLog(log, self);
 	NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
 	#ifdef GNUSTEP
-	[defs willChangeValueForKey:key]; 
+	[defs willChangeValueForKey:key];
     #endif
 	[defs setObject:x forKey:key];
 	#ifdef GNUSTEP
-	[defs didChangeValueForKey:key]; 
+	[defs didChangeValueForKey:key];
 	#endif
 	[defs synchronize];
     return YES;
@@ -197,7 +197,12 @@
         float tempo = [[beat tempo] floatValue];
         EspTimeType time = [beat adjustedDownbeatTime];
         EspTimeType monotonicToSystem = systemTime() - monotonicTime();
+//        NSLog(@"beat time on HPC is %lld",time);
+//      NSLog(@"system time is approx. %lld",systemTime());
+//        NSLog(@"HPC time is approx %lld",monotonicTime());
+//        NSLog(@"diff is %lld",monotonicToSystem);
         time += monotonicToSystem; // translate high performance time into epoch of normal system clock
+//        NSLog(@"adjusted beat time is %lld",time);
         // later there should be a variant of /esp/tempo/q that requests high performance time
         int seconds = (int)(time / 1000000000);
         int nanoseconds = (int)(time % 1000000000);
@@ -214,7 +219,7 @@
         else { postProblem(@"received /esp/tempo/q with too many parameters", self); }
         return YES;
     }
-    
+
     else if([address isEqual:@"/esp/clock/q"])
     {
         EspTimeType time = monotonicTime();
@@ -228,7 +233,7 @@
         else { postProblem(@"received /esp/clock/q with too many parameters", self); }
         return YES;
     }
-    
+
     else if([address isEqual:@"/esp/person/s"])
         return [self setDefault:@"person" withParameters:d];
     else if([address isEqual:@"/esp/person/q"])
@@ -239,7 +244,7 @@
              fromHost:h
                  port:p];
     }
-    
+
     else if([address isEqual:@"/esp/machine/s"])
         return [self setDefault:@"machine" withParameters:d];
     else if([address isEqual:@"/esp/machine/q"])
@@ -250,7 +255,7 @@
              fromHost:h
                  port:p];
     }
-    
+
     else if([address isEqual:@"/esp/broadcast/s"])
         return [self setDefault:@"broadcast" withParameters:d];
     else if([address isEqual:@"/esp/broadcast/q"])
@@ -261,7 +266,7 @@
              fromHost:h
                  port:p];
     }
-    
+
     else if([address isEqual:@"/esp/clockMode/s"])
         return [self setDefault:@"clockMode" withParameters:d];
     else if([address isEqual:@"/esp/clockMode/q"])
@@ -272,7 +277,7 @@
              fromHost:h
                  port:p];
     }
-    
+
     else if([address isEqual:@"/esp/version/q"])
     {
         NSString* version = [NSString stringWithFormat:@"%d.%d.%d",
@@ -283,9 +288,9 @@
              fromHost:h
                  port:p];
     }
-        
-    
-    
+
+
+
     // *** this was cut-and-paste from former EspBridge, needs to be reworked
     else if([address isEqual:@"/esp/bridge/localGroup"])
     {

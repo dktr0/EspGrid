@@ -21,7 +21,7 @@
 
 #define ESPGRID_MAJORVERSION 0
 #define ESPGRID_MINORVERSION 54 // changes to external/internal protocol MUST increment MINORVERSION
-#define ESPGRID_SUBVERSION 0
+#define ESPGRID_SUBVERSION 1
 
 #define ESP_NUMBER_OF_OPCODES 10
 #define ESP_OPCODE_BEACON 0
@@ -50,7 +50,7 @@
     if(![vx isKindOfClass:[NSNumber class]]) { postWarning(@"opcode with " #vx " not NSString",self); return; } \
  } while(0)
 
-	 
+
 void postChat(NSString* s);
 void postWarning(NSString* s,id sender);
 void postProblem(NSString* s,id sender);
@@ -71,9 +71,24 @@ typedef int64_t EspTimeType;
 #endif
 
 inline static EspTimeType systemTime(void) {
+#ifndef _WIN32
+ // OS X and Linux (MINGW/GNUSTEP)
     struct timeval t;
     gettimeofday(&t, NULL);
     return (t.tv_sec*1000000000) + (t.tv_usec*1000);
+#else
+ // Windows (MINGW/GNUSTEP)
+  SYSTEMTIME s;
+  FILETIME f;
+  GetSystemTime(&s);
+  SystemTimeToFileTime(&s,&f);
+  EspTimeType r;
+  r = f.dwLowDateTime;
+  r += ((uint64_t)f.dwHighDateTime) <<32;
+  r -= 116444736000000000ULL; // epoch adjustment (Windows to UNIX)
+  r *= 100; // one hundred nanoseconds per Windows tick
+  return r;
+#endif
 }
 
 inline static EspTimeType monotonicTime(void) {
@@ -91,7 +106,7 @@ inline static EspTimeType monotonicTime(void) {
 	EspTimeType x = t.QuadPart / frequency.QuadPart * 1000000000L; // whole seconds in nanoseconds
 	EspTimeType y = t.QuadPart % frequency.QuadPart * 1000000000L / frequency.QuadPart; // remainder
 	return x+y;
-#else	
+#else
 	// Linux (GNUSTEP)
     struct timespec t;
     clock_gettime(CLOCK_MONOTONIC,&t);
@@ -142,4 +157,3 @@ inline static Float64 EspSwapFloat64(double x) { return CFSwapInt64(*((UInt64*)&
 #endif
 
 #endif
-
