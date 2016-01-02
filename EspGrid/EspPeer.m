@@ -162,10 +162,8 @@
     {
         EspTimeType incomingBeaconTime = [[d objectForKey:@"beaconReceiveMonotonic"] longLongValue];
         EspTimeType storedBeaconTime = [other lastBeaconMonotonic];
-        // [adjustmentsLock lock];
         adjustments[4] = refBeaconMonotonic = storedBeaconTime - incomingBeaconTime;
         adjustments[5] = refBeaconMonotonicAverage = [refBeaconMonotonicAverageObj push:refBeaconMonotonic];
-        // [adjustmentsLock unlock];
         NSLog(@"confirming reference beacon calculations");
     }
     else NSLog(@"mismatched beacon counts - stored = %d, received = %d",storedBeaconCount,incomingBeaconCount);
