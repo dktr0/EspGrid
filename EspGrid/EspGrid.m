@@ -19,6 +19,10 @@
 #import "EspGrid.h"
 #import "EspGridDefs.h"
 
+#ifdef _WIN32
+LARGE_INTEGER performanceFrequency;
+#endif
+
 @implementation EspGrid
 @synthesize versionString;
 @synthesize title;
@@ -59,6 +63,9 @@
 -(id) init
 {
     self = [super init];
+    #ifdef _WIN32
+    QueryPerformanceFrequency(&performanceFrequency);
+    #endif
     highVolumePosts = NO;
     versionString = [NSString stringWithFormat:@"version %d.%2d.%d",
                      ESPGRID_MAJORVERSION,ESPGRID_MINORVERSION,ESPGRID_SUBVERSION];

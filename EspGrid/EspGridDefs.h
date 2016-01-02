@@ -98,13 +98,14 @@ inline static EspTimeType monotonicTime(void) {
 #else
 #ifdef _WIN32
 	// Windows (MINGW/GNUSTEP)
-	LARGE_INTEGER frequency;
+	// LARGE_INTEGER frequency;
+  extern LARGE_INTEGER performanceFrequency;
 	LARGE_INTEGER t;
-	QueryPerformanceFrequency(&frequency);
+	// QueryPerformanceFrequency(&performanceFrequency);
 	// note: apparently function above is slow so we should probably do this differently
 	QueryPerformanceCounter(&t);
-	EspTimeType x = t.QuadPart / frequency.QuadPart * 1000000000L; // whole seconds in nanoseconds
-	EspTimeType y = t.QuadPart % frequency.QuadPart * 1000000000L / frequency.QuadPart; // remainder
+	EspTimeType x = t.QuadPart / performanceFrequency.QuadPart * 1000000000L; // whole seconds in nanoseconds
+	EspTimeType y = t.QuadPart % performanceFrequency.QuadPart * 1000000000L / performanceFrequency.QuadPart; // remainder
 	return x+y;
 #else
 	// Linux (GNUSTEP)
