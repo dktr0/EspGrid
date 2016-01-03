@@ -107,9 +107,9 @@
     for(;;)
     {
     #ifdef GNUSTEP
-        NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init]; // was this necessary for GNUstep,or...? it produces a segfault on OSX sometimes
+    //    NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init]; // was this necessary for GNUstep,or...? it produces a segfault on OSX sometimes
     #endif
-        
+
     #ifndef _WIN32
         struct msghdr msg;
         struct iovec entry;
@@ -128,7 +128,7 @@
         int s = sizeof(them);
         long n = recvfrom(socketRef, receiveBuffer, ESP_SOCKET_BUFFER_SIZE, 0, (struct sockaddr*)&them, &s);
     #endif
-        
+
         // get the receive time stamp as soon as possible
         EspTimeType receiveTime = monotonicTime();
         // (*(char*)(receiveBuffer+n)) = 0; // not sure why we were doing this - it seems unnecessary
@@ -144,7 +144,7 @@
         opcode->port = ntohs(them.sin_port);
         opcode->name[15] = 0; // sanitize received name and machine strings just in case
         opcode->machine[15] = 0;
-        
+
         // pass the sanitized opcode to delegate object (likely an EspChannel)
         @try {
             [delegate performSelectorOnMainThread:@selector(opcodeReceived:) withObject:receiveData waitUntilDone:YES];
@@ -155,7 +155,7 @@
             @throw;
         }
         #ifdef GNUSTEP
-	    [pool drain];
+	    //[pool drain];
         #endif
     }
 }
@@ -164,7 +164,7 @@
 static void inline sendData(int socketRef,const void* data,size_t length,NSString* host,int port)
 {
     assert([[NSThread currentThread] isMainThread]); // don't allow transmission other than from main thread
-    
+
     if(host == nil) { postProblem(@"can't send when host==nil",nil); return; }
     if(port == 0) { postProblem(@"can't send when port==0",nil); return; }
     struct sockaddr_in address;
@@ -193,7 +193,7 @@ static void inline sendData(int socketRef,const void* data,size_t length,NSStrin
     NSAssert([d objectForKey:@"name"]!=NULL,@"attempt to send old opcode without name key in dictionary");
     NSAssert([d objectForKey:@"machine"]!=NULL,@"attempt to send old opcode without machine key in dictionary");
     NSAssert(transmitBuffer != NULL,@"attempt to send old opcode without transmit buffer allocated");
-    
+
     // serialize the dictionary for transmission, and check it isn't too big for buffer
     NSError* err = nil;
     NSData* data = [NSPropertyListSerialization dataWithPropertyList:d format:NSPropertyListBinaryFormat_v1_0
@@ -204,7 +204,7 @@ static void inline sendData(int socketRef,const void* data,size_t length,NSStrin
         postProblem(@"attempt to send old opcode larger than opcode buffer", self);
         return;
     }
-    
+
     // form a new style opcode with the data
     EspOldOpcode* opcode = (EspOldOpcode*)transmitBuffer;
     opcode->header.opcode = n;
@@ -214,7 +214,7 @@ static void inline sendData(int socketRef,const void* data,size_t length,NSStrin
     strncpy(opcode->header.machine,[[d objectForKey:@"machine"] cStringUsingEncoding:NSUTF8StringEncoding],16);
     memcpy(transmitBuffer+sizeof(EspOpcode),[data bytes],[data length]);
     opcode->header.sendTime = monotonicTime();
-    
+
     // transmit the completed opcode
     sendData(socketRef, transmitBuffer, opcode->header.length,host,port);
 }
