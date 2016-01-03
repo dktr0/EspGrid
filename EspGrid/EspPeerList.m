@@ -115,20 +115,20 @@
     NSString* name = [NSString stringWithCString:opcode->header.name encoding:NSUTF8StringEncoding];
     NSString* machine = [NSString stringWithCString:opcode->header.machine encoding:NSUTF8StringEncoding];
     NSString* ip = [NSString stringWithCString:opcode->header.ip encoding:NSUTF8StringEncoding];
-    int theirMajorVersion = opcode->majorVersion;
-    int theirMinorVersion = opcode->minorVersion;
+    char theirMajorVersion = opcode->majorVersion;
+    char theirMinorVersion = opcode->minorVersion;
     
     // check EspGrid version of peer/sender and warn in cases of mismatch
     if(theirMajorVersion < ESPGRID_MAJORVERSION ||
        (theirMajorVersion==ESPGRID_MAJORVERSION && theirMinorVersion < ESPGRID_MINORVERSION))
     {
-        NSString* s = [NSString stringWithFormat:@"%@-%@ is running old EspGrid %d.%2d",name,machine,theirMajorVersion,theirMinorVersion];
+        NSString* s = [NSString stringWithFormat:@"%@-%@ is running old EspGrid %hhu.%2hhu",name,machine,theirMajorVersion,theirMinorVersion];
         postWarning(s,self);
     }
     else if(theirMajorVersion > ESPGRID_MAJORVERSION ||
             (theirMajorVersion==ESPGRID_MAJORVERSION && theirMinorVersion > ESPGRID_MINORVERSION))
     {
-        NSString* s = [NSString stringWithFormat:@"%@-%@ is running newer EspGrid %d.%2d",name,machine,theirMajorVersion,theirMinorVersion];
+        NSString* s = [NSString stringWithFormat:@"%@-%@ is running newer EspGrid %hhu.%2hhu",name,machine,theirMajorVersion,theirMinorVersion];
         postWarning(s,self);
     }
     
