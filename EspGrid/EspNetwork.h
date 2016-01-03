@@ -18,14 +18,15 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "EspOpcode.h"
 #import "EspPeerList.h"
 #import "EspChannel.h"
-#import "EspBridge.h"
 
 #define ESPUDP_MAX_HANDLERS 16
 
 @protocol EspNetworkDelegate
--(void) handleOpcode:(NSDictionary*)d;
+-(void) handleOpcode:(EspOpcode*)opcode;
+-(void) handleOldOpcode:(NSDictionary*)d;
 @end
 
 @interface EspNetwork : NSObject <EspChannelDelegate>
@@ -33,16 +34,17 @@
     id<EspNetworkDelegate> handlers[ESPUDP_MAX_HANDLERS];
     NSMutableArray* channels;
     EspChannel* broadcast;
-    EspBridge* bridge;
+    EspChannel* bridge;
 }
 @property (nonatomic,assign) EspChannel* broadcast;
-@property (nonatomic,assign) EspBridge* bridge;
+@property (nonatomic,assign) EspChannel* bridge;
 
 +(EspNetwork*) network;
--(void) sendOpcode:(int)opcode withDictionary:(NSDictionary*)d;
--(void) handleOpcode:(NSDictionary*)d;
+-(void) sendOldOpcode:(int)opcode withDictionary:(NSDictionary*)d; // old method
+-(void) sendOpcode:(EspOpcode*)opcode; // new method
+-(void) handleOpcode:(EspOpcode*)opcode; // new
+-(void) handleOldOpcode:(NSDictionary*)d; // old
 -(void) setHandler:(id)h forOpcode:(int)o;
 -(void) broadcastAddressChanged; // signal that the broadcast address may have been changed
-
 
 @end

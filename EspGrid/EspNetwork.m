@@ -55,7 +55,7 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
         [broadcast setPort:5509];
         [broadcast setHost:[[NSUserDefaults standardUserDefaults] objectForKey:@"broadcast"]];
         [channels addObject:broadcast];
-        bridge = [[EspBridge alloc] init];
+        bridge = [[EspChannel alloc] init];
         [bridge setDelegate:self];
     }
     return self;
@@ -73,18 +73,16 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
     [broadcast setHost:[[NSUserDefaults standardUserDefaults] objectForKey:@"broadcast"]];
 }
 
--(void) sendOpcode:(int)opcode withDictionary:(NSDictionary*)d
+-(void) sendOldOpcode:(int)opcode withDictionary:(NSDictionary*)d
 {
     @try
     {
-        NSString* log = [NSString stringWithFormat:@"sending opcode %s(%d)",opcodeName[opcode],opcode];
+        NSString* log = [NSString stringWithFormat:@"sending (old) opcode %s(%d)",opcodeName[opcode],opcode];
         postLog(log, nil);
-        // add some automatically generated entries to the dictionary before transmission
         NSMutableDictionary* e = [NSMutableDictionary dictionaryWithDictionary:d];
-        [e setValue:[NSNumber numberWithInt:opcode] forKey:@"opcode"];
         [e setValue:[[NSUserDefaults standardUserDefaults] objectForKey:@"person"] forKey:@"name"];
         [e setValue:[[NSUserDefaults standardUserDefaults] objectForKey:@"machine"] forKey:@"machine"];
-        for(EspChannel* c in channels) [c sendDictionaryWithTimes:e]; // send on all channels
+        for(EspChannel* c in channels) [c sendOldOpcode:opcode withDictionary:e]; // send on all channels
     }
     @catch (NSException* exception)
     {
@@ -95,12 +93,37 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
     }
 }
 
+-(void) sendOpcode:(EspOpcode*)opcode
+{
+    NSString* log = [NSString stringWithFormat:@"sending opcode %s(%d)",opcodeName[opcode->opcode],opcode->opcode];
+    postLog(log, nil);
+    const char* name = [[[NSUserDefaults standardUserDefaults] objectForKey:@"person"] cStringUsingEncoding:NSUTF8StringEncoding];
+    const char* machine = [[[NSUserDefaults standardUserDefaults] objectForKey:@"machine"] cStringUsingEncoding:NSUTF8StringEncoding];
+    // for later: we should only copy the name/machine into opcode structure when either of them changes
+    strcpy(opcode->name,name);
+    opcode->name[15] = 0; // i.e. make sure only 15 readable characters are included
+    strcpy(opcode->machine,machine);
+    opcode->machine[15] = 0;
+    for(EspChannel* c in channels) [c sendOpcode:opcode]; // send on all channels
+}
+
+
 // ***REMEMBER: need to make sure preferences change to broadcast gets to EspNetwork:channels[0] object!!!
+
+-(void) opcodeReceived:(EspOpcode *)opcode fromChannel:(EspChannel *)channel
+{
+    NSAssert([[NSThread currentThread] isMainThread],@"attempt to process packet outside of main thread");
+    [self handleOpcode:opcode];
+    // this is basically a placeholder, as this function is supposed to do forwarding to other channels
+}
 
 // when a packet comes in on any EspChannel, process it locally and forward to other channels
 -(void) packetReceived:(NSDictionary*)packet fromChannel:(EspChannel*)channel
 {
     NSAssert([[NSThread currentThread] isMainThread],@"attempt to process packet outside of main thread");
+    [self handleOldOpcode:packet];
+    // we are disactivating the forwarding system below, while other things are finished and tested
+    /*
     NSMutableDictionary* d = [NSMutableDictionary dictionaryWithDictionary:packet];
     if([packet objectForKey:@"sendTime"] == nil) // hasn't been rebroadcast yet
     {
@@ -116,7 +139,8 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
         // forward to all other channels
         // (individual channels might choose to ignore forwarding requests)
         [d removeObjectForKey:@"packetReceiveTime"];
-        for(EspChannel*c in channels) if(c != channel) [c sendDictionaryWithTimes:d];
+        int opcode = [[d objectForKey:@"opcode"] intValue];
+        for(EspChannel*c in channels) if(c != channel) [c sendOldOpcode:opcode withDictionary:d];
     }
     else
     {
@@ -130,12 +154,31 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
         // forward to all other channels
         // (individual channels might choose to ignore forwarding requests)
         [d removeObjectForKey:@"receiveTime"];
-        for(EspChannel*c in channels) if(c != channel) [c sendDictionaryWithTimes:d];
+        int opcode = [[d objectForKey:@"opcode"] intValue];
+        for(EspChannel*c in channels) if(c != channel) [c sendOldOpcode:opcode withDictionary:d];
+    }*/
+}
+
+-(void) handleOpcode: (EspOpcode*)opcode
+{
+    const char* ourName = [[[NSUserDefaults standardUserDefaults] stringForKey:@"person"] cStringUsingEncoding:NSUTF8StringEncoding];
+    const char* ourMach = [[[NSUserDefaults standardUserDefaults] stringForKey:@"machine"] cStringUsingEncoding:NSUTF8StringEncoding];
+    if(!strcmp(opcode->name,ourName) && !strcmp(opcode->machine, ourMach)) return; // ignore our own opcodes
+    id<EspNetworkDelegate> h = handlers[opcode->opcode];
+    if(h == nil) {
+        NSString* s = [NSString stringWithFormat:@"no handler for opcode %d from %s-%s at %s",
+                       opcode->opcode,opcode->name,opcode->machine,opcode->ip];
+        postProblem(s,self);
+        return;
     }
+    NSString* log = [NSString stringWithFormat:@"received %s(%d) from %s-%s at %s",
+                     opcodeName[opcode->opcode],opcode->opcode,opcode->name,opcode->machine,opcode->ip,nil];
+    postLog(log, nil);
+    [h handleOpcode:opcode];
 }
 
 
--(void) handleOpcode: (NSDictionary*)d
+-(void) handleOldOpcode: (NSDictionary*)d
 {
     if([[d objectForKey:@"name"] isEqual:[[NSUserDefaults standardUserDefaults] stringForKey:@"person"]])
     {
@@ -158,7 +201,7 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
                      [d objectForKey:@"machine"],
                      [d objectForKey:@"originAddress"]];
     postLog(log, nil);
-    [h handleOpcode:d];
+    [h handleOldOpcode:d];
 }
 
 -(void) setHandler:(id)h forOpcode:(int)o

@@ -106,11 +106,8 @@ The following message will return the major version, minor version and "sub vers
 
 In a very common use-case, EspGrid instances will talk to eachother via broadcast UDP packets on the local network. It is possible, however, to connect EspGrid instances in other ways (and this will be expanded in the future).  The following methods set these parameters on the local EspGrid instance, and make it reach out to connect with another EspGrid instance (for example, over the Internet):
 
-- /esp/bridge/localGroup [name::string = a descriptive name, i.e. "Cybernetic Orchestra in Hamilton"]
-- /esp/bridge/localAddress [address::string = a declaration of what address this group is reachable on]
-- /esp/bridge/localPort [port::int32 = an open port on which to bridge, i.e. 5678]
-- /esp/bridge/remoteAddress [address::string = the IP address of a remote group to connect to]
-- /esp/bridge/remotePort [port::int32 = the port on which to attempt to connect to the remote group]
+- /esp/bridge/host [address::string = the IP address of a remote group to connect to]
+- /esp/bridge/port [port::int32 = the port on which to attempt to connect to the remote group]
 
 ## OSC interface for "special cases"
 

@@ -17,6 +17,7 @@
 //  along with EspGrid.  If not, see <http://www.gnu.org/licenses/>.
 
 #import <Foundation/Foundation.h>
+#import "EspOpcode.h"
 #import "EspNetwork.h"
 #import "EspOsc.h"
 #import "EspPeerList.h"
@@ -33,6 +34,8 @@
     EspOsc* osc;
     EspTimeType flux;
     NSString* fluxStatus;
+    EspBeaconOpcode beacon;
+    EspAckOpcode ack;
 }
 @property (assign) int syncMode;
 @property (assign) EspTimeType flux;

@@ -34,7 +34,7 @@ LARGE_INTEGER performanceFrequency;
     [defs setObject:@"unknown" forKey:@"person"];
     [defs setObject:@"unknown" forKey:@"machine"];
     [defs setObject:@"255.255.255.255" forKey:@"broadcast"];
-    [defs setObject:[NSNumber numberWithInt:5] forKey:@"clockMode"]; // average reference beacon difference
+    [defs setObject:[NSNumber numberWithInt:4] forKey:@"clockMode"]; // average reference beacon difference
     [[NSUserDefaults standardUserDefaults] registerDefaults:defs];
 }
 
@@ -156,7 +156,7 @@ LARGE_INTEGER performanceFrequency;
     return [EspPeerList peerList];
 }
 
--(EspBridge*) bridge
+-(EspChannel*) bridge
 {
     return [[EspNetwork network] bridge];
 }
@@ -296,57 +296,24 @@ LARGE_INTEGER performanceFrequency;
                  port:p];
     }
 
-
-
-    // *** this was cut-and-paste from former EspBridge, needs to be reworked
-    else if([address isEqual:@"/esp/bridge/localGroup"])
+    else if([address isEqual:@"/esp/bridge/port"])
     {
         if([d count] != 1)
         {
-            postProblem(@"received /esp/bridge/localGroup with wrong number of parameters", self);
+            postProblem(@"received /esp/bridge/port with wrong number of parameters", self);
             return NO;
         }
-        [self setLocalGroup:[d objectAtIndex:0]];
+        [[[EspNetwork network] bridge] setPort:[[d objectAtIndex:0] intValue]];
         return YES;
     }
-    else if([address isEqual:@"/esp/bridge/localAddress"])
+    else if([address isEqual:@"/esp/bridge/host"])
     {
         if([d count] != 1)
         {
-            postProblem(@"received /esp/bridge/localAddress with wrong number of parameters", self);
+            postProblem(@"received /esp/bridge/host with wrong number of parameters", self);
             return NO;
         }
-        [self setLocalAddress:[d objectAtIndex:0]];
-        return YES;
-    }
-    else if([address isEqual:@"/esp/bridge/localPort"])
-    {
-        if([d count] != 1)
-        {
-            postProblem(@"received /esp/bridge/localPort with wrong number of parameters", self);
-            return NO;
-        }
-        [self changeLocalPort:[[d objectAtIndex:0] intValue]];
-        return YES;
-    }
-    else if([address isEqual:@"/esp/bridge/remoteAddress"])
-    {
-        if([d count] != 1)
-        {
-            postProblem(@"received /esp/bridge/remoteAddress with wrong number of parameters", self);
-            return NO;
-        }
-        [self setRemoteAddress:[d objectAtIndex:0]];
-        return YES;
-    }
-    else if([address isEqual:@"/esp/bridge/remotePort"])
-    {
-        if([d count] != 1)
-        {
-            postProblem(@"received /esp/bridge/remotePort with wrong number of parameters", self);
-            return NO;
-        }
-        [self setRemotePort:[d objectAtIndex:0]];
+        [[[EspNetwork network] bridge] setHost:[d objectAtIndex:0]];
         return YES;
     }
     return NO;

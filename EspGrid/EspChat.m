@@ -39,7 +39,7 @@
 -(void) sendMessage:(NSString*)msg
 {
     NSDictionary* d = [NSDictionary dictionaryWithObject:msg forKey:@"msg"];
-    [network sendOpcode:ESP_OPCODE_CHATSEND withDictionary:d];
+    [network sendOldOpcode:ESP_OPCODE_CHATSEND withDictionary:d];
     NSString* from = [[NSUserDefaults standardUserDefaults] stringForKey:@"person"];
     NSArray* a = [NSArray arrayWithObjects:@"/esp/chat/receive",from,msg,nil];
     [osc transmit:a log:YES];
@@ -47,7 +47,12 @@
     postChat(m);
 }
 
--(void) handleOpcode:(NSDictionary*)d;
+-(void) handleOpcode:(EspOpcode *)opcode
+{
+    NSAssert(false,@"empty new opcode handler called");
+}
+
+-(void) handleOldOpcode:(NSDictionary*)d;
 {
     int opcode = [[d objectForKey:@"opcode"] intValue];
     

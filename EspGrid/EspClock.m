@@ -45,14 +45,28 @@
     fluxIndex = 0;
     [self setFluxStatus:@"---"];
     self = [super init];
+    
+    // setup BEACON opcode
+    beacon.header.opcode = ESP_OPCODE_BEACON;
+    beacon.header.length = sizeof(EspBeaconOpcode);
+    beacon.majorVersion = ESPGRID_MAJORVERSION;
+    beacon.minorVersion = ESPGRID_MINORVERSION;
+    beacon.subVersion = ESPGRID_SUBVERSION;
+    
+    // setup ACK opcode
+    ack.header.opcode = ESP_OPCODE_ACK;
+    ack.header.length = sizeof(EspAckOpcode);
+    
     countOfBeaconsIssued = 0;
-    [self sendBeacon:nil];
+    [self sendBeacon:nil]; // issue initial beacon
+    
     return self;
 }
 
 
 -(void) changeSyncMode:(int)mode
 {
+    NSLog(@"changing clock mode to %d",mode);
     [self setSyncMode:mode];
     [[peerList selfInPeerList] setSyncMode:mode];
 }
@@ -60,29 +74,29 @@
 -(void) issueBeacon
 {
     countOfBeaconsIssued++;
-    NSMutableDictionary* d = [[NSMutableDictionary alloc] init]; // was autoreleased on OSX 0.48 ???
-    [d setObject:[NSNumber numberWithLong:countOfBeaconsIssued] forKey:@"beaconCount"];
-    [d setObject:[NSNumber numberWithInt:ESPGRID_MAJORVERSION] forKey:@"majorVersion"];
-    [d setObject:[NSNumber numberWithInt:ESPGRID_MINORVERSION] forKey:@"minorVersion"];
-    [d setObject:[NSNumber numberWithInt:ESPGRID_SUBVERSION] forKey:@"subVersion"];
-    [d setObject:[NSNumber numberWithInt:syncMode] forKey:@"syncMode"];
-    [network sendOpcode:ESP_OPCODE_BEACON withDictionary:d];
+    beacon.beaconCount = countOfBeaconsIssued;
+    beacon.syncMode = syncMode;
+    [network sendOpcode:(EspOpcode*)&beacon];
     [peerList updateStatus];
 }
 
--(void) issueAck:(NSDictionary*)d
+-(void) issueAck:(EspBeaconOpcode*)b
 {
-    // argument d contains what was received from an incoming BEACON opcode
-    // some of that is bundled back into the outgoing ACK opcode
-    NSMutableDictionary* d2 = [[NSMutableDictionary alloc] init];
-    [d2 setValue:[d objectForKey:@"name"] forKey:@"nameRcvd"];
-    [d2 setValue:[d objectForKey:@"machine"]forKey:@"machineRcvd"];
-    [d2 setValue:[d objectForKey:@"originAddress"] forKey:@"ipRcvd"];
-    [d2 setValue:[[d objectForKey:@"beaconCount"] copy] forKey:@"beaconCount"];
-    [d2 setValue:[[d objectForKey:@"sendTime"] copy] forKey:@"beaconSend"];
-    [d2 setValue:[[d objectForKey:@"receiveTime"] copy] forKey:@"beaconReceive"];
-    [network sendOpcode:ESP_OPCODE_ACK withDictionary:d2];
+    strcpy(ack.nameRcvd,b->header.name);
+    ack.nameRcvd[15] = 0; // i.e. make sure strings have only 15 readable characters in them
+    strcpy(ack.machineRcvd,b->header.machine);
+    ack.machineRcvd[15] = 0;
+    strcpy(ack.ipRcvd,b->header.ip);
+    ack.ipRcvd[15] = 0;
+    ack.beaconCount = b->beaconCount;
+    ack.beaconSend = b->header.sendTime;
+    ack.beaconReceive = b->header.receiveTime;
+    [network sendOpcode:(EspOpcode*)&ack];
 }
+
+// THEN: continue through to receive processing, possibly making old and new systems coexist for different opcodes
+// lingering question: will this be cross-platform (i.e. are the structures tightly-packed? I sure hope so...)
+
 
 -(void) sendBeacon:(NSTimer*)t
 {
@@ -95,46 +109,24 @@
                                     repeats:NO];
 }
 
--(void) handleOpcode:(NSDictionary*)d;
+-(void) handleOpcode:(EspOpcode*)opcode;
 {
-    id opcodeObject = [d objectForKey:@"opcode"];
-    if(opcodeObject == nil) { postWarning(@"asked to handle opcode without opcode field",self); }
-    if(![opcodeObject isKindOfClass:[NSNumber class]]) { postWarning(@"opcode field not number",self); }
-    int opcode = [opcodeObject intValue];
-        
-    if(opcode==ESP_OPCODE_BEACON) {
-        // validate opcode fields
-        NSString* name = [d objectForKey:@"name"]; VALIDATE_OPCODE_NSSTRING(name);
-        NSString* machine = [d objectForKey:@"machine"]; VALIDATE_OPCODE_NSSTRING(machine);
-        NSString* ip = [d objectForKey:@"originAddress"]; VALIDATE_OPCODE_NSSTRING(ip);
-        NSNumber* beaconCount = [d objectForKey:@"beaconCount"]; VALIDATE_OPCODE_NSNUMBER(beaconCount);
-        NSNumber* majorVersion = [d objectForKey:@"majorVersion"]; VALIDATE_OPCODE_NSNUMBER(majorVersion);
-        NSNumber* minorVersion = [d objectForKey:@"minorVersion"]; VALIDATE_OPCODE_NSNUMBER(minorVersion);
-        // should change later to validate received subVersion from BEACON as well
-        NSNumber* syncModeObject = [d objectForKey:@"syncMode"]; VALIDATE_OPCODE_NSNUMBER(syncModeObject);
-        NSNumber* sendTime = [d objectForKey:@"sendTime"]; VALIDATE_OPCODE_NSNUMBER(sendTime);
-        NSNumber* receiveTime = [d objectForKey:@"receiveTime"]; VALIDATE_OPCODE_NSNUMBER(receiveTime);
-        // log; respond with ACK; harvest data into peerlist
-        postLog([NSString stringWithFormat:@"BEACON from %@-%@ at %@",name,machine,ip],self);
-        [self issueAck:d];
-        [peerList receivedBeacon:d];
+    NSAssert(opcode->opcode == ESP_OPCODE_BEACON || opcode->opcode == ESP_OPCODE_ACK,@"EspClock sent unrecognized opcode");
+    
+    if(opcode->opcode==ESP_OPCODE_BEACON) {
+        postLog([NSString stringWithFormat:@"BEACON from %s-%s at %s",opcode->name,opcode->machine,opcode->ip],self);
+        [self issueAck:(EspBeaconOpcode*)opcode];
+        [peerList receivedBeacon:(EspBeaconOpcode*)opcode];
     }
     
-    if(opcode==ESP_OPCODE_ACK) {
-        // validate opcode fields
-        NSString* name = [d objectForKey:@"name"]; VALIDATE_OPCODE_NSSTRING(name);
-        NSString* machine = [d objectForKey:@"machine"]; VALIDATE_OPCODE_NSSTRING(machine);
-        NSString* ip = [d objectForKey:@"originAddress"]; VALIDATE_OPCODE_NSSTRING(ip);
-        NSString* nameRcvd = [d objectForKey:@"nameRcvd"]; VALIDATE_OPCODE_NSSTRING(nameRcvd);
-        NSString* machineRcvd = [d objectForKey:@"machineRcvd"]; VALIDATE_OPCODE_NSSTRING(machineRcvd);
-        NSString* ipRcvd = [d objectForKey:@"ipRcvd"]; VALIDATE_OPCODE_NSSTRING(ipRcvd);
-        NSNumber* beaconCountObject = [d objectForKey:@"beaconCount"]; VALIDATE_OPCODE_NSNUMBER(beaconCountObject);
-        NSNumber* beaconSend = [d objectForKey:@"beaconSend"]; VALIDATE_OPCODE_NSNUMBER(beaconSend);
-        NSNumber* beaconReceive = [d objectForKey:@"beaconReceive"]; VALIDATE_OPCODE_NSNUMBER(beaconReceive);
-        NSNumber* sendTime = [d objectForKey:@"sendTime"]; VALIDATE_OPCODE_NSNUMBER(sendTime);
-        NSNumber* receiveTime = [d objectForKey:@"receiveTime"]; VALIDATE_OPCODE_NSNUMBER(receiveTime);
-        [peerList receivedAck:d]; // harvest data into peerlist
+    if(opcode->opcode==ESP_OPCODE_ACK) {
+        [peerList receivedAck:(EspAckOpcode*)opcode]; // harvest data into peerlist
     }
+}
+
+-(void) handleOldOpcode:(NSDictionary*)opcode
+{
+    NSAssert(false,@"empty old opcode handler called");
 }
 
 -(EspTimeType) adjustmentForPeer:(EspPeer*)peer

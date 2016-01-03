@@ -57,32 +57,32 @@
     [super dealloc];
 }
 
--(void) processBeacon:(NSDictionary*)d
+-(void) processBeacon:(EspBeaconOpcode*)opcode
 {
-    [self setName:[d objectForKey:@"name"]];
-    [self setMachine:[d objectForKey:@"machine"]];
-    [self setIp:[d objectForKey:@"ip"]];
-    [self setMajorVersion:[[d objectForKey:@"majorVersion"] intValue]];
-    [self setMinorVersion:[[d objectForKey:@"minorVersion"] intValue]];
-    [self setSubVersion:[[d objectForKey:@"subVersion"] intValue]];
+    [self setName:[NSString stringWithCString:opcode->header.name encoding:NSUTF8StringEncoding]];
+    [self setMachine:[NSString stringWithCString:opcode->header.machine encoding:NSUTF8StringEncoding]];
+    [self setIp:[NSString stringWithCString:opcode->header.ip encoding:NSUTF8StringEncoding]];
+    [self setMajorVersion:opcode->majorVersion];
+    [self setMinorVersion:opcode->minorVersion];
+    [self setSubVersion:opcode->subVersion];
     [self setVersion:[NSString stringWithFormat:@"%d.%d.%d",majorVersion,minorVersion,subVersion]];
-    [self setSyncMode:[[d objectForKey:@"syncMode"] intValue]];
-    [self setBeaconCount:[[d objectForKey:@"beaconCount"] intValue]];
-    [self setLastBeacon:[[d objectForKey:@"receiveTime"] longLongValue]];
+    [self setSyncMode:opcode->syncMode];
+    [self setBeaconCount:opcode->beaconCount];
+    [self setLastBeacon:opcode->header.receiveTime];
     [self setLastBeaconStatus:@"<10s"];
 }
 
--(void) processAckForSelf:(NSDictionary*)d peerCount:(int)count
+-(void) processAckForSelf:(EspAckOpcode*)opcode peerCount:(int)count
 {
     // when we receive an ACK to our own beacon, we can use the information it contains
     // to form various estimates of the latency between ourselves and the peer sending the ACK
     // Note: this method does not verify that the ACK is indeed meant for this peer
     
     // these are clock measurements included with the ACK opcode, or added by send/receive
-    EspTimeType beaconSend = [[d objectForKey:@"beaconSend"] longLongValue];
-    EspTimeType beaconReceive = [[d objectForKey:@"beaconReceive"] longLongValue];
-    EspTimeType ackSend = [[d objectForKey:@"sendTime"] longLongValue];
-    EspTimeType ackReceive = [[d objectForKey:@"receiveTime"] longLongValue];
+    EspTimeType beaconSend = opcode->beaconSend;
+    EspTimeType beaconReceive = opcode->beaconReceive;
+    EspTimeType ackSend = opcode->header.sendTime;
+    EspTimeType ackReceive = opcode->header.receiveTime;
     
     // from these times we can calculate roundtrip time, and interval peer spent preparing ACK, on each clock
     // and then each of those can be tracked immediately, lowest value or average value
@@ -115,16 +115,16 @@
     }
 }
 
--(void) processAck:(NSDictionary*)d forOther:(EspPeer*)other
+-(void) processAck:(EspAckOpcode*)opcode forOther:(EspPeer*)other
 {
     // when we receive an ACK to someone else' beacon, we can use the information it contains
     // to form reference beacon style estimates of the difference between their clocks and our clocks
         
-    int incomingBeaconCount = [[d objectForKey:@"beaconCount"] intValue];
-    int storedBeaconCount = [other beaconCount];
+    long incomingBeaconCount = opcode->beaconCount;
+    long storedBeaconCount = [other beaconCount];
     if(incomingBeaconCount == storedBeaconCount)
     {
-        EspTimeType incomingBeaconTime = [[d objectForKey:@"beaconReceive"] longLongValue];
+        EspTimeType incomingBeaconTime = opcode->beaconReceive;
         EspTimeType storedBeaconTime = [other lastBeacon];
         adjustments[3] = refBeacon = storedBeaconTime - incomingBeaconTime;
         adjustments[4] = refBeaconAverage = [refBeaconAverageObj push:refBeacon];

@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0603F51117DD562D009943C3 /* EspBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 0603F51017DD562D009943C3 /* EspBridge.m */; };
 		060A261515C90E2E00BC5E8D /* EspBeat.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25EE15C90E2E00BC5E8D /* EspBeat.m */; };
 		060A261615C90E2E00BC5E8D /* EspChat.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25F015C90E2E00BC5E8D /* EspChat.m */; };
 		060A261715C90E2E00BC5E8D /* EspClock.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25F215C90E2E00BC5E8D /* EspClock.m */; };
@@ -31,9 +30,6 @@
 		060ABC4517E0C13E0031AE8F /* EspCodeShare.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25F415C90E2E00BC5E8D /* EspCodeShare.m */; };
 		060ABC4617E0C1450031AE8F /* EspKeyValueController.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25FA15C90E2E00BC5E8D /* EspKeyValueController.m */; };
 		060ABC4917E0C14C0031AE8F /* EspPeerList.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A260015C90E2E00BC5E8D /* EspPeerList.m */; };
-		060ABC4D17E0C15A0031AE8F /* EspBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 0603F51017DD562D009943C3 /* EspBridge.m */; };
-		060ABC4E17E0C15C0031AE8F /* EspBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 0603F51017DD562D009943C3 /* EspBridge.m */; };
-		060ABC4F17E0C15C0031AE8F /* EspBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = 0603F51017DD562D009943C3 /* EspBridge.m */; };
 		063BE05618259F1000B31C18 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 063BE05518259F1000B31C18 /* main.m */; };
 		063BE058182738BA00B31C18 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A261415C90E2E00BC5E8D /* main.m */; };
 		0640A21419FD38DC00A41A1E /* AudioUnit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0640A21219FD38DC00A41A1E /* AudioUnit.framework */; };
@@ -68,6 +64,7 @@
 		06534E871BDBD8620051E388 /* EspOscSubscribers.m in Sources */ = {isa = PBXBuildFile; fileRef = 06534E851BDBD8620051E388 /* EspOscSubscribers.m */; };
 		06534E881BDBD8620051E388 /* EspOscSubscribers.m in Sources */ = {isa = PBXBuildFile; fileRef = 06534E851BDBD8620051E388 /* EspOscSubscribers.m */; };
 		06534E8B1BDC0DA30051E388 /* EspOscSubscribersTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06534E8A1BDC0DA30051E388 /* EspOscSubscribersTest.m */; };
+		06635CA61C38BC6D003E8A8F /* EspOscSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 06635CA51C38BC6D003E8A8F /* EspOscSocket.m */; };
 		0676AF761637A2610082B57D /* Help in Resources */ = {isa = PBXBuildFile; fileRef = 0676AF751637A2610082B57D /* Help */; };
 		068B283F182C6E2500EA2990 /* EspSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283A182C6E2500EA2990 /* EspSocket.m */; };
 		068B2840182C6E2500EA2990 /* EspSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 068B283A182C6E2500EA2990 /* EspSocket.m */; };
@@ -133,8 +130,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0603F50F17DD562D009943C3 /* EspBridge.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspBridge.h; sourceTree = "<group>"; };
-		0603F51017DD562D009943C3 /* EspBridge.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspBridge.m; sourceTree = "<group>"; };
 		060A25ED15C90E2E00BC5E8D /* EspBeat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = EspBeat.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		060A25EE15C90E2E00BC5E8D /* EspBeat.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspBeat.m; sourceTree = "<group>"; };
 		060A25EF15C90E2E00BC5E8D /* EspChat.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = EspChat.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
@@ -196,6 +191,9 @@
 		06534E8A1BDC0DA30051E388 /* EspOscSubscribersTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspOscSubscribersTest.m; sourceTree = "<group>"; };
 		06534E8C1BDC0DEA0051E388 /* EspOscSubscribersTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EspOscSubscribersTest.h; sourceTree = "<group>"; };
 		065F7040162B16B6008D0CB7 /* EspGridDefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspGridDefs.h; sourceTree = "<group>"; };
+		06635CA31C38A3F5003E8A8F /* EspOpcode.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EspOpcode.h; sourceTree = "<group>"; };
+		06635CA41C38BC6D003E8A8F /* EspOscSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspOscSocket.h; sourceTree = "<group>"; };
+		06635CA51C38BC6D003E8A8F /* EspOscSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspOscSocket.m; sourceTree = "<group>"; };
 		0676AF751637A2610082B57D /* Help */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Help; path = EspGridOSX/Help; sourceTree = "<group>"; };
 		068B2839182C6E2500EA2990 /* EspSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspSocket.h; sourceTree = "<group>"; };
 		068B283A182C6E2500EA2990 /* EspSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspSocket.m; sourceTree = "<group>"; };
@@ -300,15 +298,16 @@
 			children = (
 				063BE05718259F2200B31C18 /* Makefile */,
 				065F7040162B16B6008D0CB7 /* EspGridDefs.h */,
+				06635CA31C38A3F5003E8A8F /* EspOpcode.h */,
 				068B2839182C6E2500EA2990 /* EspSocket.h */,
 				068B283A182C6E2500EA2990 /* EspSocket.m */,
 				06FE7D6D18E8A24E000131C3 /* EspChannel.h */,
 				06FE7D6E18E8A24E000131C3 /* EspChannel.m */,
-				0603F50F17DD562D009943C3 /* EspBridge.h */,
-				0603F51017DD562D009943C3 /* EspBridge.m */,
 				068B283E182C6E2500EA2990 /* EspNetwork.h */,
 				068B283B182C6E2500EA2990 /* EspNetwork.m */,
 				06534E891BDBD9510051E388 /* EspHandleOsc.h */,
+				06635CA41C38BC6D003E8A8F /* EspOscSocket.h */,
+				06635CA51C38BC6D003E8A8F /* EspOscSocket.m */,
 				06534E841BDBD8620051E388 /* EspOscSubscribers.h */,
 				06534E851BDBD8620051E388 /* EspOscSubscribers.m */,
 				068B283C182C6E2500EA2990 /* EspOsc.h */,
@@ -690,7 +689,6 @@
 				063BE05618259F1000B31C18 /* main.m in Sources */,
 				0640A21819FD393900A41A1E /* EspMovingAverage.m in Sources */,
 				06534E881BDBD8620051E388 /* EspOscSubscribers.m in Sources */,
-				060ABC4D17E0C15A0031AE8F /* EspBridge.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -712,7 +710,6 @@
 				06D2BBC6163DC0F5002AB7AE /* EspQueue.m in Sources */,
 				06D2BBC7163DC155002AB7AE /* EspCodeShare.m in Sources */,
 				06D31E9A164ADFCA002CCCAF /* EspCodeShareItem.m in Sources */,
-				060ABC4E17E0C15C0031AE8F /* EspBridge.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -723,6 +720,7 @@
 				060A261515C90E2E00BC5E8D /* EspBeat.m in Sources */,
 				06534E861BDBD8620051E388 /* EspOscSubscribers.m in Sources */,
 				060A261615C90E2E00BC5E8D /* EspChat.m in Sources */,
+				06635CA61C38BC6D003E8A8F /* EspOscSocket.m in Sources */,
 				060A261715C90E2E00BC5E8D /* EspClock.m in Sources */,
 				068B283F182C6E2500EA2990 /* EspSocket.m in Sources */,
 				060A261815C90E2E00BC5E8D /* EspCodeShare.m in Sources */,
@@ -741,7 +739,6 @@
 				068B2845182C6E2500EA2990 /* EspOsc.m in Sources */,
 				06D31E99164ADFCA002CCCAF /* EspCodeShareItem.m in Sources */,
 				0698E8AB1722B2D900FCE1AA /* EspDetailedPeerListController.m in Sources */,
-				0603F51117DD562D009943C3 /* EspBridge.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -772,7 +769,6 @@
 				06A17BEA16A39CE900F798D5 /* EspClockTests.m in Sources */,
 				06A17BED16A3C0DF00F798D5 /* EspKeyValueControllerTests.m in Sources */,
 				068B2846182C6E2500EA2990 /* EspOsc.m in Sources */,
-				060ABC4F17E0C15C0031AE8F /* EspBridge.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

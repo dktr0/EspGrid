@@ -1,7 +1,7 @@
 //
-//  EspSocket.m
+//  EspOscSocket.m
 //
-//  This file is part of EspGrid.  EspGrid is (c) 2012,2013 by David Ogborn.
+//  This file is part of EspGrid.  EspGrid is (c) 2012-2016 by David Ogborn.
 //
 //  EspGrid is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with EspGrid.  If not, see <http://www.gnu.org/licenses/>.
 
-#import "EspSocket.h"
+#import "EspOscSocket.h"
 #import "EspGridDefs.h"
 #import <unistd.h>
 
@@ -24,16 +24,16 @@
 #import <Ws2tcpip.h>
 #endif
 
-@implementation EspSocket
+@implementation EspOscSocket
 @synthesize delegate;
 
--(id) initWithPort:(int)p andDelegate:(id<EspSocketDelegate>)d
+-(id) initWithPort: (int)p andDelegate:(id<EspOscSocketDelegate>)d
 {
     self = [super init];
-    transmitData = [[NSMutableData alloc] initWithLength:ESP_SOCKET_BUFFER_SIZE];
+    transmitData = [[NSMutableData alloc] initWithLength:ESP_OSC_SOCKET_BUFFER_SIZE];
     if(!transmitData) { postProblem(@"unable to allocate transmitData", self); }
     transmitBuffer = (void*)[transmitData bytes];
-    receiveData = [[NSMutableData alloc] initWithLength:ESP_SOCKET_BUFFER_SIZE];
+    receiveData = [[NSMutableData alloc] initWithLength:ESP_OSC_SOCKET_BUFFER_SIZE];
     if(!receiveData) { postProblem(@"unable to allocate receiveData", self); }
     receiveBuffer = (void*)[receiveData bytes];
     if(!receiveData) { postProblem(@"unable to allocate receiveData", self); }
@@ -57,16 +57,12 @@
 
 -(void) dealloc
 {
-    [self closeSocket];
+    close(socketRef);
     [receiveData release];
+    free(receiveBuffer);
     [transmitData release];
+    free(transmitBuffer);
     [super dealloc];
-}
-
--(void) closeSocket
-{
-    if(socketRef!=0)close(socketRef);
-    socketRef = 0;
 }
 
 -(BOOL) bindToPort:(unsigned int)p
@@ -100,7 +96,6 @@
     return YES;
 }
 
-
 -(void) udpReceiveLoop
 {
     [NSThread setThreadPriority:0.5];
@@ -109,7 +104,6 @@
     #ifdef GNUSTEP
         NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init]; // was this necessary for GNUstep,or...? it produces a segfault on OSX sometimes
     #endif
-        
     #ifndef _WIN32
         struct msghdr msg;
         struct iovec entry;
@@ -118,7 +112,7 @@
         msg.msg_iov = &entry;
         msg.msg_iovlen = 1;
         entry.iov_base = receiveBuffer;
-        entry.iov_len = ESP_SOCKET_BUFFER_SIZE;
+        entry.iov_len = ESP_OSC_SOCKET_BUFFER_SIZE;
         msg.msg_name = (caddr_t)&them;
         msg.msg_namelen = sizeof(them);
         msg.msg_control = &control;
@@ -126,45 +120,46 @@
         long n = recvmsg(socketRef, &msg, 0);
     #else
         int s = sizeof(them);
-        long n = recvfrom(socketRef, receiveBuffer, ESP_SOCKET_BUFFER_SIZE, 0, (struct sockaddr*)&them, &s);
+        long n = recvfrom(socketRef, receiveBuffer, ESP_OSC_SOCKET_BUFFER_SIZE, 0, (struct sockaddr*)&them, &s);
     #endif
-        
-        // get the receive time stamp as soon as possible
-        EspTimeType receiveTime = monotonicTime();
-        // (*(char*)(receiveBuffer+n)) = 0; // not sure why we were doing this - it seems unnecessary
-        // validate the length of the received packet
-        if(n>ESP_SOCKET_BUFFER_SIZE) { postProblem(@"received more data than buffer can handle",self); continue; }
-        else if(n==0) { postProblem(@"received network data of length 0",self); continue; }
-        else if(n==-1) { NSLog(@"***udpReceiveLoop error: %s",strerror(errno)); continue; }
-        EspOpcode* opcode = (EspOpcode*)receiveBuffer;
-        if(n != opcode->length) { postProblem(@"packet length doesn't match opcode length",self); continue; }
-        // if we get this far, length of received packet is valid (and it is highly likely it is indeed an opcode)
-        opcode->receiveTime = receiveTime;
-        strncpy(opcode->ip, inet_ntoa(them.sin_addr), 16);
-        opcode->port = ntohs(them.sin_port);
-        opcode->name[15] = 0; // sanitize received name and machine strings just in case
-        opcode->machine[15] = 0;
-        
-        // pass the sanitized opcode to delegate object (likely an EspChannel)
-        @try {
-            [delegate performSelectorOnMainThread:@selector(opcodeReceived:) withObject:receiveData waitUntilDone:YES];
+        EspTimeType monotonic = monotonicTime();
+        if(n>ESP_OSC_SOCKET_BUFFER_SIZE)
+        {
+            postProblem(@"received more data than buffer can handle",self);
+            continue;
         }
-        @catch (NSException* exception) {
-            NSString* msg = [NSString stringWithFormat:@"EXCEPTION in udpReceiveLoop: %@: %@",[exception name],[exception  reason]];
-            postProblem(msg, nil);
-            @throw;
-        }
-        #ifdef GNUSTEP
+        if(n>0) {
+
+            (*(char*)(receiveBuffer+n)) = 0;
+            NSString* h = [NSString stringWithCString:inet_ntoa(them.sin_addr) encoding:NSASCIIStringEncoding];
+            NSData* d = [[NSData alloc] initWithBytesNoCopy:receiveBuffer length:n freeWhenDone:NO];
+            them.sin_port = ntohs(them.sin_port);
+            @try {
+                NSDictionary* packet = [NSDictionary dictionaryWithObjectsAndKeys:
+                                        d,@"data",h,@"host",[NSNumber numberWithInt:them.sin_port],@"port",
+                                        [NSNumber numberWithUnsignedLongLong:monotonic],@"monotonicTime",nil];
+                [delegate performSelectorOnMainThread:@selector(packetReceived:) withObject:packet waitUntilDone:YES];
+            }
+            @catch (NSException* exception) {
+                NSString* msg = [NSString stringWithFormat:@"EXCEPTION in udpReceiveLoop: %@: %@",[exception name],[exception  reason]];
+                postProblem(msg, nil);
+                @throw;
+            }
+            [d release];
+#ifdef GNUSTEP
 	    [pool drain];
-        #endif
+#endif
+        }
+        else if (n==-1)
+        {
+            NSLog(@"***udpReceiveLoop error: %s",strerror(errno));
+        }
     }
 }
 
-
-static void inline sendData(int socketRef,const void* data,size_t length,NSString* host,int port)
+static void sendOscData(int socketRef,const void* data,size_t length,NSString* host,int port)
 {
     assert([[NSThread currentThread] isMainThread]); // don't allow transmission other than from main thread
-    
     if(host == nil) { postProblem(@"can't send when host==nil",nil); return; }
     if(port == 0) { postProblem(@"can't send when port==0",nil); return; }
     struct sockaddr_in address;
@@ -177,46 +172,14 @@ static void inline sendData(int socketRef,const void* data,size_t length,NSStrin
     if(r != length) NSLog(@"*** sendto unable to send all %ld bytes to %@, bytes sent = %ld",length,host,r);
 }
 
-
--(void) sendOpcode:(EspOpcode*)opcode toHost:(NSString*)host
+-(void)sendData: (NSData*)data toHost:(NSString*)host port:(int)p
 {
-    opcode->sendTime = monotonicTime();
-    sendData(socketRef, (void*)opcode, opcode->length,host,port);
+    sendOscData(socketRef, [data bytes], [data length], host, p); // use a specific port indicated by argument p
 }
 
-
--(void) sendOldOpcode:(int)n withDictionary:(NSDictionary*)d toHost:(NSString*)host
+-(void)sendData: (NSData*)data toHost:(NSString*)host
 {
-    // check for some unlikely mistakes we hopefully haven't made
-    NSAssert(n!=ESP_OPCODE_BEACON,@"attempt to send new opcode BEACON with sendOldOpcode");
-    NSAssert(n!=ESP_OPCODE_ACK,@"attempt to send new opcode ACK with sendOldOpcode");
-    NSAssert([d objectForKey:@"name"]!=NULL,@"attempt to send old opcode without name key in dictionary");
-    NSAssert([d objectForKey:@"machine"]!=NULL,@"attempt to send old opcode without machine key in dictionary");
-    NSAssert(transmitBuffer != NULL,@"attempt to send old opcode without transmit buffer allocated");
-    
-    // serialize the dictionary for transmission, and check it isn't too big for buffer
-    NSError* err = nil;
-    NSData* data = [NSPropertyListSerialization dataWithPropertyList:d format:NSPropertyListBinaryFormat_v1_0
-                                                             options:0 error:&err];
-    if(err != nil) @throw([NSException exceptionWithName:@"serialization" reason:@"unknown" userInfo:nil]);
-    size_t maxSize = ESP_SOCKET_BUFFER_SIZE - sizeof(EspOpcode);
-    if([data length] > maxSize) {
-        postProblem(@"attempt to send old opcode larger than opcode buffer", self);
-        return;
-    }
-    
-    // form a new style opcode with the data
-    EspOldOpcode* opcode = (EspOldOpcode*)transmitBuffer;
-    opcode->header.opcode = n;
-    opcode->header.receiveTime = 0LL;
-    opcode->header.length = (int)sizeof(EspOpcode) + (int)[data length];
-    strncpy(opcode->header.name,[[d objectForKey:@"name"] cStringUsingEncoding:NSUTF8StringEncoding],16);
-    strncpy(opcode->header.machine,[[d objectForKey:@"machine"] cStringUsingEncoding:NSUTF8StringEncoding],16);
-    memcpy(transmitBuffer+sizeof(EspOpcode),[data bytes],[data length]);
-    opcode->header.sendTime = monotonicTime();
-    
-    // transmit the completed opcode
-    sendData(socketRef, transmitBuffer, opcode->header.length,host,port);
+    sendOscData(socketRef, [data bytes], [data length], host, port); // use the port on which we listen
 }
 
 @end

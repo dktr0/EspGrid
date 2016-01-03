@@ -134,7 +134,7 @@
                        [NSNumber numberWithLong:contentLength],@"length",
                        sourceName,@"sourceName",
                        sourceMachine,@"sourceMachine",nil];
-    [udp sendOpcode:ESP_OPCODE_ANNOUNCESHARE withDictionary:o];
+    [udp sendOldOpcode:ESP_OPCODE_ANNOUNCESHARE withDictionary:o];
 }
 
 -(void) requestAllOnUdp:(EspNetwork*)udp
@@ -146,7 +146,7 @@
                        [NSNumber numberWithDouble:timeStamp], @"timeStamp", nil];
     NSString* l = [NSString stringWithFormat:@"sending REQUEST_SHARE (opcode 6) for %lld on %@-%@",timeStamp,sourceName,sourceMachine];
     postLog(l, self);
-    [udp sendOpcode:ESP_OPCODE_REQUESTSHARE withDictionary:o];
+    [udp sendOldOpcode:ESP_OPCODE_REQUESTSHARE withDictionary:o];
 }
 
 -(void) deliverAllOnUdp:(EspNetwork*)udp
@@ -178,7 +178,7 @@
                        [NSNumber numberWithLong:i],@"index",f,@"fragment",nil];
     NSString* l = [NSString stringWithFormat:@"sending DELIVER_SHARE (opcode 7) for %lld on %@-%@ (%ld of %ld)",timeStamp,sourceName,sourceMachine,i+1,nFragments];
     postLog(l,self);
-    [udp sendOpcode:ESP_OPCODE_DELIVERSHARE withDictionary:o];
+    [udp sendOldOpcode:ESP_OPCODE_DELIVERSHARE withDictionary:o];
     [f release];
 }
 

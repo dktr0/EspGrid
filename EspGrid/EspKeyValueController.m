@@ -107,7 +107,7 @@
     [d setObject:[authorityMachines objectForKey:keyPath] forKey:@"authorityMachine"];
     [d setObject:[[timeStamps objectForKey:keyPath] copy] forKey:@"timeStamp"];
     [d setObject:[[values objectForKey:keyPath] copy] forKey:@"value"];
-    [network sendOpcode:ESP_OPCODE_KVC withDictionary:d];
+    [network sendOldOpcode:ESP_OPCODE_KVC withDictionary:d];
 }
 
 -(EspTimeType) clockAdjustmentForAuthority:(NSString*)keyPath
@@ -116,7 +116,12 @@
     return [clock adjustmentForPeer:auth];
 }
 
--(void) handleOpcode:(NSDictionary*)d
+-(void) handleOpcode:(EspOpcode *)opcode
+{
+    NSAssert(false,@"empty new opcode handler called");
+}
+
+-(void) handleOldOpcode:(NSDictionary*)d
 {
     int opcode = [[d objectForKey:@"opcode"] intValue];
     

@@ -68,7 +68,6 @@
 // Main tab
 -(IBAction)beatOn:(id)sender;
 -(IBAction)beatTempo:(id)sender;
--(IBAction)beatCycleLength:(id)sender;
 
 // Peers tab
 -(IBAction)showDetailedPeerList:(id)sender;
@@ -81,9 +80,6 @@
 -(IBAction)logOSCChanged:(id)sender;
 
 // Bridge tab
--(IBAction)bridgeLocalGroup:(id)sender;
--(IBAction)bridgeLocalAddress:(id)sender;
--(IBAction)bridgeLocalPort:(id)sender;
 -(IBAction)bridgeRemoteAdddress:(id)sender;
 -(IBAction)bridgeRemotePort:(id)sender;
 

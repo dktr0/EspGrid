@@ -17,6 +17,7 @@
 //  along with EspGrid.  If not, see <http://www.gnu.org/licenses/>.
 
 #import <Foundation/Foundation.h>
+#import "EspOpcode.h"
 #import "EspGridDefs.h"
 #import "EspPeer.h"
 
@@ -30,11 +31,10 @@
 @property (nonatomic,assign) EspPeer* selfInPeerList;
 
 +(EspPeerList*) peerList;
--(EspPeer*) receivedBeacon:(NSDictionary*)d;
--(EspPeer*) receivedAck:(NSDictionary*)d;
+-(EspPeer*) receivedBeacon:(EspBeaconOpcode*)opcode;
+-(EspPeer*) receivedAck:(EspAckOpcode*)opcode;
 -(EspPeer*) findPeerWithName:(NSString*)name andMachine:(NSString*)machine;
--(EspPeer*) addNewPeer:(NSDictionary*)d;
+-(EspPeer*) addNewPeer:(EspBeaconOpcode*)opcode;
 -(void) addSelfToPeerList;
 -(void) updateStatus;
 @end
-

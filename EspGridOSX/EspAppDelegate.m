@@ -23,11 +23,15 @@
 
 @synthesize window = _window;
 
--(IBAction)bridgeLocalGroup:(id)sender { [[esp bridge] setLocalGroup:[espBridgeLocalGroup stringValue]]; }
--(IBAction)bridgeLocalAddress:(id)sender { [[esp bridge] setLocalAddress:[espBridgeLocalAddress stringValue]]; }
--(IBAction)bridgeLocalPort:(id)sender { [[esp bridge] changeLocalPort:[espBridgeLocalPort intValue]]; }
--(IBAction)bridgeRemoteAdddress:(id)sender { [[esp bridge] setRemoteAddress:[espBridgeRemoteAddress stringValue]]; }
--(IBAction)bridgeRemotePort:(id)sender { [[esp bridge] setRemotePort:[espBridgeRemotePort stringValue]]; }
+-(IBAction)bridgeRemoteAdddress:(id)sender
+{
+    [[esp bridge] setHost:[espBridgeRemoteAddress stringValue]];
+}
+
+-(IBAction)bridgeRemotePort:(id)sender
+{
+    [[esp bridge] setPort:[espBridgeRemotePort intValue]];
+}
 
 -(IBAction)logOSCChanged:(id)sender
 {

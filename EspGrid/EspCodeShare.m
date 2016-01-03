@@ -160,8 +160,12 @@
           sourceName,sourceMachine,timeStamp,index+1,[item nFragments]);
 }
 
+-(void) handleOpcode:(EspOpcode *)opcode
+{
+    NSAssert(false,@"empty new opcode handler called");
+}
 
--(void) handleOpcode:(NSDictionary*)d;
+-(void) handleOldOpcode:(NSDictionary*)d
 {
     int opcode = [[d objectForKey:@"opcode"] intValue];
     

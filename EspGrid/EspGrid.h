@@ -18,7 +18,6 @@
 
 #import <Foundation/Foundation.h>
 #import "EspNetwork.h"
-#import "EspBridge.h"
 #import "EspOsc.h"
 #import "EspClock.h"
 #import "EspBeat.h"
@@ -45,7 +44,7 @@
 -(EspBeat*) beat;
 -(EspCodeShare*) codeShare;
 -(EspPeerList*) peerList;
--(EspBridge*) bridge;
+-(EspChannel*) bridge;
 -(EspClock*) clock;
 -(EspChat*) chat;
 

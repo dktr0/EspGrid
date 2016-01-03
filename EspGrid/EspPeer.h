@@ -17,6 +17,7 @@
 //  along with EspGrid.  If not, see <http://www.gnu.org/licenses/>.
 
 #import <Foundation/Foundation.h>
+#import "EspOpcode.h"
 #import "EspGridDefs.h"
 #import "EspMovingAverage.h"
 
@@ -26,12 +27,12 @@
   NSString* name;
   NSString* machine;
   NSString* ip;
-  int majorVersion;
-  int minorVersion;
-  int subVersion;
+  char majorVersion;
+  char minorVersion;
+  char subVersion;
   NSString* version;
-  int syncMode;
-  int beaconCount;
+  char syncMode;
+  long beaconCount;
   EspTimeType lastBeacon;
   NSString* lastBeaconStatus;
   EspTimeType recentLatency;
@@ -47,12 +48,12 @@
 @property (copy) NSString* name;
 @property (copy) NSString* machine;
 @property (copy) NSString* ip;
-@property (assign) int majorVersion;
-@property (assign) int minorVersion;
-@property (assign) int subVersion;
+@property (assign) char majorVersion;
+@property (assign) char minorVersion;
+@property (assign) char subVersion;
 @property (copy) NSString* version;
-@property (assign) int syncMode;
-@property (assign) int beaconCount;
+@property (assign) char syncMode;
+@property (assign) long beaconCount;
 @property (assign) EspTimeType lastBeacon;
 @property (copy) NSString* lastBeaconStatus;
 
@@ -62,9 +63,9 @@
 @property (assign) EspTimeType averageLatency;
 @property (assign) EspTimeType refBeacon,refBeaconAverage;
 
--(void) processBeacon:(NSDictionary*)d;
--(void) processAckForSelf:(NSDictionary*)d peerCount:(int)count;
--(void) processAck:(NSDictionary*)d forOther:(EspPeer*)other;
+-(void) processBeacon:(EspBeaconOpcode*)opcode;
+-(void) processAckForSelf:(EspAckOpcode*)opcode peerCount:(int)count;
+-(void) processAck:(EspAckOpcode*)opcode forOther:(EspPeer*)other;
 -(void) updateLastBeaconStatus;
 -(void) dumpAdjustments;
 -(EspTimeType) adjustmentForSyncMode:(int)mode;

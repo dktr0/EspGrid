@@ -32,7 +32,7 @@
 -(id) init
 {
     self = [super init];
-    udp = [[EspSocket alloc] initWithPort:5510 andDelegate:self];
+    udp = [[EspOscSocket alloc] initWithPort:5510 andDelegate:self];
     handlers = [[NSMutableArray alloc] init];
     subscribers = [[EspOscSubscribers alloc] init];
     [subscribers setSocket:udp];

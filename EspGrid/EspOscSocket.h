@@ -1,7 +1,7 @@
 //
-//  EspSocket.h
+//  EspOscSocket.h
 //
-//  This file is part of EspGrid.  EspGrid is (c) 2012-2015 by David Ogborn.
+//  This file is part of EspGrid.  EspGrid is (c) 2012-2016 by David Ogborn.
 //
 //  EspGrid is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -18,7 +18,6 @@
 
 #import <Foundation/Foundation.h>
 #import "EspGridDefs.h"
-#import "EspOpcode.h"
 #ifdef _WIN32
 #import <Winsock2.h>
 #else
@@ -30,31 +29,30 @@
 #import <netdb.h>
 #endif
 
-@protocol EspSocketDelegate <NSObject>
--(void)opcodeReceived:(NSData*)data;
+@protocol EspOscSocketDelegate <NSObject>
+-(void)packetReceived:(NSDictionary*)packet;
 @end
 
-#define ESP_SOCKET_BUFFER_SIZE (sizeof(EspOldOpcode))
+#define ESP_OSC_SOCKET_BUFFER_SIZE 2048
 
-@interface EspSocket : NSObject
+@interface EspOscSocket : NSObject
 {
     int socketRef, port;
     struct sockaddr_in us;
     NSThread* thread;
     struct sockaddr_in them;
-    NSObject<EspSocketDelegate> *delegate;
+    NSObject<EspOscSocketDelegate> *delegate;
     void* transmitBuffer;
     NSMutableData* transmitData;
     void* receiveBuffer;
     NSMutableData* receiveData;
 }
-@property (nonatomic,assign) NSObject<EspSocketDelegate>* delegate;
+@property (nonatomic,assign) NSObject<EspOscSocketDelegate>* delegate;
 
--(id) initWithPort:(int)p andDelegate:(id<EspSocketDelegate>)delegate;
+-(id) initWithPort:(int)p andDelegate:(id<EspOscSocketDelegate>)delegate;
 -(BOOL) bindToPort:(unsigned int)p;
--(void) closeSocket;
--(void) sendOpcode:(EspOpcode*)opcode toHost:(NSString*)host;
--(void) sendOldOpcode:(int)n withDictionary:(NSDictionary*)d toHost:(NSString*)host;
+-(void) sendData:(NSData*)data toHost:(NSString*)host; // send to whatever port we listen on
+-(void) sendData:(NSData*)data toHost:(NSString*)host port:(int)p; // send to an arbitrary port
 
 @end
 

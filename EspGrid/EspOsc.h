@@ -17,13 +17,13 @@
 //  along with EspGrid.  If not, see <http://www.gnu.org/licenses/>.
 
 #import <Foundation/Foundation.h>
-#import "EspSocket.h"
+#import "EspOscSocket.h"
 #import "EspHandleOsc.h"
 #import "EspOscSubscribers.h"
 
-@interface EspOsc : NSObject <EspSocketDelegate, EspHandleOsc>
+@interface EspOsc : NSObject <EspOscSocketDelegate, EspHandleOsc>
 {
-    EspSocket* udp;
+    EspOscSocket* udp;
     NSMutableArray* handlers;
     EspOscSubscribers* subscribers;
     BOOL echoToLog;

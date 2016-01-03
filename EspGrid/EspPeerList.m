@@ -73,50 +73,50 @@
     [selfInPeerList setMachine:[x stringForKey:@"machine"]];
 }
 
--(EspPeer*) receivedBeacon:(NSDictionary*)d
+-(EspPeer*) receivedBeacon:(EspBeaconOpcode*)opcode
 {
     // find or add the peer from whom the beacon has come
-    NSString* name = [d objectForKey:@"name"];
-    NSString* machine = [d objectForKey:@"machine"];
+    NSString* name = [NSString stringWithCString:opcode->header.name encoding:NSUTF8StringEncoding];
+    NSString* machine = [NSString stringWithCString:opcode->header.machine encoding:NSUTF8StringEncoding];
     EspPeer* peer = [self findPeerWithName:name andMachine:machine];
-    if(peer == nil) peer = [self addNewPeer:d]; // note: only a BEACON can add a new peer
+    if(peer == nil) peer = [self addNewPeer:opcode]; // note: only a BEACON can add a new peer
     [self willChangeValueForKey:@"peers"];
-    [peer processBeacon:d];
+    [peer processBeacon:opcode];
     [self didChangeValueForKey:@"peers"];
     return peer;
 }
 
--(EspPeer*) receivedAck:(NSDictionary*)d
+-(EspPeer*) receivedAck:(EspAckOpcode*)opcode
 {
     // find or add the peer from whom the ack has come
-    NSString* name = [d objectForKey:@"name"];
-    NSString* machine = [d objectForKey:@"machine"];
+    NSString* name = [NSString stringWithCString:opcode->header.name encoding:NSUTF8StringEncoding];
+    NSString* machine = [NSString stringWithCString:opcode->header.machine encoding:NSUTF8StringEncoding];
     EspPeer* peer = [self findPeerWithName:name andMachine:machine];
     if(peer == nil) return nil; // note: we don't do anything with a given peer unless we have received a prior BEACON
     
     // who is the ack for?
-    NSString* ackForName = [d objectForKey:@"nameRcvd"];
-    NSString* ackForMachine = [d objectForKey:@"machineRcvd"];
+    NSString* ackForName = [NSString stringWithCString:opcode->nameRcvd encoding:NSUTF8StringEncoding];
+    NSString* ackForMachine = [NSString stringWithCString:opcode->machineRcvd encoding:NSUTF8StringEncoding];
     EspPeer* ackFor = [self findPeerWithName:ackForName andMachine:ackForMachine];
     if(ackFor == nil) { NSLog(@"ACK for unknown peer %@-%@",ackForName,ackForMachine); return nil; } // note: we don't do anything with a given peer unless we have received a prior BEACON
     
     // process the ACK within the pertinent EspPeer instance...
     [self willChangeValueForKey:@"peers"];
-    if(ackFor == selfInPeerList) [peer processAckForSelf:d peerCount:(int)[peers count]];
-    else [peer processAck:d forOther:ackFor];
+    if(ackFor == selfInPeerList) [peer processAckForSelf:opcode peerCount:(int)[peers count]];
+    else [peer processAck:opcode forOther:ackFor];
     [self didChangeValueForKey:@"peers"];
     [peer dumpAdjustments];
     return peer;
 }
 
--(EspPeer*) addNewPeer:(NSDictionary*)d
+-(EspPeer*) addNewPeer:(EspBeaconOpcode*)opcode
 {
     // extract parameters from dictionary passed from opcode
-    NSString* name = [d objectForKey:@"name"];
-    NSString* machine = [d objectForKey:@"machine"];
-    NSString* ip = [d objectForKey:@"originAddress"];
-    int theirMajorVersion = [[d objectForKey:@"majorVersion"] intValue];
-    int theirMinorVersion = [[d objectForKey:@"minorVersion"] intValue];
+    NSString* name = [NSString stringWithCString:opcode->header.name encoding:NSUTF8StringEncoding];
+    NSString* machine = [NSString stringWithCString:opcode->header.machine encoding:NSUTF8StringEncoding];
+    NSString* ip = [NSString stringWithCString:opcode->header.ip encoding:NSUTF8StringEncoding];
+    int theirMajorVersion = opcode->majorVersion;
+    int theirMinorVersion = opcode->minorVersion;
     
     // check EspGrid version of peer/sender and warn in cases of mismatch
     if(theirMajorVersion < ESPGRID_MAJORVERSION ||

@@ -51,7 +51,7 @@
     NSMutableDictionary* d = [[NSMutableDictionary alloc] init];
     [d setObject:params forKey:@"params"];
     [d setObject:[NSNumber numberWithLongLong:t] forKey:@"time"];
-    [network sendOpcode:ESP_OPCODE_OSCNOW withDictionary:d];
+    [network sendOldOpcode:ESP_OPCODE_OSCNOW withDictionary:d];
     [osc transmit:params log:NO];
 }
 
@@ -66,7 +66,7 @@
     NSMutableDictionary* d = [[NSMutableDictionary alloc] init];
     [d setObject:a forKey:@"params"];
     [d setObject:[NSNumber numberWithLongLong:t] forKey:@"time"];
-    [network sendOpcode:ESP_OPCODE_OSCNOW withDictionary:d];
+    [network sendOldOpcode:ESP_OPCODE_OSCNOW withDictionary:d];
     [osc transmit:a log:NO];
 }
 
@@ -77,7 +77,7 @@
     NSMutableDictionary* d = [[NSMutableDictionary alloc] init];
     [d setObject:params forKey:@"params"];
     [d setObject:[NSNumber numberWithLongLong:t] forKey:@"time"];
-    [network sendOpcode:ESP_OPCODE_OSCFUTURE withDictionary:d];
+    [network sendOldOpcode:ESP_OPCODE_OSCFUTURE withDictionary:d];
     [queue addItem:params atTime:t];
 }
 
@@ -92,7 +92,7 @@
     NSMutableDictionary* d = [[NSMutableDictionary alloc] init];
     [d setObject:a forKey:@"params"];
     [d setObject:[NSNumber numberWithLongLong:t] forKey:@"time"];
-    [network sendOpcode:ESP_OPCODE_OSCFUTURE withDictionary:d];
+    [network sendOldOpcode:ESP_OPCODE_OSCFUTURE withDictionary:d];
     [queue addItem:a atTime:t];
 }
 
@@ -109,7 +109,7 @@
     [a removeObjectAtIndex:0]; // remove time increment parameter (nanoseconds)
     [d setObject:a forKey:@"params"];
     [d setObject:[NSNumber numberWithLongLong:t+i] forKey:@"time"];
-    [network sendOpcode:ESP_OPCODE_OSCFUTURE withDictionary:d];
+    [network sendOldOpcode:ESP_OPCODE_OSCFUTURE withDictionary:d];
     [queue addItem:a atTime:t+i];
 }
 
@@ -129,12 +129,16 @@
     NSMutableDictionary* d = [[NSMutableDictionary alloc] init];
     [d setObject:a forKey:@"params"];
     [d setObject:[NSNumber numberWithLongLong:t+i] forKey:@"time"];
-    [network sendOpcode:ESP_OPCODE_OSCFUTURE withDictionary:d];
+    [network sendOldOpcode:ESP_OPCODE_OSCFUTURE withDictionary:d];
     [queue addItem:a atTime:t+i];
 }
 
+-(void) handleOpcode:(EspOpcode *)opcode
+{
+    NSAssert(false,@"empty new opcode handler called");
+}
 
--(void) handleOpcode:(NSDictionary*)d;
+-(void) handleOldOpcode:(NSDictionary*)d;
 {
     int opcode = [[d objectForKey:@"opcode"] intValue];
     
