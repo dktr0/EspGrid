@@ -97,7 +97,7 @@
     EspPeer* authority = [peerList findPeerWithName:authorityName andMachine:authorityMachine];
     if(authority != [peerList selfInPeerList])
     {
-        EspTimeType t = monotonicTime() - [authority lastBeaconMonotonic];
+        EspTimeType t = monotonicTime() - [authority lastBeacon];
         if(t < 10000000000) return;
     }
     // all conditions have been met: so broadcast the opcode

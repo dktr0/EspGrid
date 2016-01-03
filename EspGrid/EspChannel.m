@@ -40,14 +40,12 @@
     NSData* d = [packet objectForKey:@"data"];
     NSString* h = [packet objectForKey:@"host"];
     int p = [[packet objectForKey:@"port"] intValue];
-    EspTimeType systemTime = [[packet objectForKey:@"systemTime"] longLongValue];
     EspTimeType monotonicTime = [[packet objectForKey:@"monotonicTime"] longLongValue];
     
     NSAssert(d != nil, @"data should not be nil in EspChannel::dataReceived...");
     NSAssert(h != nil, @"host should not be nil in EspChannel::dataReceived...");
     EspTimeType packetSendTime = *((EspTimeType*)[d bytes]); // first 8 bytes are monotonic send time
-    EspTimeType packetSendTimeSystem = *((EspTimeType*)([d bytes]+8)); // next 8 are system send time
-    NSData* temp = [NSData dataWithBytesNoCopy:[d bytes]+16 length:[d length]-16 freeWhenDone:NO];
+    NSData* temp = [NSData dataWithBytesNoCopy:[d bytes]+8 length:[d length]-8 freeWhenDone:NO];
     NSError* err = nil;
     NSMutableDictionary* plist =
     (NSMutableDictionary*)[NSPropertyListSerialization propertyListWithData:temp
@@ -58,9 +56,7 @@
         [plist setValue:h forKey:@"ip"];
         [plist setValue:[NSNumber numberWithInt:p] forKey:@"port"];
         [plist setValue:[NSNumber numberWithLongLong:packetSendTime] forKey:@"packetSendTime"];
-        [plist setValue:[NSNumber numberWithLongLong:packetSendTimeSystem] forKey:@"packetSendTimeSystem"];
         [plist setValue:[NSNumber numberWithLongLong:monotonicTime] forKey:@"packetReceiveTime"];
-        [plist setValue:[NSNumber numberWithLongLong:systemTime] forKey:@"packetReceiveTimeSystem"];
         [self afterDataReceived:plist];
     }
     else

@@ -122,7 +122,6 @@
         int s = sizeof(them);
         long n = recvfrom(socketRef, receiveBuffer, ESP_SOCKET_BUFFER_SIZE, 0, (struct sockaddr*)&them, &s);
     #endif
-        EspTimeType timeStamp = systemTime(); // note: this will be overridden by kernel level stamp if it exists
         EspTimeType monotonic = monotonicTime();
         if(n>ESP_SOCKET_BUFFER_SIZE)
         {
@@ -130,27 +129,14 @@
             continue;
         }
         if(n>0) {
-            // parse kernel level timestamp, if available
-#ifndef _WIN32
-            struct timeval *kernelTimeStamp = (struct timeval *)nil;
-            for (struct cmsghdr* cmsg = CMSG_FIRSTHDR(&msg); cmsg; cmsg = CMSG_NXTHDR(&msg, cmsg))
-            {
-                if(cmsg->cmsg_level == SOL_SOCKET && cmsg->cmsg_type == SCM_TIMESTAMP)
-                {   // NOTE: some online Linux example code uses SO_TIMESTAMP here instead of SCM_TIMESTAMP...
-                    kernelTimeStamp = (struct timeval *)CMSG_DATA(cmsg);
-                    timeStamp = (kernelTimeStamp->tv_sec*1000000000) + (kernelTimeStamp->tv_usec*1000);
-                }
-            }
-#endif
+
             (*(char*)(receiveBuffer+n)) = 0;
             NSString* h = [NSString stringWithCString:inet_ntoa(them.sin_addr) encoding:NSASCIIStringEncoding];
-            // if(n!=bufferSize) buffer = realloc(buffer,bufferSize); // reduce buffer size to save memory
             NSData* d = [[NSData alloc] initWithBytesNoCopy:receiveBuffer length:n freeWhenDone:NO];
             them.sin_port = ntohs(them.sin_port);
             @try {
                 NSDictionary* packet = [NSDictionary dictionaryWithObjectsAndKeys:
                                         d,@"data",h,@"host",[NSNumber numberWithInt:them.sin_port],@"port",
-                                        [NSNumber numberWithUnsignedLongLong:timeStamp],@"systemTime",
                                         [NSNumber numberWithUnsignedLongLong:monotonic],@"monotonicTime",nil];
                 [delegate performSelectorOnMainThread:@selector(packetReceived:) withObject:packet waitUntilDone:YES];
             }
@@ -204,17 +190,15 @@ static void sendData(int socketRef,const void* data,size_t length,NSString* host
 -(void)sendDataWithTimes:(NSData*)data toHost:(NSString*)host port:(int)p
 {
     *((EspTimeType*)transmitBuffer) = monotonicTime();
-    *((EspTimeType*)transmitBuffer+1) = systemTime();
-    memcpy(transmitBuffer+16, [data bytes], [data length]);
-    sendData(socketRef, transmitBuffer, [data length]+16, host, p);
+    memcpy(transmitBuffer+8, [data bytes], [data length]);
+    sendData(socketRef, transmitBuffer, [data length]+8, host, p);
 }
 
 -(void)sendDataWithTimes:(NSData*)data toHost:(NSString*)host
 {
     *((EspTimeType*)transmitBuffer) = monotonicTime();
-    *((EspTimeType*)transmitBuffer+1) = systemTime();
-    memcpy(transmitBuffer+16, [data bytes], [data length]);
-    sendData(socketRef, transmitBuffer, [data length]+16, host, port);
+    memcpy(transmitBuffer+8, [data bytes], [data length]);
+    sendData(socketRef, transmitBuffer, [data length]+8, host, port);
 }
 
 @end

@@ -31,41 +31,29 @@
 @synthesize version;
 @synthesize syncMode;
 @synthesize beaconCount;
-@synthesize lastBeaconMonotonic,lastBeaconSystem;
+@synthesize lastBeacon;
 @synthesize lastBeaconStatus;
 
 // these are updated by ACK opcode
-@synthesize recentLatencyMM,lowestLatencyMM,averageLatencyMM;
-@synthesize recentLatencyMS,lowestLatencyMS,averageLatencyMS;
-@synthesize recentLatencySM,lowestLatencySM,averageLatencySM;
-@synthesize recentLatencySS,lowestLatencySS,averageLatencySS;
-@synthesize refBeaconMonotonic,refBeaconMonotonicAverage;
+@synthesize recentLatency,lowestLatency,averageLatency;
+@synthesize refBeacon,refBeaconAverage;
 
 -(id) init
 {
     self = [super init];
     adjustments = malloc(sizeof(EspTimeType)*15);
     memset(adjustments,0,sizeof(EspTimeType)*15);
-    averageLatencyMMobj = [[EspMovingAverage alloc] initWithLength:12];
-    averageLatencyMSobj = [[EspMovingAverage alloc] initWithLength:12];
-    averageLatencySMobj = [[EspMovingAverage alloc] initWithLength:12];
-    averageLatencySSobj = [[EspMovingAverage alloc] initWithLength:12];
-    lowestLatencyMM = 100000000000; // 100 seconds should be enough?
-    lowestLatencyMS = 100000000000; // really should just replace with a flag
-    lowestLatencySM = 100000000000; // that automatically places first measurement as lowest
-    lowestLatencySS = 100000000000;
-    refBeaconMonotonicAverageObj = [[EspMovingAverage alloc] initWithLength:12];
+    averageLatencyObj = [[EspMovingAverage alloc] initWithLength:12];
+    lowestLatency = 100000000000; // 100 seconds should be enough?
+    refBeaconAverageObj = [[EspMovingAverage alloc] initWithLength:12];
     return self;
 }
 
 -(void) dealloc
 {
     free(adjustments);
-    [averageLatencyMMobj release];
-    [averageLatencyMSobj release];
-    [averageLatencySMobj release];
-    [averageLatencySSobj release];
-    [refBeaconMonotonicAverageObj release];
+    [averageLatencyObj release];
+    [refBeaconAverageObj release];
     [super dealloc];
 }
 
@@ -80,8 +68,7 @@
     [self setVersion:[NSString stringWithFormat:@"%d.%d.%d",majorVersion,minorVersion,subVersion]];
     [self setSyncMode:[[d objectForKey:@"syncMode"] intValue]];
     [self setBeaconCount:[[d objectForKey:@"beaconCount"] intValue]];
-    [self setLastBeaconMonotonic:[[d objectForKey:@"receiveTime"] longLongValue]];
-    [self setLastBeaconSystem:[[d objectForKey:@"receiveTimeSystem"] longLongValue]];
+    [self setLastBeacon:[[d objectForKey:@"receiveTime"] longLongValue]];
     [self setLastBeaconStatus:@"<10s"];
 }
 
@@ -92,60 +79,37 @@
     // Note: this method does not verify that the ACK is indeed meant for this peer
     
     // these are clock measurements included with the ACK opcode, or added by send/receive
-    EspTimeType beaconSendMonotonic = [[d objectForKey:@"beaconSendMonotonic"] longLongValue];
-    EspTimeType beaconSendSystem = [[d objectForKey:@"beaconSendSystem"] longLongValue];
-    EspTimeType beaconReceiveMonotonic = [[d objectForKey:@"beaconReceiveMonotonic"] longLongValue];
-    EspTimeType beaconReceiveSystem = [[d objectForKey:@"beaconReceiveSystem"] longLongValue];
-    EspTimeType ackSendMonotonic = [[d objectForKey:@"sendTime"] longLongValue];
-    EspTimeType ackSendSystem = [[d objectForKey:@"sendTimeSystem"] longLongValue];
-    EspTimeType ackReceiveMonotonic = [[d objectForKey:@"receiveTime"] longLongValue];
-    EspTimeType ackReceiveSystem = [[d objectForKey:@"receiveTimeSystem"] longLongValue];
+    EspTimeType beaconSend = [[d objectForKey:@"beaconSend"] longLongValue];
+    EspTimeType beaconReceive = [[d objectForKey:@"beaconReceive"] longLongValue];
+    EspTimeType ackSend = [[d objectForKey:@"sendTime"] longLongValue];
+    EspTimeType ackReceive = [[d objectForKey:@"receiveTime"] longLongValue];
     
     // from these times we can calculate roundtrip time, and interval peer spent preparing ACK, on each clock
     // and then each of those can be tracked immediately, lowest value or average value
-    EspTimeType ackPrepareMonotonic = ackSendMonotonic - beaconReceiveMonotonic;
-    EspTimeType ackPrepareSystem = ackSendSystem - beaconReceiveSystem;
-    EspTimeType roundtripMonotonic = ackReceiveMonotonic - beaconSendMonotonic;
-    EspTimeType roundtripSystem = ackReceiveSystem - beaconSendSystem;
+    EspTimeType ackPrepare = ackSend - beaconReceive;
+    EspTimeType roundtrip = ackReceive - beaconSend;
     
-    recentLatencyMM = (roundtripMonotonic - ackPrepareMonotonic) / 2;
-    recentLatencyMS = (roundtripMonotonic - ackPrepareSystem) / 2;
-    recentLatencySM = (roundtripSystem - ackPrepareMonotonic) / 2;
-    recentLatencySS = (roundtripSystem - ackPrepareSystem) / 2;
-    if(recentLatencyMM < lowestLatencyMM) lowestLatencyMM = recentLatencyMM;
-    if(recentLatencyMS < lowestLatencyMS) lowestLatencyMS = recentLatencyMS;
-    if(recentLatencySM < lowestLatencySM) lowestLatencySM = recentLatencySM;
-    if(recentLatencySS < lowestLatencySS) lowestLatencySS = recentLatencySS;
-    averageLatencyMM = [averageLatencyMMobj push:recentLatencyMM];
-    averageLatencyMS = [averageLatencyMSobj push:recentLatencyMS];
-    averageLatencySM = [averageLatencySMobj push:recentLatencySM];
-    averageLatencySS = [averageLatencySSobj push:recentLatencySS];
+    recentLatency = (roundtrip - ackPrepare) / 2;
+    if(recentLatency < lowestLatency) lowestLatency = recentLatency;
+    averageLatency = [averageLatencyObj push:recentLatency];
     
-    adjustments[1] = ackReceiveMonotonic - (ackSendMonotonic + recentLatencyMM);
-    adjustments[2] = ackReceiveMonotonic - (ackSendMonotonic + lowestLatencyMM);
-    adjustments[3] = ackReceiveMonotonic - (ackSendMonotonic + averageLatencyMM);
-    adjustments[6] = ackReceiveMonotonic - (ackSendMonotonic + recentLatencyMS);
-    adjustments[7] = ackReceiveMonotonic - (ackSendMonotonic + recentLatencySM);
-    adjustments[8] = ackReceiveMonotonic - (ackSendMonotonic + recentLatencySS);
-    adjustments[9] = ackReceiveMonotonic - (ackSendMonotonic + lowestLatencyMS);
-    adjustments[10] = ackReceiveMonotonic - (ackSendMonotonic + lowestLatencySM);
-    adjustments[11] = ackReceiveMonotonic - (ackSendMonotonic + lowestLatencySS);
-    adjustments[12]= ackReceiveMonotonic - (ackSendMonotonic + averageLatencyMS);
-    adjustments[13]= ackReceiveMonotonic - (ackSendMonotonic + averageLatencySM);
-    adjustments[14]= ackReceiveMonotonic - (ackSendMonotonic + averageLatencySS);
+    adjustments[0] = ackReceive - (ackSend + recentLatency);
+    adjustments[1] = ackReceive - (ackSend + lowestLatency);
+    adjustments[2] = ackReceive - (ackSend + averageLatency);
+
     // if there are fewer than 3 peers, fill in temp. values for ref beacon adjustments
     // based on these latency calculations
     if(count<3)
     {
-        adjustments[4] = adjustments[1];
-        adjustments[5] = adjustments[3];
+        adjustments[3] = adjustments[0];
+        adjustments[4] = adjustments[2];
     }
 }
 
 -(void) dumpAdjustments
 {
     NSLog(@"adjustments for %@-%@:",name,machine);
-    for(int x=0;x<15;x++)
+    for(int x=0;x<5;x++)
     {
         NSLog(@" adjustment[%d]=%lld",x,adjustments[x]);
     }
@@ -160,13 +124,11 @@
     int storedBeaconCount = [other beaconCount];
     if(incomingBeaconCount == storedBeaconCount)
     {
-        EspTimeType incomingBeaconTime = [[d objectForKey:@"beaconReceiveMonotonic"] longLongValue];
-        EspTimeType storedBeaconTime = [other lastBeaconMonotonic];
-        adjustments[4] = refBeaconMonotonic = storedBeaconTime - incomingBeaconTime;
-        adjustments[5] = refBeaconMonotonicAverage = [refBeaconMonotonicAverageObj push:refBeaconMonotonic];
-        NSLog(@"confirming reference beacon calculations");
+        EspTimeType incomingBeaconTime = [[d objectForKey:@"beaconReceive"] longLongValue];
+        EspTimeType storedBeaconTime = [other lastBeacon];
+        adjustments[3] = refBeacon = storedBeaconTime - incomingBeaconTime;
+        adjustments[4] = refBeaconAverage = [refBeaconAverageObj push:refBeacon];
     }
-    else NSLog(@"mismatched beacon counts - stored = %d, received = %d",storedBeaconCount,incomingBeaconCount);
 }
 
 -(EspTimeType) adjustmentForSyncMode:(int)mode
@@ -176,7 +138,7 @@
 
 -(void) updateLastBeaconStatus
 {
-    EspTimeType diff = monotonicTime() - lastBeaconMonotonic;
+    EspTimeType diff = monotonicTime() - lastBeacon;
     if(diff < 10000000000) [self setLastBeaconStatus:@"<10s"];
     else if(diff < 30000000000) [self setLastBeaconStatus:@"<30s"];
     else if(diff < 60000000000) [self setLastBeaconStatus:@"<60s"];

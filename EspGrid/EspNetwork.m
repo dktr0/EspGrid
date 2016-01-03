@@ -109,10 +109,6 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
         [d removeObjectForKey:@"packetSendTime"];
         [d setObject:[packet objectForKey:@"packetReceiveTime"] forKey:@"receiveTime"];
         [d removeObjectForKey:@"packetReceiveTime"];
-        [d setObject:[packet objectForKey:@"packetSendTimeSystem"] forKey:@"sendTimeSystem"];
-        [d removeObjectForKey:@"packetSendTimeSystem"];
-        [d setObject:[packet objectForKey:@"packetReceiveTimeSystem"] forKey:@"receiveTimeSystem"];
-        [d removeObjectForKey:@"packetReceiveTimeSystem"];
         // preserve originating ip address
         [d setObject:[packet objectForKey:@"ip"] forKey:@"originAddress"];
         [self handleOpcode:d];
@@ -120,7 +116,6 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
         // forward to all other channels
         // (individual channels might choose to ignore forwarding requests)
         [d removeObjectForKey:@"packetReceiveTime"];
-        [d removeObjectForKey:@"packetReceiveTimeSystem"];
         for(EspChannel*c in channels) if(c != channel) [c sendDictionaryWithTimes:d];
     }
     else
@@ -129,16 +124,12 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
         // values of sendTime and sendTimeSystem are preserved as received
         [d setObject:[packet objectForKey:@"packetReceiveTime"] forKey:@"receiveTime"];
         [d removeObjectForKey:@"packetReceiveTime"];
-        [d setObject:[packet objectForKey:@"packetReceiveTimeSystem"] forKey:@"receiveTimeSystem"];
-        [d removeObjectForKey:@"packetReceiveTimeSystem"];
         [d removeObjectForKey:@"packetSendTime"];
-        [d removeObjectForKey:@"packetSendTimeSystem"];
         [self handleOpcode:d];
         
         // forward to all other channels
         // (individual channels might choose to ignore forwarding requests)
         [d removeObjectForKey:@"receiveTime"];
-        [d removeObjectForKey:@"receiveTimeSystem"];
         for(EspChannel*c in channels) if(c != channel) [c sendDictionaryWithTimes:d];
     }
 }
@@ -168,23 +159,6 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
                      [d objectForKey:@"originAddress"]];
     postLog(log, nil);
     [h handleOpcode:d];
-}
-
--(BOOL) isDuplicateMessage: (NSDictionary*)msg
-{
-    NSString* h = [NSString stringWithFormat:@"%@-%@-%@",
-                    [msg objectForKey:@"hash"],
-                    [msg objectForKey:@"name"],
-                   [msg objectForKey:@"machine"]];
-    if([hashQueue containsObject:h]){
-        return YES;   
-    } 
-    else {
-        [hashQueue replaceObjectAtIndex:hashQueueIndex withObject:h];
-        hashQueueIndex++;
-        if(hashQueueIndex >= 100) hashQueueIndex = 0;
-        return NO;       
-    }
 }
 
 -(void) setHandler:(id)h forOpcode:(int)o

@@ -34,10 +34,6 @@
     NSMutableArray* channels;
     EspChannel* broadcast;
     EspBridge* bridge;
-    
-    NSInteger messageHash; // a count used to identify multi-transmitted messages, ignore duplicates
-    NSMutableArray* hashQueue; // the most recent received hashes, used to ignore duplicates
-    int hashQueueIndex; // circular index into hashQueue
 }
 @property (nonatomic,assign) EspChannel* broadcast;
 @property (nonatomic,assign) EspBridge* bridge;
@@ -45,7 +41,6 @@
 +(EspNetwork*) network;
 -(void) sendOpcode:(int)opcode withDictionary:(NSDictionary*)d;
 -(void) handleOpcode:(NSDictionary*)d;
--(BOOL) isDuplicateMessage:(NSDictionary*)msg;
 -(void) setHandler:(id)h forOpcode:(int)o;
 -(void) broadcastAddressChanged; // signal that the broadcast address may have been changed
 

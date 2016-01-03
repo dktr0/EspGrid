@@ -32,19 +32,16 @@
   NSString* version;
   int syncMode;
   int beaconCount;
-  EspTimeType lastBeaconMonotonic,lastBeaconSystem;
+  EspTimeType lastBeacon;
   NSString* lastBeaconStatus;
-  EspTimeType recentLatencyMM,recentLatencyMS,recentLatencySM,recentLatencySS;
-  EspTimeType lowestLatencyMM,lowestLatencyMS,lowestLatencySM,lowestLatencySS;
-  EspTimeType averageLatencyMM,averageLatencyMS,averageLatencySM,averageLatencySS;
-  EspTimeType refBeaconMonotonic,refBeaconMonotonicAverage;
+  EspTimeType recentLatency;
+  EspTimeType lowestLatency;
+  EspTimeType averageLatency;
+  EspTimeType refBeacon,refBeaconAverage;
     // instance variables
     EspTimeType* adjustments;
-    EspMovingAverage* averageLatencyMMobj;
-    EspMovingAverage* averageLatencyMSobj;
-    EspMovingAverage* averageLatencySMobj;
-    EspMovingAverage* averageLatencySSobj;
-    EspMovingAverage* refBeaconMonotonicAverageObj;
+    EspMovingAverage* averageLatencyObj;
+    EspMovingAverage* refBeaconAverageObj;
 }
 // these are set/updated from BEACON opcode
 @property (copy) NSString* name;
@@ -56,14 +53,14 @@
 @property (copy) NSString* version;
 @property (assign) int syncMode;
 @property (assign) int beaconCount;
-@property (assign) EspTimeType lastBeaconMonotonic,lastBeaconSystem;
+@property (assign) EspTimeType lastBeacon;
 @property (copy) NSString* lastBeaconStatus;
 
 // these are set/updated from ACK opcode
-@property (assign) EspTimeType recentLatencyMM,recentLatencyMS,recentLatencySM,recentLatencySS;
-@property (assign) EspTimeType lowestLatencyMM,lowestLatencyMS,lowestLatencySM,lowestLatencySS;
-@property (assign) EspTimeType averageLatencyMM,averageLatencyMS,averageLatencySM,averageLatencySS;
-@property (assign) EspTimeType refBeaconMonotonic,refBeaconMonotonicAverage;
+@property (assign) EspTimeType recentLatency;
+@property (assign) EspTimeType lowestLatency;
+@property (assign) EspTimeType averageLatency;
+@property (assign) EspTimeType refBeacon,refBeaconAverage;
 
 -(void) processBeacon:(NSDictionary*)d;
 -(void) processAckForSelf:(NSDictionary*)d peerCount:(int)count;
