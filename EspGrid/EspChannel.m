@@ -68,6 +68,7 @@
                                                             format:NULL error:&err];
         if(plist != nil)
         {
+            [plist setValue:[NSNumber numberWithChar:opcode->opcode] forKey:@"opcode"];
             [plist setValue:[NSString stringWithCString:opcode->ip encoding:NSUTF8StringEncoding] forKey:@"ip"];
             [plist setValue:[NSNumber numberWithInt:opcode->port] forKey:@"port"];
             [plist setValue:[NSNumber numberWithLongLong:opcode->sendTime] forKey:@"packetSendTime"];
