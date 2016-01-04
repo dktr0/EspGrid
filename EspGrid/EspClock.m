@@ -82,21 +82,17 @@
 
 -(void) issueAck:(EspBeaconOpcode*)b
 {
-    strcpy(ack.nameRcvd,b->header.name);
+    strncpy(ack.nameRcvd,b->header.name,16);
     ack.nameRcvd[15] = 0; // i.e. make sure strings have only 15 readable characters in them
-    strcpy(ack.machineRcvd,b->header.machine);
+    strncpy(ack.machineRcvd,b->header.machine,16);
     ack.machineRcvd[15] = 0;
-    strcpy(ack.ipRcvd,b->header.ip);
+    strncpy(ack.ipRcvd,b->header.ip,16);
     ack.ipRcvd[15] = 0;
     ack.beaconCount = b->beaconCount;
     ack.beaconSend = b->header.sendTime;
     ack.beaconReceive = b->header.receiveTime;
     [network sendOpcode:(EspOpcode*)&ack];
 }
-
-// THEN: continue through to receive processing, possibly making old and new systems coexist for different opcodes
-// lingering question: will this be cross-platform (i.e. are the structures tightly-packed? I sure hope so...)
-
 
 -(void) sendBeacon:(NSTimer*)t
 {

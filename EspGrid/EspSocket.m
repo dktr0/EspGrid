@@ -141,6 +141,7 @@
         // if we get this far, length of received packet is valid (and it is highly likely it is indeed an opcode)
         opcode->receiveTime = receiveTime;
         strncpy(opcode->ip, inet_ntoa(them.sin_addr), 16);
+        opcode->ip[15]=0;
         opcode->port = ntohs(them.sin_port);
         opcode->name[15] = 0; // sanitize received name and machine strings just in case
         opcode->machine[15] = 0;
@@ -211,7 +212,9 @@ static void inline sendData(int socketRef,const void* data,size_t length,NSStrin
     opcode->header.receiveTime = 0LL;
     opcode->header.length = (int)sizeof(EspOpcode) + (int)[data length];
     strncpy(opcode->header.name,[[d objectForKey:@"name"] cStringUsingEncoding:NSUTF8StringEncoding],16);
+    opcode->header.name[15] = 0;
     strncpy(opcode->header.machine,[[d objectForKey:@"machine"] cStringUsingEncoding:NSUTF8StringEncoding],16);
+    opcode->header.machine[15] = 0;
     memcpy(transmitBuffer+sizeof(EspOpcode),[data bytes],[data length]);
     opcode->header.sendTime = monotonicTime();
 

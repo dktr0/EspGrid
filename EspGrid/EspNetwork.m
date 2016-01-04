@@ -100,9 +100,9 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
     const char* name = [[[NSUserDefaults standardUserDefaults] objectForKey:@"person"] cStringUsingEncoding:NSUTF8StringEncoding];
     const char* machine = [[[NSUserDefaults standardUserDefaults] objectForKey:@"machine"] cStringUsingEncoding:NSUTF8StringEncoding];
     // for later: we should only copy the name/machine into opcode structure when either of them changes
-    strcpy(opcode->name,name);
+    strncpy(opcode->name,name,16);
     opcode->name[15] = 0; // i.e. make sure only 15 readable characters are included
-    strcpy(opcode->machine,machine);
+    strncpy(opcode->machine,machine,16);
     opcode->machine[15] = 0;
     for(EspChannel* c in channels) [c sendOpcode:opcode]; // send on all channels
 }
