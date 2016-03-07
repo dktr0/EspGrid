@@ -63,6 +63,10 @@ LARGE_INTEGER performanceFrequency;
 -(id) init
 {
     self = [super init];
+
+    NSLog(@"sizeof EspBeaconOpcode = %d",sizeof(EspBeaconOpcode));
+    NSLog(@"sizeof char = %d",sizeof(char));
+
     #ifdef _WIN32
     QueryPerformanceFrequency(&performanceFrequency);
     #endif
