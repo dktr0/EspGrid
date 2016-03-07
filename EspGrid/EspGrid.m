@@ -64,6 +64,7 @@ LARGE_INTEGER performanceFrequency;
 {
     self = [super init];
 
+    NSLog(@"sizeof EspOpcode = %d",sizeof(EspOpcode));
     NSLog(@"sizeof EspBeaconOpcode = %d",sizeof(EspBeaconOpcode));
     NSLog(@"sizeof char = %d",sizeof(char));
     NSLog(@"sizeof int = %d",sizeof(int));
