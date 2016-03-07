@@ -22,7 +22,6 @@
 #include "EspGridDefs.h"
 
 typedef struct {
-    char opcode;
     EspTimeType sendTime;
     EspTimeType receiveTime;
     char name[16];
@@ -30,6 +29,7 @@ typedef struct {
     char ip[16];
     int port;
     int length;
+    char opcode;
 } EspOpcode;
 
 typedef struct {
@@ -39,7 +39,7 @@ typedef struct {
 
 typedef struct {
     EspOpcode header;
-    long beaconCount;
+    int beaconCount;
     char majorVersion;
     char minorVersion;
     char subVersion;
