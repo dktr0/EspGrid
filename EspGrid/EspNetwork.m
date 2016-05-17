@@ -28,6 +28,7 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
 {
     opcodeName[ESP_OPCODE_BEACON] = "BEACON";
     opcodeName[ESP_OPCODE_ACK] = "ACK";
+    opcodeName[ESP_OPCODE_PEERINFO] = "PEERINFO";
     opcodeName[ESP_OPCODE_CHATSEND] = "CHATSEND";
     opcodeName[ESP_OPCODE_KVC] = "KVC";
     opcodeName[ESP_OPCODE_ANNOUNCESHARE] = "ANNOUNCESHARE";
