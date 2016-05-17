@@ -58,14 +58,14 @@ typedef struct {
 
 typedef struct {
     EspOpcode header;
-    char nameAbout[16];
-    char machineAbout[16];
-    char ipAbout[16];
+    char peerName[16];
+    char peerMachine[16];
+    char peerIp[16];
     EspTimeType recentLatency;
     EspTimeType lowestLatency;
     EspTimeType averageLatency;
     EspTimeType refBeacon;
     EspTimeType refBeaconAverage;    
-} EspClockInfoOpcode;
+} EspPeerInfoOpcode;
 
 #endif /* EspOpcode_h */

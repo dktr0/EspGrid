@@ -56,7 +56,7 @@
     // setup ACK opcode
     ack.header.opcode = ESP_OPCODE_ACK;
     ack.header.length = sizeof(EspAckOpcode);
-    
+        
     countOfBeaconsIssued = 0;
     [self sendBeacon:nil]; // issue initial beacon
     

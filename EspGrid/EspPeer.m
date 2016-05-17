@@ -46,6 +46,11 @@
     averageLatencyObj = [[EspMovingAverage alloc] initWithLength:12];
     lowestLatency = 100000000000; // 100 seconds should be enough?
     refBeaconAverageObj = [[EspMovingAverage alloc] initWithLength:12];
+    
+    // initial setup of PEERINFO opcode
+    peerinfo.header.opcode = ESP_OPCODE_ACK;
+    peerinfo.header.length = sizeof(EspPeerInfoOpcode);
+
     return self;
 }
 
@@ -70,6 +75,13 @@
     [self setBeaconCount:opcode->beaconCount];
     [self setLastBeacon:opcode->header.receiveTime];
     [self setLastBeaconStatus:@"<10s"];
+    // preload name, machine and ip into peerinfo opcode
+    strncpy(peerinfo.peerName,opcode->header.name,16);
+    peerinfo.peerName[15] = 0;
+    strncpy(peerinfo.peerMachine,opcode->header.machine,16);
+    peerinfo.peerMachine[15] = 0;
+    strncpy(peerinfo.peerIp,opcode->header.ip,16);
+    peerinfo.peerIp[15] = 0;
 }
 
 -(void) processAckForSelf:(EspAckOpcode*)opcode peerCount:(int)count
@@ -144,6 +156,16 @@
     else if(diff < 60000000000) [self setLastBeaconStatus:@"<60s"];
     else if(diff < 120000000000) [self setLastBeaconStatus:@"<120s"];
     else [self setLastBeaconStatus:@"LOST"];
+}
+
+-(void) issuePeerInfo:(EspNetwork*)network
+{
+    peerinfo.recentLatency = recentLatency;
+    peerinfo.lowestLatency = lowestLatency;
+    peerinfo.averageLatency = averageLatency;
+    peerinfo.refBeacon = refBeacon;
+    peerinfo.refBeaconAverage = refBeaconAverage;
+    [network sendOpcode:(EspOpcode*)&peerinfo];
 }
 
 @end

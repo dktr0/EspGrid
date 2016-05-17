@@ -19,6 +19,7 @@
 #import <Foundation/Foundation.h>
 #import "EspOpcode.h"
 #import "EspGridDefs.h"
+#import "EspNetwork.h"
 #import "EspMovingAverage.h"
 
 @interface EspPeer : NSObject
@@ -39,6 +40,9 @@
   EspTimeType lowestLatency;
   EspTimeType averageLatency;
   EspTimeType refBeacon,refBeaconAverage;
+
+    EspPeerInfoOpcode peerinfo;
+    
     // instance variables
     EspTimeType* adjustments;
     EspMovingAverage* averageLatencyObj;
