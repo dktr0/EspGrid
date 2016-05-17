@@ -117,7 +117,7 @@
     
     if(opcode->opcode==ESP_OPCODE_ACK) {
         EspPeer* peer = [peerList receivedAck:(EspAckOpcode*)opcode]; // harvest data into peerlist
-        [peer issuePeerInfoOpcode:network];
+        [peer issuePeerInfoOpcode];
     }
     
     if(opcode->opcode==ESP_OPCODE_PEERINFO) {
