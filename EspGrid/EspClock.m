@@ -107,7 +107,7 @@
 
 -(void) handleOpcode:(EspOpcode*)opcode;
 {
-    NSAssert(opcode->opcode == ESP_OPCODE_BEACON || opcode->opcode == ESP_OPCODE_ACK,@"EspClock sent unrecognized opcode");
+    NSAssert(opcode->opcode == ESP_OPCODE_BEACON || opcode->opcode == ESP_OPCODE_ACK || opcode->opcode == ESP_OPCODE_PEERINFO,@"EspClock sent unrecognized opcode");
     
     if(opcode->opcode==ESP_OPCODE_BEACON) {
         postLog([NSString stringWithFormat:@"BEACON from %s-%s at %s",opcode->name,opcode->machine,opcode->ip],self);
@@ -121,7 +121,13 @@
     }
     
     if(opcode->opcode==ESP_OPCODE_PEERINFO) {
-        // placeholder
+        EspPeerInfoOpcode* peerinfo = (EspPeerInfoOpcode*)opcode;
+        postLog([NSString stringWithFormat:@"PEERINFO from %s-%s-%s re %s-%s-%s",opcode->name,opcode->machine,opcode->ip,peerinfo->peerName,peerinfo->peerMachine,peerinfo->peerIp,nil],self);
+        postLog([NSString stringWithFormat:@" recentLatency=%lld",peerinfo->recentLatency,nil],self);
+        postLog([NSString stringWithFormat:@" lowestLatency=%lld",peerinfo->lowestLatency,nil],self);
+        postLog([NSString stringWithFormat:@" averageLatency=%lld",peerinfo->averageLatency,nil],self);
+        postLog([NSString stringWithFormat:@" refBeacon=%lld",peerinfo->refBeacon,nil],self);
+        postLog([NSString stringWithFormat:@" refBeaconAverage=%lld",peerinfo->refBeaconAverage,nil],self);
     }
 }
 
