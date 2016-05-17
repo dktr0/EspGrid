@@ -107,7 +107,6 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
     for(EspChannel* c in channels) [c sendOpcode:opcode]; // send on all channels
 }
 
-
 // ***REMEMBER: need to make sure preferences change to broadcast gets to EspNetwork:channels[0] object!!!
 
 -(void) opcodeReceived:(EspOpcode *)opcode fromChannel:(EspChannel *)channel
