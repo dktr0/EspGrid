@@ -48,7 +48,7 @@
     refBeaconAverageObj = [[EspMovingAverage alloc] initWithLength:12];
     
     // initial setup of PEERINFO opcode
-    peerinfo.header.opcode = ESP_OPCODE_ACK;
+    peerinfo.header.opcode = ESP_OPCODE_PEERINFO;
     peerinfo.header.length = sizeof(EspPeerInfoOpcode);
 
     return self;
@@ -158,7 +158,7 @@
     else [self setLastBeaconStatus:@"LOST"];
 }
 
--(void) issuePeerInfo:(EspNetwork*)network
+-(void) issuePeerInfoOpcode:(EspNetwork*)network
 {
     peerinfo.recentLatency = recentLatency;
     peerinfo.lowestLatency = lowestLatency;

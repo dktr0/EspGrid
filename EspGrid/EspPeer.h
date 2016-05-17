@@ -73,5 +73,6 @@
 -(void) updateLastBeaconStatus;
 -(void) dumpAdjustments;
 -(EspTimeType) adjustmentForSyncMode:(int)mode;
+-(void) issuePeerInfoOpcode:(EspNetwork*)network;
 
 @end

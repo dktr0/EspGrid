@@ -20,12 +20,13 @@
 #define EspGrid_EspGridDefs_h
 
 #define ESPGRID_MAJORVERSION 0
-#define ESPGRID_MINORVERSION 55 // changes to external/internal protocol MUST increment MINORVERSION
+#define ESPGRID_MINORVERSION 56 // changes to external/internal protocol MUST increment MINORVERSION
 #define ESPGRID_SUBVERSION 0
 
 #define ESP_NUMBER_OF_OPCODES 10
 #define ESP_OPCODE_BEACON 0
 #define ESP_OPCODE_ACK 1
+#define ESP_OPCODE_PEERINFO 4
 #define ESP_OPCODE_CHATSEND 2
 #define ESP_OPCODE_KVC 3
 #define ESP_OPCODE_ANNOUNCESHARE 5
