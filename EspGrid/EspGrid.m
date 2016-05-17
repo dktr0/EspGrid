@@ -90,6 +90,7 @@ LARGE_INTEGER performanceFrequency;
     EspNetwork* network = [EspNetwork network];
     [network setHandler:[EspClock clock] forOpcode:ESP_OPCODE_BEACON];
     [network setHandler:[EspClock clock] forOpcode:ESP_OPCODE_ACK];
+    [network setHandler:[EspClock clock] forOpcode:ESP_OPCODE_PEERINFO];
     [network setHandler:[EspChat chat] forOpcode:ESP_OPCODE_CHATSEND];
     [network setHandler:[EspKeyValueController keyValueController] forOpcode:ESP_OPCODE_KVC];
     [network setHandler:[EspCodeShare codeShare] forOpcode:ESP_OPCODE_ANNOUNCESHARE];
