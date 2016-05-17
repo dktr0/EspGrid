@@ -56,4 +56,16 @@ typedef struct {
     EspTimeType beaconReceive;
 } EspAckOpcode;
 
+typedef struct {
+    EspOpcode header;
+    char nameAbout[16];
+    char machineAbout[16];
+    char ipAbout[16];
+    EspTimeType recentLatency;
+    EspTimeType lowestLatency;
+    EspTimeType averageLatency;
+    EspTimeType refBeacon;
+    EspTimeType refBeaconAverage;    
+} EspClockInfoOpcode;
+
 #endif /* EspOpcode_h */
