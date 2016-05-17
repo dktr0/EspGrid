@@ -18,6 +18,7 @@
 
 #import "EspPeer.h"
 #import "EspMovingAverage.h"
+#import "EspNetwork.h"
 
 @implementation EspPeer
 
@@ -158,8 +159,9 @@
     else [self setLastBeaconStatus:@"LOST"];
 }
 
--(void) issuePeerInfoOpcode:(EspNetwork*)network
+-(void) issuePeerInfoOpcode
 {
+    EspNetwork* network = [EspNetwork network];
     peerinfo.recentLatency = recentLatency;
     peerinfo.lowestLatency = lowestLatency;
     peerinfo.averageLatency = averageLatency;

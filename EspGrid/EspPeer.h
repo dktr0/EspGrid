@@ -19,7 +19,6 @@
 #import <Foundation/Foundation.h>
 #import "EspOpcode.h"
 #import "EspGridDefs.h"
-#import "EspNetwork.h"
 #import "EspMovingAverage.h"
 
 @interface EspPeer : NSObject
@@ -73,6 +72,6 @@
 -(void) updateLastBeaconStatus;
 -(void) dumpAdjustments;
 -(EspTimeType) adjustmentForSyncMode:(int)mode;
--(void) issuePeerInfoOpcode:(EspNetwork*)network;
+-(void) issuePeerInfoOpcode;
 
 @end
