@@ -33,6 +33,7 @@
 +(EspPeerList*) peerList;
 -(EspPeer*) receivedBeacon:(EspBeaconOpcode*)opcode;
 -(EspPeer*) receivedAck:(EspAckOpcode*)opcode;
+-(void) receivedPeerInfo:(EspPeerInfoOpcode*)opcode;
 -(EspPeer*) findPeerWithName:(NSString*)name andMachine:(NSString*)machine;
 -(EspPeer*) addNewPeer:(EspBeaconOpcode*)opcode;
 -(void) addSelfToPeerList;

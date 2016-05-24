@@ -121,13 +121,7 @@
     }
     
     if(opcode->opcode==ESP_OPCODE_PEERINFO) {
-        EspPeerInfoOpcode* peerinfo = (EspPeerInfoOpcode*)opcode;
-        postLog([NSString stringWithFormat:@"PEERINFO from %s-%s-%s re %s-%s-%s",opcode->name,opcode->machine,opcode->ip,peerinfo->peerName,peerinfo->peerMachine,peerinfo->peerIp,nil],self);
-        postLog([NSString stringWithFormat:@" recentLatency=%lld",peerinfo->recentLatency,nil],self);
-        postLog([NSString stringWithFormat:@" lowestLatency=%lld",peerinfo->lowestLatency,nil],self);
-        postLog([NSString stringWithFormat:@" averageLatency=%lld",peerinfo->averageLatency,nil],self);
-        postLog([NSString stringWithFormat:@" refBeacon=%lld",peerinfo->refBeacon,nil],self);
-        postLog([NSString stringWithFormat:@" refBeaconAverage=%lld",peerinfo->refBeaconAverage,nil],self);
+        [peerList receivedPeerInfo:(EspPeerInfoOpcode*)opcode];
     }
 }
 

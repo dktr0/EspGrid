@@ -109,6 +109,35 @@
     return peer;
 }
 
+-(void) receivedPeerInfo:(EspPeerInfoOpcode*)opcode
+{
+    NSString* name1 = [NSString stringWithCString:opcode->header.name encoding:NSUTF8StringEncoding];
+    NSString* machine1 = [NSString stringWithCString:opcode->header.machine encoding:NSUTF8StringEncoding];
+    EspPeer* peer1 = [self findPeerWithName:name1 andMachine:machine1];
+    if(peer1 == nil) { // note: we don't do anything with a given peer unless we have received a prior BEACON
+        postLog(@"received PEERINFO from peer before receiving BEACON from that peer",self);
+        return;
+    }
+    NSString* name2 = [NSString stringWithCString:opcode->peerName encoding:NSUTF8StringEncoding];
+    NSString* machine2 = [NSString stringWithCString:opcode->peerMachine encoding:NSUTF8StringEncoding];
+    EspPeer* peer2 = [self findPeerWithName:name2 andMachine:machine2];
+    if(peer2 == nil) { // note: we don't do anything with a given peer unless we have received a prior BEACON
+        postLog(@"received PEERINFO about a peer before receiving BEACON from that peer",self);
+        return;
+    }
+    postLog([NSString stringWithFormat:@"PEERINFO from %s-%s-%s re %s-%s-%s",
+             opcode->header.name,opcode->header.machine,opcode->header.ip,
+             opcode->peerName,opcode->peerMachine,opcode->peerIp,nil],self);
+    postLog([NSString stringWithFormat:@" recentLatency=%lld",opcode->recentLatency,nil],self);
+    postLog([NSString stringWithFormat:@" lowestLatency=%lld",opcode->lowestLatency,nil],self);
+    postLog([NSString stringWithFormat:@" averageLatency=%lld",opcode->averageLatency,nil],self);
+    postLog([NSString stringWithFormat:@" refBeacon=%lld",opcode->refBeacon,nil],self);
+    postLog([NSString stringWithFormat:@" refBeaconAverage=%lld",opcode->refBeaconAverage,nil],self);
+    [peer1 dumpAdjustments];
+    [peer2 dumpAdjustments];
+}
+
+
 -(EspPeer*) addNewPeer:(EspBeaconOpcode*)opcode
 {
     // extract parameters from dictionary passed from opcode
