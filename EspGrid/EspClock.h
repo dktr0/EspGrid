@@ -46,4 +46,6 @@
 -(EspTimeType) adjustmentForPeer:(EspPeer*)peer;
 -(void) updateflux:(EspTimeType)adjToAdj;
 
+-(void) personOrMachineChanged;
+
 @end

@@ -51,7 +51,8 @@
     // initial setup of PEERINFO opcode
     peerinfo.header.opcode = ESP_OPCODE_PEERINFO;
     peerinfo.header.length = sizeof(EspPeerInfoOpcode);
-
+    copyNameAndMachineIntoOpcode((EspOpcode*)&peerinfo);
+    
     return self;
 }
 
@@ -61,6 +62,11 @@
     [averageLatencyObj release];
     [refBeaconAverageObj release];
     [super dealloc];
+}
+
+-(void) personOrMachineChanged
+{
+    copyNameAndMachineIntoOpcode((EspOpcode*)&peerinfo);
 }
 
 -(void) processBeacon:(EspBeaconOpcode*)opcode
@@ -122,10 +128,7 @@
 -(void) dumpAdjustments
 {
     NSLog(@"adjustments for %@-%@:",name,machine);
-    for(int x=0;x<5;x++)
-    {
-        NSLog(@" adjustment[%d]=%lld",x,adjustments[x]);
-    }
+    for(int x=0;x<5;x++) NSLog(@" adjustment[%d]=%lld",x,adjustments[x]);
 }
 
 -(void) processAck:(EspAckOpcode*)opcode forOther:(EspPeer*)other

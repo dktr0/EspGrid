@@ -52,15 +52,23 @@
     beacon.majorVersion = ESPGRID_MAJORVERSION;
     beacon.minorVersion = ESPGRID_MINORVERSION;
     beacon.subVersion = ESPGRID_SUBVERSION;
+    copyNameAndMachineIntoOpcode((EspOpcode*)&beacon);
     
     // setup ACK opcode
     ack.header.opcode = ESP_OPCODE_ACK;
     ack.header.length = sizeof(EspAckOpcode);
+    copyNameAndMachineIntoOpcode((EspOpcode*)&ack);
         
     countOfBeaconsIssued = 0;
     [self sendBeacon:nil]; // issue initial beacon
     
     return self;
+}
+
+-(void) personOrMachineChanged
+{
+    copyNameAndMachineIntoOpcode((EspOpcode*)&beacon);
+    copyNameAndMachineIntoOpcode((EspOpcode*)&ack);
 }
 
 

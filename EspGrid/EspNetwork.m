@@ -98,13 +98,13 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
 {
     NSString* log = [NSString stringWithFormat:@"sending opcode %s(%d)",opcodeName[opcode->opcode],opcode->opcode];
     postLog(log, nil);
-    const char* name = [[[NSUserDefaults standardUserDefaults] objectForKey:@"person"] cStringUsingEncoding:NSUTF8StringEncoding];
+    /* const char* name = [[[NSUserDefaults standardUserDefaults] objectForKey:@"person"] cStringUsingEncoding:NSUTF8StringEncoding];
     const char* machine = [[[NSUserDefaults standardUserDefaults] objectForKey:@"machine"] cStringUsingEncoding:NSUTF8StringEncoding];
     // for later: we should only copy the name/machine into opcode structure when either of them changes
     strncpy(opcode->name,name,16);
     opcode->name[15] = 0; // i.e. make sure only 15 readable characters are included
     strncpy(opcode->machine,machine,16);
-    opcode->machine[15] = 0;
+    opcode->machine[15] = 0; */
     for(EspChannel* c in channels) [c sendOpcode:opcode]; // send on all channels
 }
 
@@ -212,3 +212,13 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
 
 
 @end
+
+void copyNameAndMachineIntoOpcode(EspOpcode* opcode)
+{
+    const char* name = [[[NSUserDefaults standardUserDefaults] objectForKey:@"person"] cStringUsingEncoding:NSUTF8StringEncoding];
+    const char* machine = [[[NSUserDefaults standardUserDefaults] objectForKey:@"machine"] cStringUsingEncoding:NSUTF8StringEncoding];
+    strncpy(opcode->name,name,16);
+    opcode->name[15] = 0; // i.e. make sure only 15 readable characters are included
+    strncpy(opcode->machine,machine,16);
+    opcode->machine[15] = 0;
+}

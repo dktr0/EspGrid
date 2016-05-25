@@ -74,4 +74,6 @@
 -(EspTimeType) adjustmentForSyncMode:(int)mode;
 -(void) issuePeerInfoOpcode;
 
+-(void) personOrMachineChanged;
+
 @end

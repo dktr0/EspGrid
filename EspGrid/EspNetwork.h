@@ -48,3 +48,7 @@
 -(void) broadcastAddressChanged; // signal that the broadcast address may have been changed
 
 @end
+
+void copyNameAndMachineIntoOpcode(EspOpcode* opcode); // this will go into some opcode-related file eventually
+
+

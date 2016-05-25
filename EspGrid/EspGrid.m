@@ -63,14 +63,13 @@ LARGE_INTEGER performanceFrequency;
 -(id) init
 {
     self = [super init];
-
-    NSLog(@"sizeof EspOpcode = %d",sizeof(EspOpcode));
-    NSLog(@"sizeof EspBeaconOpcode = %d",sizeof(EspBeaconOpcode));
-    NSLog(@"sizeof EspAckOpcode = %d",sizeof(EspAckOpcode));
-    NSLog(@"sizeof char = %d",sizeof(char));
-    NSLog(@"sizeof int = %d",sizeof(int));
-    NSLog(@"sizeof long = %d",sizeof(long));
-    NSLog(@"sizeof EspTimeType = %d",sizeof(EspTimeType));
+    NSLog(@"sizeof EspOpcode = %lu",sizeof(EspOpcode));
+    NSLog(@"sizeof EspBeaconOpcode = %lu",sizeof(EspBeaconOpcode));
+    NSLog(@"sizeof EspAckOpcode = %lu",sizeof(EspAckOpcode));
+    NSLog(@"sizeof char = %lu",sizeof(char));
+    NSLog(@"sizeof int = %lu",sizeof(int));
+    NSLog(@"sizeof long = %lu",sizeof(long));
+    NSLog(@"sizeof EspTimeType = %lu",sizeof(EspTimeType));
 
     #ifdef _WIN32
     QueryPerformanceFrequency(&performanceFrequency);
@@ -139,7 +138,9 @@ LARGE_INTEGER performanceFrequency;
     [[self clock] changeSyncMode:[[defs valueForKey:@"clockMode"] intValue]];
     [defs addObserver:self forKeyPath:@"clockMode" options:NSKeyValueObservingOptionNew context:nil];
     [defs addObserver:self forKeyPath:@"broadcast" options:NSKeyValueObservingOptionNew context:nil];
-
+    [defs addObserver:self forKeyPath:@"person" options:NSKeyValueObservingOptionNew context:nil];
+    [defs addObserver:self forKeyPath:@"machine" options:NSKeyValueObservingOptionNew context:nil];
+    
 	// Note: on GNUSTEP/WIN32 preferences at the command-line don't seem to persist
 	// unless, as in the following, we set them to their current values
 	[defs setValue:[defs valueForKey:@"person"] forKey:@"person"];
@@ -150,6 +151,13 @@ LARGE_INTEGER performanceFrequency;
 
     return self;
 }
+
+-(void) personOrMachineChanged
+{
+    [[EspClock clock] personOrMachineChanged];
+    [[EspPeerList peerList] personOrMachineChanged];
+}
+
 
 -(EspBeat*) beat
 {
@@ -327,16 +335,16 @@ LARGE_INTEGER performanceFrequency;
         return YES;
     }
     return NO;
-
 }
+
 
 -(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if([keyPath isEqualToString:@"broadcast"]) [[EspNetwork network] broadcastAddressChanged];
+    else if([keyPath isEqualToString:@"person"] || [keyPath isEqualToString:@"machine"]) [self personOrMachineChanged];
     else if([keyPath isEqualToString:@"clockMode"]) [[self clock] changeSyncMode:[[[NSUserDefaults standardUserDefaults] valueForKey:@"clockMode"] intValue]];
     else NSLog(@"PROBLEM: received KVO notification for unexpected keyPath %@",keyPath);
 }
-
 
 
 +(void) postChat:(NSString*)m

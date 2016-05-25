@@ -38,4 +38,7 @@
 -(EspPeer*) addNewPeer:(EspBeaconOpcode*)opcode;
 -(void) addSelfToPeerList;
 -(void) updateStatus;
+
+-(void) personOrMachineChanged;
+
 @end

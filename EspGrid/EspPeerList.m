@@ -33,9 +33,6 @@
 -(id) init {
     self = [super init];
     peers = [[NSMutableArray alloc] init];
-    NSUserDefaults* x = [NSUserDefaults standardUserDefaults];
-    [x addObserver:self forKeyPath:@"person" options:NSKeyValueObservingOptionNew context:nil];
-    [x addObserver:self forKeyPath:@"machine" options:NSKeyValueObservingOptionNew context:nil];
     [self addSelfToPeerList];
     [self updateStatus];
     return self;
@@ -63,14 +60,6 @@
                    ESPGRID_SUBVERSION]];
     [peers addObject:d];
     selfInPeerList = d;
-}
-
--(void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
-{
-    // this is called when name/machine are changed in user defaults
-    NSUserDefaults* x = [NSUserDefaults standardUserDefaults];
-    [selfInPeerList setName:[x stringForKey:@"person"]];
-    [selfInPeerList setMachine:[x stringForKey:@"machine"]];
 }
 
 -(EspPeer*) receivedBeacon:(EspBeaconOpcode*)opcode
@@ -177,6 +166,14 @@
     for(EspPeer* x in peers) [x updateLastBeaconStatus];
     if(c>1) [self setStatus:[NSString stringWithFormat:@"%ld peers on grid",c]];
     else [self setStatus:@"no peers found yet"];
+}
+
+-(void) personOrMachineChanged
+{
+    NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
+    [selfInPeerList setName:[defs stringForKey:@"person"]];
+    [selfInPeerList setMachine:[defs stringForKey:@"machine"]];
+    for(EspPeer* x in peers) [x personOrMachineChanged];
 }
 
 -(EspPeer*) findPeerWithName:(NSString*)name andMachine:(NSString*)machine
