@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <title>EspGrid by d0kt0r0</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>EspGrid</h1>
+        <h2>Synchronization and sharing for network music</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/d0kt0r0/EspGrid/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/d0kt0r0/EspGrid/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/d0kt0r0/EspGrid" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <p>EspGrid is a software system to streamline the sharing of timing, beats and code in electronic ensembles, from duos and trios through larger laptop orchestras to globally distributed ensembles.</p>
+
+<p>Here's how it works: Each member of the ensemble runs the EspGrid software on any computers they are using. Behind the scenes, all of the individual copies of EspGrid talk to each other and run various algorithms to estimate timing differences between them, as well as to share things like musical definitions and events. Then, other software can "ask" EspGrid about the situation (using a simple OSC protocol), receiving an accurate answer while being shielded from much of the complexity of the question.</p>
+
+<p>EspGrid's development began in the busy rehearsal and performance environment of McMaster University’s Cybernetic Orchestra, originally as part of the project "Scalable, Collective Traditions of Electronic Sound Performance" supported by Canada’s Social Sciences and Humanities Research Council (SSHRC), and the Arts Research Board of McMaster University. Aspects of its design and use have been discussed in contributions to the Audio Engineering Society and Computer Music Journal.</p>
+
+<p>A number of features distinguish EspGrid from most other synchronization and sharing systems for electronic music:</p>
+
+<ul>
+<li>a collection of different algorithms to estimate time differences are included, and can be selected on the fly</li>
+<li>it is a freestanding application, not built on top of or dependent upon, common audio programming environments</li>
+<li>a rudimentary "bridge" system allows the construction of ensembles spanning local-area/wide-area networks</li>
+</ul>
+
+<h3>
+<a id="where-to-next" class="anchor" href="#where-to-next" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Where to next?</h3>
+
+<p>To learn more about installing or building EspGrid, and getting started, see the document INSTALLING.md.</p>
+
+<p>To learn more about the simple OSC protocol used to receive information from EspGrid, and to control it, see the document OSC.md.</p>
+
+<p>To learn more about the internal protocol used for communication between EspGrid instances, see the document internal.md.</p>
+      </section>
+    </div>
+
+    
+  </body>
+</html>
