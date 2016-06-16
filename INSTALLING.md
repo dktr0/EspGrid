@@ -2,7 +2,7 @@
 
 ## Installing EspGrid from prebuilt binaries
 
-The quickest way to get started with EspGrid is to download a prebuilt binary. Recent binary builds of EspGrid for OS X and Windows are usually available here: http://esp.mcmaster.ca/?page_id=1759
+The quickest way to get started with EspGrid is to download a prebuilt binary. Recent binary builds of EspGrid for OS X and Windows are available here: <https://github.com/d0kt0r0/EspGrid/releases>
 
 ## Additional installation steps on Windows
 
