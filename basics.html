@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <title>EspGrid: Basics</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>EspGrid</h1>
+        <h2>Synchronization and sharing for network music</h2>
+        <section id="downloads">
+          <a href="https://github.com/d0kt0r0/EspGrid/releases" class="btn">Download</a>
+          <a href="install.html" class="btn">Install</a>
+          <a href="basics.html" class="btn">Basics</a>
+          <a href="faq.html" class="btn">FAQ</a>
+          <a href="protocol.html" class="btn">Protocol</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+
+        <p>This page is a basic guide to using EspGrid as a synchronization and sharing mechanism.</p>
+
+        <h3>The Big Picture</h3>
+
+        <p>Here's how it works: Each member of the ensemble runs the EspGrid software on any computers they are using. Behind the scenes, all of the individual copies of EspGrid talk to each other and run various algorithms to estimate timing differences between them, as well as to share things like musical definitions and events. Then, other software can "ask" EspGrid about the situation (using a simple OSC protocol), receiving an accurate answer while being shielded from much of the complexity of the question.</p>
+
+        <h3>Identifying yourself</h3>
+
+        <p>Each EspGrid instance identifies itself to the others via the name of a person and the name of a machine. These settings are preserved from run to run, so you only need actually do anything when you want to change them. All of EspGrid's settings can be changed through the OSC interface - and thus through helpers/plugins/extensions that are created for various other pieces of audio software. Additionally, on OS X only, a dedicated graphical user interface can be used to change the settings as well (these identity settings appear in Preferences in the OS X GUI). Here is an example of how setting the person and machine name might look from SuperCollider (using the Esp.sc quark):</p>
+        <code><pre>
+          Esp.person = "JohnCage";
+          Esp.machine = "trs80-coco2";
+        </pre></code>
+
+        <h3>Chat</h3>
+
+        <p>You can send chat messages to all of the EspGrid users you are connected to. This can be done via OSC messages, via the OS X GUI, or through various helper plugins/extensions. For example, in SuperCollider using the Esp.sc quark a chat message can be sent as follows (and incoming messages appear in the post window):
+        <code><pre>
+            Esp.chat("hello there everyone");
+        </pre></code>
+
+        <h3>Synchronization and Sharing Tempo</h3>
+
+        <p>You can set or change a musical tempo and when you do so this information is shared with all of the connected EspGrid instances, but the time values (for example, exactly when the beat starts) is adjusted to make precise sense in local terms. Here's an example of using EspGrid and the Esp.sc quark on SuperCollider in order to make a default TempoClock that is synced up to EspGrid:</p>
+
+        <code><pre>
+          TempoClock.default = EspClock.new;
+          TempoClock.tempo = 104/60; // change "your" tempo and you change everyone else' in sync
+        </pre></code>
+
+        <h3>Clock Modes</h3>
+
+        <p>As it runs, EspGrid is constantly gathering information about all of the other EspGrid instances it is able to find (on the local network by default, and if configured accordingly, on other networks reached through gateways). It uses this information to estimate the apparent differences between times reported by clocks on those remote instances/machines, with this information being crucial in the formation of things like synchronized metre (see above). A distinguishing feature of EspGrid is that these estimates can be formed with one of a growing number of different algorithms. An immediate benefit of using EspGrid is that, as better and additional algorithms become available - including those adapted to especially complex or challenging network conditions, they can be incorporated while changing nothing about the way you use EspGrid. The clock mode can be set with a simple OSC message, or (on OS X) via the Preferences window.</p>
+
+        <p>The default and recommended clock mode is 4 (which, for the technically inclined, estimates differences relative to remote clocks using a reference beacon calculation smoothed by a moving average filter, except when the ensemble is smaller than 3 instances, in which case it reverts to a Cristian's algorithm calculation again smoothed by a moving average filter.)</p>
+
+        <h3>What Else Can It Do?</h3>
+
+        <p>Currently, EspGrid has facilities for the following additional features: forming bridged networks that span multiple local networks, sharing text fragments (i.e. sharing code) and broadcasting arbitrary OSC messages at precisely scheduled and synchronized times in the future. For information about these (and other) features, click on "Protocol" at the top of this page.</p>
+
+      </section>
+    </div>
+
+  </body>
+</html>
