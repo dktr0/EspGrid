@@ -30,6 +30,60 @@
 
     <div class="container">
       <section id="main_content">
+
+        <p>In general, getting setup for using EspGrid involves two things:</p>
+
+        <ol>
+          <li>Downloading the EspGrid application, and (on Windows and Linux only) GNUstep libraries</li>
+          <li>Setting up helpers/plugins/extensions for the software you wish to use with EspGrid</li>
+        </ol>
+
+        <h3>Installing EspGrid on OS X</h3>
+        <p>Click on "Download" (above) and download the most recent OS X release of the software. If you want, you could drag the software to your Applications folder, but this is not necessary - EspGrid will run from wherever you put it.</p>
+
+        <h3>Installing EspGrid on Windows</h3>
+        <p>On Windows, EspGrid requires that the GNUstep libraries be installed. Two GNUstep libraries are required: GNUstep MSYS system and GNUstep Core. Both packages are easy to install and can be downloaded <a href="http://www.gnu.org/software/gnustep/windows/installer.html">here</a>.</p>
+        <p>After you have the two GNUstep libraries installed, click <a href=" ">here</a> to download the most recent Windows release of the software. You should be able to run the downloaded executable no matter where on your system you place it, just by double clicking on it. (Note: on Windows, the EspGrid executable is called espgridd.exe.)</a>
+
+        <h3>Building EspGrid on Linux</h3>
+        <p>On Linux it is generally necessary to build EspGrid from source code. You'll need to have the commonly available GNUstep packages (basic and development) installed on your system. After that, clone the <a href="https://github.com/d0kt0r0/EspGrid">EspGrid source tree from github</a>, change into the EspGrid subfolder of the EspGrid source tree and invoke "make". When everything has built, you can copy the espgridd executable to a suitable place
+          in your system's path so that you can run it just by typing espgridd from any terminal.
+          That all might look something like this:</p>
+        <code><pre>
+          cd ~
+          git clone https://github.com/d0kt0r0/EspGrid
+          cd EspGrid/EspGrid
+          make
+          sudo mv espgridd /usr/local/bin
+        </pre></code>
+
+        <h3>Setting up SuperCollider for EspGrid</h3>
+        <p>The Esp.sc quark for SuperCollider makes it easy to work with EspGrid. Make sure you have SuperCollider 3.7 or greater. Evaluate the following to install it:</p>
+
+        <code><pre>
+          Quarks.install("https://github.com/d0kt0r0/Esp.sc.git");
+        </pre></code>
+
+        <h3>Setting up Tidal for EspGrid</h3>
+        <p>There is currently an experimental Tidal-EspGrid integration that will hopefully become a standard feature of Tidal soon. To use it now, you'd clone that experimental branch of Tidal and install it. That might look something like this:</p>
+        <code><pre>
+          cd ~
+          git clone https://github.com/d0kt0r0/Tidal
+          cd Tidal
+          git fetch
+          git checkout -b espgrid origin/espgrid
+          cabal install
+        </pre></code>
+        <p>If you need to change back to the normal, current release of Tidal without EspGrid integration, that might then look like this:</p>
+        <code><pre>
+          cd ~/Tidal
+          git checkout -b master origin/master
+          cabal install
+        </pre></code>
+
+        <h3>Setting up other programs for EspGrid</h3>
+        <p>EspGrid communicates with other applications via a simple Open Sound Control (OSC) interface (click on "Protocol" for the details of this) so it can easily be integrated with any software that is capable of sending and receiving OSC messages over UDP. As additional helpers/integrations for other systems become available, they'll be added to this page, and discussion/questions/requests about such integrations can take place on the live coding #synchronization channel.</p>
+
       </section>
     </div>
 
