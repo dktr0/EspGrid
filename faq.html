@@ -15,7 +15,7 @@
 
     <header>
       <div class="container">
-        <h1>EspGrid</h1>
+        <h1>EspGrid FAQ</h1>
         <h2>Synchronization and sharing for network music</h2>
         <section id="downloads">
           <a href="https://github.com/d0kt0r0/EspGrid/releases" class="btn">Download</a>
@@ -29,6 +29,22 @@
 
     <div class="container">
       <section id="main_content">
+
+        <h4>Where can I get help if I don't find what I need in this FAQ?</h4>
+        <p>Currently, the best place for help is in the Live coding Slack group, in the #synchronization channel. You can join that group by entering your email <a href="http://live-code-slack.herokuapp.com/">here</a>. Alternately, you can email EspGrid lead developer David Ogborn at <ogbornd@mcmaster.ca>.</p>
+
+        <h4>What are the software license terms for EspGrid?</h4>
+        <p>EspGrid is copyright 2012-16 by David Ogborn and has been released as free and open source software under the terms of the GNU General Public License version 3. You can read <a href="https://github.com/d0kt0r0/EspGrid/blob/master/COPYING.txt">the license itself</a> for the details, but basically, this means that you are free to copy and use the software as you see fit, provided that any redistributed or altered versions of the software are still covered by the same license terms.</p>
+
+        <h4>Can't I just synchronize program x and y by having them talk directly to eachother, without EspGrid?</h4>
+        <p>Yes, you certainly could do that... but by using EspGrid you would have to do less work and will be joining a growing ecosystem of EspGrid-aware software. If your favourite software x works with EspGrid, and a collaborator comes along and their completely different software z also works with EspGrid, now you can both play together without wasting valuable time writing new software just for synchronizing x and z.</p>
+
+        <h4>But couldn't we just have a universal OSC protocol for synchronizing things "directly"?</h4>
+        <p>Yes, you certainly could do that also... but (1) it would likely not scale easily, in performance, over new and different network or software setups (unless it was a very complicated protocol), (2) it might be difficult to incorporate new approaches to estimating time differences, (3) as an independent process, EspGrid will stay up even if your main audio software crashes. By talking to EspGrid, you get, for free, an abstraction of increasing power over diversity of network setups, synchronization algorithms and process environment. Why continually reinvent the wheel?</p>
+
+        <h4>What should I do if I experience a problem that looks like it might be a bug in EspGrid?</h4>
+        <p>Please file an Issue on <a href="https://github.com/d0kt0r0/EspGrid">the github.com page for EspGrid</a>.</p>
+
       </section>
     </div>
 
