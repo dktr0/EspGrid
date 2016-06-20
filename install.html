@@ -63,6 +63,8 @@
           Quarks.install("Esp");
         </pre></code>
 
+        <p>That's it! Restart SuperCollider (or Recompile the Class Library) for the new extension to be available.</p>
+
         <p>Note re: SuperCollider on Windows: On recent Windows builds of SuperCollider the Quarks systems that allows easy installation of extensions may not be working "out of the box". Evaluate Quarks.gui. If you see an empty list (no quarks listed) then you may not have "git" installed (required by the Quarks system) or SuperCollider may be unable to find it on the system's path. A recommended fix is to (a) install <a href="https://git-scm.com/download/win">Git for Windows</a> and then (b) add C:/Program Files/Git/bin to your system's path as follows:</p>
 
         <ul>
@@ -77,7 +79,8 @@
           <li>close and relaunch SuperCollider</li>
           <li>confirm that evaluating Quarks.gui gives you a list of available Quarks</li>
           <li>Click on Esp in the list, or evaluate Quarks.install("Esp") to install the Esp.sc quark</li>
-        </ul>      
+          <li>Restart SuperCollider (or Recompile the Class Library)
+        </ul>
 
         <h3>Setting up Tidal for EspGrid</h3>
         <p>There is currently an experimental Tidal-EspGrid integration that will hopefully become a standard feature of Tidal soon. To use it now, you'd clone that experimental branch of Tidal and install it. That might look something like this:</p>
