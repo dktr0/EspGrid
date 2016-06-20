@@ -57,11 +57,27 @@
         </pre></code>
 
         <h3>Setting up SuperCollider for EspGrid</h3>
-        <p>The Esp.sc quark for SuperCollider makes it easy to work with EspGrid. Make sure you have SuperCollider 3.7 or greater. Evaluate the following to install it:</p>
+        <p>The Esp.sc quark for SuperCollider makes it easy to work with EspGrid. Make sure you have SuperCollider 3.7 or greater. Evaluate the following to install it (but on Windows see the note immediately below):</p>
 
         <code><pre>
-          Quarks.install("https://github.com/d0kt0r0/Esp.sc.git");
+          Quarks.install("Esp");
         </pre></code>
+
+        <p>Note re: SuperCollider on Windows: On recent Windows builds of SuperCollider the Quarks systems that allows easy installation of extensions may not be working "out of the box". Evaluate Quarks.gui. If you see an empty list (no quarks listed) then you may not have "git" installed (required by the Quarks system) or SuperCollider may be unable to find it on the system's path. A recommended fix is to (a) install <a href="https://git-scm.com/download/win">Git for Windows</a> and then (b) add C:/Program Files/Git/bin to your system's path as follows:</p>
+
+        <ul>
+          <li>Click on Settings</li>
+          <li>then System</li>
+          <li>then About</li>
+          <li>then System Info (at the very bottom)</li>
+          <li>then Advanced System Settings</li>
+          <li>then Environment Variables</li>
+          <li>then Edit with the focus on PATH</li>
+          <li>then click New and enter C:/Program Files/Git/bin</li>
+          <li>close and relaunch SuperCollider</li>
+          <li>confirm that evaluating Quarks.gui gives you a list of available Quarks</li>
+          <li>Click on Esp in the list, or evaluate Quarks.install("Esp") to install the Esp.sc quark</li>
+        </ul>      
 
         <h3>Setting up Tidal for EspGrid</h3>
         <p>There is currently an experimental Tidal-EspGrid integration that will hopefully become a standard feature of Tidal soon. To use it now, you'd clone that experimental branch of Tidal and install it. That might look something like this:</p>
