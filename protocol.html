@@ -125,7 +125,7 @@
     <li>/esp/broadcast/q [port::int32,optional] [host::string,optional]</li>
     <li>/esp/broadcast/r [address::string]</li></ul>
 
-<p>One of the key virtues of the EspGrid system has been the idea of supporting different ways of estimating the clock differences between the machines. This should be better documented in the future. In the meantime, mode 5 (the default) is a good choice. It uses reference beacon algorithms when there are 3 or more nodes in the system, and Cristian's algorithm when there are only 2 nodes:</p>
+<p>One of the key virtues of the EspGrid system has been the idea of supporting different ways of estimating the clock differences between the machines. This should be better documented in the future. In the meantime, mode 4 (the default) is a good choice. It uses reference beacon algorithms when there are 3 or more nodes in the system, and Cristian's algorithm when there are only 2 nodes:</p>
 
     <ul><li>/esp/clockMode/s [mode::int32]</li>
     <li>/esp/clockMode/q [port::int32,optional] [host::string,optional]</li>
