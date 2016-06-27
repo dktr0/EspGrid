@@ -33,12 +33,14 @@
 #define ESP_OPCODE_OSCNOW 8
 #define ESP_OPCODE_OSCFUTURE 9
 
+#define ESP_MAXNAMELENGTH
+
 typedef struct {
     EspTimeType sendTime;
     EspTimeType receiveTime;
-    char name[16];
-    char machine[16];
-    char ip[16];
+    char name[ESP_MAXNAMELENGTH];
+    char machine[ESP_MAXNAMELENGTH];
+    char ip[ESP_MAXNAMELENGTH];
     int port;
     int length;
     char opcode;
@@ -60,9 +62,9 @@ typedef struct {
 
 typedef struct {
     EspOpcode header;
-    char nameRcvd[16];
-    char machineRcvd[16];
-    char ipRcvd[16];
+    char nameRcvd[ESP_MAXNAMELENGTH];
+    char machineRcvd[ESP_MAXNAMELENGTH];
+    char ipRcvd[ESP_MAXNAMELENGTH];
     long beaconCount;
     EspTimeType beaconSend;
     EspTimeType beaconReceive;
@@ -70,14 +72,14 @@ typedef struct {
 
 typedef struct {
     EspOpcode header;
-    char peerName[16];
-    char peerMachine[16];
-    char peerIp[16];
+    char peerName[ESP_MAXNAMELENGTH];
+    char peerMachine[ESP_MAXNAMELENGTH];
+    char peerIp[ESP_MAXNAMELENGTH];
     EspTimeType recentLatency;
     EspTimeType lowestLatency;
     EspTimeType averageLatency;
     EspTimeType refBeacon;
-    EspTimeType refBeaconAverage;    
+    EspTimeType refBeaconAverage;
 } EspPeerInfoOpcode;
 
 #define ESP_CHAT_MAXLENGTH 256
@@ -86,5 +88,27 @@ typedef struct {
     EspOpcode header;
     char text[ESP_CHAT_MAXLENGTH];
 } EspChatOpcode;
+
+#define ESP_KVC_MAXKEYLENGTH 32
+
+#define ESP_KVCTYPE_BOOL 1
+#define ESP_KVCTYPE_DOUBLE 2
+#define ESP_KVCTYPE_TIME 3
+#define ESP_KVCTYPE_INT 4
+
+typedef struct {
+  EspOpcode header;
+  EspTimeType timeStamp;
+  char keyPath[ESP_KVC_MAXKEYLENGTH];
+  char authorityPerson[ESP_MAXNAMELENGTH];
+  char authorityMachine[ESP_MAXNAMELENGTH];
+  int type;
+  union KvcValue {
+    char boolValue;
+    double doubleValue;
+    EspTimeType timeValue;
+    int intValue;
+  } value;
+} EspKvcOpcode;
 
 #endif /* EspOpcode_h */

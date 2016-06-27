@@ -33,12 +33,12 @@
     self = [super init];
     network = [EspNetwork network];
     osc = [EspOsc osc];
-    
+
     // setup CHAT opcode
     chat.header.opcode = ESP_OPCODE_CHATSEND;
     chat.header.length = sizeof(EspChatOpcode);
     copyNameAndMachineIntoOpcode((EspOpcode*)&chat);
-    
+
     return self;
 }
 
@@ -56,7 +56,7 @@
     NSString* from = [[NSUserDefaults standardUserDefaults] stringForKey:@"person"];
     NSArray* a = [NSArray arrayWithObjects:@"/esp/chat/receive",from,msg,nil];
     [osc transmit:a log:YES];
-    
+
     // post chat message in this process
     NSString* m = [NSString stringWithFormat:@"%@: %@",from,msg];
     postChat(m);
@@ -66,14 +66,14 @@
 {
     NSAssert(opcode->opcode == ESP_OPCODE_CHATSEND,@"EspChat sent unrecognized opcode");
     EspChatOpcode* msgRcvd = (EspChatOpcode*)opcode;
-    
+
     // sanitize strings
     msgRcvd->text[ESP_CHAT_MAXLENGTH-1] = 0;
     opcode->name[15] = 0;
-    
+
     // post message in this process
     postChat([NSString stringWithFormat:@"%s: %s",opcode->name,msgRcvd->text]);
-    
+
     // and send it to all external protocol subscribers
     NSString* x = [NSString stringWithCString:opcode->name encoding:NSUTF8StringEncoding];
     NSString* y = [NSString stringWithCString:msgRcvd->text encoding:NSUTF8StringEncoding];
@@ -83,7 +83,7 @@
 
 -(void) handleOldOpcode:(NSDictionary*)d;
 {
-    NSAssert(false,@"empty old opcode handler called");
+    NSAssert(false,@"empty old opcode handler in EspChat called");
 }
 
 -(BOOL) handleOsc:(NSString*)address withParameters:(NSArray*)d fromHost:(NSString*)h port:(int)p

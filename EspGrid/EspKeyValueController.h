@@ -18,7 +18,7 @@
 
 #import <Foundation/Foundation.h>
 #import "EspOsc.h"
-#import "EspNetwork.h" 
+#import "EspNetwork.h"
 #import "EspClock.h"
 #import "EspPeerList.h"
 
@@ -30,17 +30,18 @@
     NSMutableDictionary* authorities;
     NSMutableDictionary* timeStamps;
     NSMutableDictionary* values;
+    NSMutableDictionary* types;
     int broadcastIndex;
     NSObject* model;
     EspOsc* osc;
     EspNetwork* network;
     EspClock* clock;
     EspPeerList* peerList;
+    EspKvcOpcode kvc;
 }
 @property (nonatomic,assign) NSObject* model;
--(void) addKeyPath:(NSString*)keyPath;
+-(void) addKeyPath:(NSString*)keyPath type:(int)t;
 -(void) broadcastKeyPath:(NSString*)keyPath;
 -(EspTimeType) clockAdjustmentForAuthority:(NSString*)keyPath;
 +(EspKeyValueController*) keyValueController;
 @end
-

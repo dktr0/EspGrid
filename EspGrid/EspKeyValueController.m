@@ -42,6 +42,12 @@
     authorities = [[NSMutableDictionary alloc] init];
     timeStamps = [[NSMutableDictionary alloc] init];
     values = [[NSMutableDictionary alloc] init];
+    types = [[NSMutableDictionary alloc] init];
+
+    kvc.header.opcode = ESP_OPCODE_KVC;
+    kvc.header.length = sizeof(EspKvcOpcode);
+    copyNameAndMachineIntoOpcode((EspOpcode*)&kvc);
+
     [NSTimer scheduledTimerWithTimeInterval:0.030
                                      target:self
                                    selector:@selector(broadcastCycle:)
@@ -58,12 +64,16 @@
     [authorities release];
     [timeStamps release];
     [values release];
+    [types release];
     [super dealloc];
 }
 
--(void)addKeyPath:(NSString*)keyPath
+-(void)addKeyPath:(NSString*)keyPath type:(int)t
 {
+    if(t!=ESP_KVCTYPE_BOOL && t!=ESP_KVCTYPE_DOUBLE && t!=ESP_KVCTYPE_TIME && t!= ESP_KVCTYPE_INT)
+      NSAssert(false,@"EspKeyValueController: attempt to addKeyPath with unrecognized type");
     [keyPaths addObject:[keyPath copy]];
+    [types addObject:[NSNumber numberWithInt:t]];
     [timeStamps setObject:[NSNumber numberWithLongLong:0] forKey:keyPath];
 }
 
@@ -91,23 +101,32 @@
     // don't broadcast values that haven't been changed/set yet (no authority)
     EspTimeType t = [[timeStamps objectForKey:keyPath] longLongValue];
     if(t == 0) return;
+
     // also: don't broadcast values when we aren't the authority, unless authority is AWOL...
-    NSString* authorityName = [authorityNames objectForKey:keyPath];
+    NSString* authorityPerson = [authorityNames objectForKey:keyPath];
     NSString* authorityMachine = [authorityMachines objectForKey:keyPath];
-    EspPeer* authority = [peerList findPeerWithName:authorityName andMachine:authorityMachine];
+    EspPeer* authority = [peerList findPeerWithName:authorityPerson andMachine:authorityMachine];
     if(authority != [peerList selfInPeerList])
     {
         EspTimeType t = monotonicTime() - [authority lastBeacon];
         if(t < 10000000000) return;
     }
-    // all conditions have been met: so broadcast the opcode
-    NSMutableDictionary* d = [[[NSMutableDictionary alloc] init] autorelease];
-    [d setObject:keyPath forKey:@"keyPath"];
-    [d setObject:[authorityNames objectForKey:keyPath] forKey:@"authorityName"];
-    [d setObject:[authorityMachines objectForKey:keyPath] forKey:@"authorityMachine"];
-    [d setObject:[[timeStamps objectForKey:keyPath] copy] forKey:@"timeStamp"];
-    [d setObject:[[values objectForKey:keyPath] copy] forKey:@"value"];
-    [network sendOldOpcode:ESP_OPCODE_KVC withDictionary:d];
+
+    copyNameAndMachineIntoOpcode((EspOpcode*)&kvc); // to fix: should only be copied when defaults change
+    kvc.timeStamp = [[timeStamps objectForKey:keyPath] longLongValue];
+    strncpy(kvc.keyPath,[keyPath cStringUsingEncoding:NSUTF8StringEncoding],ESP_KVC_MAXKEYLENGTH);
+    kvc.keyPath[ESP_KVC_MAXKEYLENGTH-1] = 0;
+    strncpy(kvc.authorityPerson,[authorityPerson cStringUsingEncoding:NSUTF8StringEncoding],ESP_MAXNAMELENGTH);
+    kvc.authorityPerson[ESP_MAXNAMELENGTH-1] = 0;
+    strncpy(kvc.authorityMachine,[authorityMachine cStringUsingEncoding:NSUTF8StringEncoding],ESP_MAXNAMELENGTH);
+    kvc.authorityMachine[ESP_MAXNAMELENGTH-1] = 0;
+    kvc.type = [[types objectForKey:keyPath] intValue];
+    if(kvc.type == ESP_KVCTYPE_BOOL) kvc.value.boolValue = [[values objectForKey:keyPath] boolValue];
+    else if(kvc.type == ESP_KVCTYPE_BOOL) kvc.value.doubleValue = [[values objectForKey:keyPath] doubleValue];
+    else if(kvc.type == ESP_KVCTYPE_BOOL) kvc.value.timeValue = [[values objectForKey:keyPath] longLongValue];
+    else if(kvc.type == ESP_KVCTYPE_BOOL) kvc.value.intValue = [[values objectForKey:keyPath] intValue];
+    else NSAssert(false,@"invalid kvc type in EspKeyValueController broadcast method");
+    [network sendOpcode:(EspOpcode*)kvc];
 }
 
 -(EspTimeType) clockAdjustmentForAuthority:(NSString*)keyPath
@@ -118,44 +137,52 @@
 
 -(void) handleOpcode:(EspOpcode *)opcode
 {
-    NSAssert(false,@"empty new opcode handler called");
+    NSAssert(opcode->opcode == ESP_OPCODE_KVC,@"EspKeyValueController sent unrecognized opcode");
+    EspKvcOpcode* rcvd = (EspKvcOpcode*)opcode;
+
+    // extract and sanitize opcode elements
+    if(rcvd->timeStamp == 0) return; // ignore initial, non-actioned settings
+    NSString* keyPath = [NSString stringWithCString:opcode->keyPath encoding:NSUTF8StringEncoding];
+    if([types objectForKey:keyPath] == NULL) {
+      postLog([NSString stringWithFormat:@"dropping KVC with unregistered keypath %@",keyPath],self);
+      return;
+    }
+    NSString* authorityPerson = [NSString stringWithCString:opcode->authorityPerson encoding:NSUTF8StringEncoding];
+    NSString* authorityMachine = [NSString stringWithCString:opcode->authorityMachine encoding:NSUTF8StringEncoding];
+    id value;
+    if(rcvd->type == ESP_KVCTYPE_BOOL) value = [NSNumber numberWithBool:rcvd->value.boolValue];
+    else if(rcvd->type == ESP_KVCTYPE_DOUBLE) value = [NSNumber numberWithDouble:rcvd->value.doubleValue];
+    else if(rcvd->type == ESP_KVCTYPE_TIME) value = [NSNumber numberWithLongLong:rcvd->value.timeValue];
+    else if(rcvd->type == ESP_KVCTYPE_INT) value = [NSNumber numberWithInt:rcvd->value.intValue];
+    else {
+      postLog([NSString stringWithFormat:@"dropping KVC with unrecognized type field %d",rcvd->type],self);
+      return;
+    }
+    EspPeer* newAuthority = [peerList findPeerWithName:authorityPerson andMachine:authorityMachine];
+    if(newAuthority == nil) {
+        postLog([NSString stringWithFormat:@"dropping KVC with unknown authority): %@-%@",
+                 authorityPerson,authorityMachine], self);
+        return;
+    }
+    EspTimeType t2 = rcvd->timeStamp + [clock adjustmentForPeer:newAuthority];
+    EspPeer* oldAuthority = [authorities objectForKey:keyPath];
+    EspTimeType t1 = 0;
+    if(oldAuthority != nil) t1 = [[timeStamps objectForKey:keyPath] longLongValue] + [clock adjustmentForPeer:oldAuthority];
+    if(t2 > t1)
+    {
+        [model setValue:value forKeyPath:keyPath];
+        [values setObject:value forKey:keyPath];
+        [timeStamps setObject:[NSNumber numberWithLongLong:rcvd->timeStamp] forKey:keyPath];
+        [authorityNames setObject:[authorityPerson copy] forKey:keyPath];
+        [authorityMachines setObject:[authorityMachine copy] forKey:keyPath];
+        [authorities setObject:newAuthority forKey:keyPath];
+        postLog([NSString stringWithFormat:@"new value %@ for key %@",keyPath,value],self);
+    }
 }
 
 -(void) handleOldOpcode:(NSDictionary*)d
 {
-    int opcode = [[d objectForKey:@"opcode"] intValue];
-    
-    if(opcode == ESP_OPCODE_KVC) // a broadcast dictionary value from somewhere 
-    {
-        NSNumber* timeStamp = [d objectForKey:@"timeStamp"]; VALIDATE_OPCODE_NSNUMBER(timeStamp);
-        if([timeStamp longLongValue] == 0) return; // ignore initial, non-actioned settings
-        NSString* keyPath = [d objectForKey:@"keyPath"]; VALIDATE_OPCODE_NSSTRING(keyPath);
-        id value = [d objectForKey:@"value"];
-        if(value == nil) { postWarning(@"received KVC with value==nil",self); return; }
-        NSString* name = [d objectForKey:@"authorityName"]; VALIDATE_OPCODE_NSSTRING(name);
-        NSString* machine = [d objectForKey:@"authorityMachine"]; VALIDATE_OPCODE_NSSTRING(machine);
-        EspPeer* newAuthority = [peerList findPeerWithName:name andMachine:machine];
-        if(newAuthority == nil)
-        {
-            postLog([NSString stringWithFormat:@"dropping KVC (unknown authority): %@-%@",
-                     name,machine], self);
-			return;
-        }
-        EspTimeType t2 = [timeStamp longLongValue] + [clock adjustmentForPeer:newAuthority];
-        EspPeer* oldAuthority = [authorities objectForKey:keyPath];
-        EspTimeType t1;
-        if(oldAuthority != nil) t1 = [[timeStamps objectForKey:keyPath] longLongValue] + [clock adjustmentForPeer:oldAuthority]; else t1 = 0;
-        if(t2 > t1)
-        {
-            [model setValue:value forKeyPath:keyPath];
-            [values setObject:value forKey:keyPath];
-            [timeStamps setObject:[timeStamp copy] forKey:keyPath];
-            [authorityNames setObject:[name copy] forKey:keyPath];
-            [authorityMachines setObject:[machine copy] forKey:keyPath];
-            [authorities setObject:newAuthority forKey:keyPath];
-            postLog([NSString stringWithFormat:@"new value %@ for key %@",keyPath,value],self);
-        }
-    }
+    NSAssert(false,@"empty old opcode handler in EspKeyValueController called");
 }
 
 @end
