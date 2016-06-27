@@ -21,6 +21,18 @@
 
 #include "EspGridDefs.h"
 
+#define ESP_NUMBER_OF_OPCODES 10
+#define ESP_OPCODE_BEACON 0
+#define ESP_OPCODE_ACK 1
+#define ESP_OPCODE_PEERINFO 4
+#define ESP_OPCODE_CHATSEND 2
+#define ESP_OPCODE_KVC 3
+#define ESP_OPCODE_ANNOUNCESHARE 5
+#define ESP_OPCODE_REQUESTSHARE 6
+#define ESP_OPCODE_DELIVERSHARE 7
+#define ESP_OPCODE_OSCNOW 8
+#define ESP_OPCODE_OSCFUTURE 9
+
 typedef struct {
     EspTimeType sendTime;
     EspTimeType receiveTime;
@@ -67,5 +79,12 @@ typedef struct {
     EspTimeType refBeacon;
     EspTimeType refBeaconAverage;    
 } EspPeerInfoOpcode;
+
+#define ESP_CHAT_MAXLENGTH 256
+
+typedef struct {
+    EspOpcode header;
+    char text[ESP_CHAT_MAXLENGTH];
+} EspChatOpcode;
 
 #endif /* EspOpcode_h */
