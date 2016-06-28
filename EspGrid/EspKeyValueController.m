@@ -70,10 +70,10 @@
 
 -(void)addKeyPath:(NSString*)keyPath type:(int)t
 {
-    if(t!=ESP_KVCTYPE_BOOL && t!=ESP_KVCTYPE_DOUBLE && t!=ESP_KVCTYPE_TIME && t!= ESP_KVCTYPE_INT)
+    if(t!=ESP_KVCTYPE_BOOL && t!=ESP_KVCTYPE_DOUBLE && t!=ESP_KVCTYPE_TIME && t!= ESP_KVCTYPE_INT && t!=ESP_KVCTYPE_BEAT)
       NSAssert(false,@"EspKeyValueController: attempt to addKeyPath with unrecognized type");
     [keyPaths addObject:[keyPath copy]];
-    [types addObject:[NSNumber numberWithInt:t]];
+    [types setObject:[NSNumber numberWithInt:t] forKey:keyPath];
     [timeStamps setObject:[NSNumber numberWithLongLong:0] forKey:keyPath];
 }
 
@@ -125,8 +125,15 @@
     else if(kvc.type == ESP_KVCTYPE_BOOL) kvc.value.doubleValue = [[values objectForKey:keyPath] doubleValue];
     else if(kvc.type == ESP_KVCTYPE_BOOL) kvc.value.timeValue = [[values objectForKey:keyPath] longLongValue];
     else if(kvc.type == ESP_KVCTYPE_BOOL) kvc.value.intValue = [[values objectForKey:keyPath] intValue];
+    else if(kvc.type == ESP_KVCTYPE_BEAT) {
+        id beatParams = [values objectForKey:keyPath];
+        kvc.value.beatValue.on = [[beatParams objectForKey:@"on"] boolValue];
+        kvc.value.beatValue.tempo = [[beatParams objectForKey:@"tempo"] doubleValue];
+        kvc.value.beatValue.downbeatTime = [[beatParams objectForKey:@"downbeatTime"] longLongValue];
+        kvc.value.beatValue.number = [[beatParams objectForKey:@"downbeatNumber"] intValue];
+    }
     else NSAssert(false,@"invalid kvc type in EspKeyValueController broadcast method");
-    [network sendOpcode:(EspOpcode*)kvc];
+    [network sendOpcode:(EspOpcode*)&kvc];
 }
 
 -(EspTimeType) clockAdjustmentForAuthority:(NSString*)keyPath
@@ -142,18 +149,25 @@
 
     // extract and sanitize opcode elements
     if(rcvd->timeStamp == 0) return; // ignore initial, non-actioned settings
-    NSString* keyPath = [NSString stringWithCString:opcode->keyPath encoding:NSUTF8StringEncoding];
+    NSString* keyPath = [NSString stringWithCString:rcvd->keyPath encoding:NSUTF8StringEncoding];
     if([types objectForKey:keyPath] == NULL) {
       postLog([NSString stringWithFormat:@"dropping KVC with unregistered keypath %@",keyPath],self);
       return;
     }
-    NSString* authorityPerson = [NSString stringWithCString:opcode->authorityPerson encoding:NSUTF8StringEncoding];
-    NSString* authorityMachine = [NSString stringWithCString:opcode->authorityMachine encoding:NSUTF8StringEncoding];
+    NSString* authorityPerson = [NSString stringWithCString:rcvd->authorityPerson encoding:NSUTF8StringEncoding];
+    NSString* authorityMachine = [NSString stringWithCString:rcvd->authorityMachine encoding:NSUTF8StringEncoding];
     id value;
     if(rcvd->type == ESP_KVCTYPE_BOOL) value = [NSNumber numberWithBool:rcvd->value.boolValue];
     else if(rcvd->type == ESP_KVCTYPE_DOUBLE) value = [NSNumber numberWithDouble:rcvd->value.doubleValue];
     else if(rcvd->type == ESP_KVCTYPE_TIME) value = [NSNumber numberWithLongLong:rcvd->value.timeValue];
     else if(rcvd->type == ESP_KVCTYPE_INT) value = [NSNumber numberWithInt:rcvd->value.intValue];
+    else if(rcvd->type == ESP_KVCTYPE_BEAT) {
+        value = [NSDictionary dictionaryWithObjectsAndKeys:
+                                    [NSNumber numberWithBool:rcvd->value.beatValue.on],@"on",
+                                    [NSNumber numberWithDouble:rcvd->value.beatValue.tempo],@"tempo",
+                                    [NSNumber numberWithLongLong:rcvd->value.beatValue.downbeatTime],@"downbeatTime",
+                                    [NSNumber numberWithInt:rcvd->value.beatValue.number],@"downbeatNumber",nil];
+    }
     else {
       postLog([NSString stringWithFormat:@"dropping KVC with unrecognized type field %d",rcvd->type],self);
       return;

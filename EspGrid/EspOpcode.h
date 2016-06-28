@@ -33,7 +33,7 @@
 #define ESP_OPCODE_OSCNOW 8
 #define ESP_OPCODE_OSCFUTURE 9
 
-#define ESP_MAXNAMELENGTH
+#define ESP_MAXNAMELENGTH 16
 
 typedef struct {
     EspTimeType sendTime;
@@ -95,6 +95,7 @@ typedef struct {
 #define ESP_KVCTYPE_DOUBLE 2
 #define ESP_KVCTYPE_TIME 3
 #define ESP_KVCTYPE_INT 4
+#define ESP_KVCTYPE_BEAT 5
 
 typedef struct {
   EspOpcode header;
@@ -108,6 +109,12 @@ typedef struct {
     double doubleValue;
     EspTimeType timeValue;
     int intValue;
+      struct {
+          char on;
+          double tempo;
+          EspTimeType downbeatTime;
+          int number;
+      } beatValue;
   } value;
 } EspKvcOpcode;
 
