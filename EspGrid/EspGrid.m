@@ -115,6 +115,7 @@ LARGE_INTEGER performanceFrequency;
 
     [osc addHandler:self forAddress:@"/esp/clock/q"];
     [osc addHandler:self forAddress:@"/esp/tempo/q"];
+    [osc addHandler:self forAddress:@"/esp/tempoCPU/q"];
     [osc addHandler:[EspBeat beat] forAddress:@"/esp/beat/on"];
     [osc addHandler:[EspBeat beat] forAddress:@"/esp/beat/tempo"];
     [osc addHandler:[EspChat chat] forAddress:@"/esp/chat/send"];
@@ -222,17 +223,33 @@ LARGE_INTEGER performanceFrequency;
         float tempo = [[beat tempo] floatValue];
         EspTimeType time = [beat adjustedDownbeatTime];
         EspTimeType monotonicToSystem = systemTime() - monotonicTime();
-//        NSLog(@"beat time on HPC is %lld",time);
-//      NSLog(@"system time is approx. %lld",systemTime());
-//        NSLog(@"HPC time is approx %lld",monotonicTime());
-//        NSLog(@"diff is %lld",monotonicToSystem);
         time += monotonicToSystem; // translate high performance time into epoch of normal system clock
-//        NSLog(@"adjusted beat time is %lld",time);
-        // later there should be a variant of /esp/tempo/q that requests high performance time
         int seconds = (int)(time / 1000000000);
         int nanoseconds = (int)(time % 1000000000);
         long n = [[beat downbeatNumber] longValue];
         NSArray* msg = [NSArray arrayWithObjects:@"/esp/tempo/r",
+                        [NSNumber numberWithInt:on],
+                        [NSNumber numberWithFloat:tempo],
+                        [NSNumber numberWithInt:seconds],
+                        [NSNumber numberWithInt:nanoseconds],
+                        [NSNumber numberWithInt:(int)n],nil];
+        if([d count] == 0) [osc transmit:msg toHost:h port:p log:NO]; // respond directly to host and port of incoming msg
+        else if([d count] == 1) [osc transmit:msg toHost:h port:[[d objectAtIndex:0] intValue] log:NO]; // explicit port, deduced host
+        else if([d count] == 2) [osc transmit:msg toHost:[d objectAtIndex:1] port:[[d objectAtIndex:0] intValue] log:NO]; // explicit port+host
+        else { postProblem(@"received /esp/tempo/q with too many parameters", self); }
+        return YES;
+    }
+    
+    else if([address isEqual:@"/esp/tempoCPU/q"])
+    {
+        EspBeat* beat = [EspBeat beat];
+        BOOL on = [[beat on] boolValue];
+        float tempo = [[beat tempo] floatValue];
+        EspTimeType time = [beat adjustedDownbeatTime];
+        int seconds = (int)(time / 1000000000);
+        int nanoseconds = (int)(time % 1000000000);
+        long n = [[beat downbeatNumber] longValue];
+        NSArray* msg = [NSArray arrayWithObjects:@"/esp/tempoCPU/r",
                         [NSNumber numberWithInt:on],
                         [NSNumber numberWithFloat:tempo],
                         [NSNumber numberWithInt:seconds],
