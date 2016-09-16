@@ -35,7 +35,7 @@ int main(int argc, const char * argv[])
     {
         NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
         EspGrid* grid = [[EspGrid alloc] init];
-        BOOL echoToLog = FALSE;
+        BOOL echoToLog = false;
         for(int x=1; x<argc; x++)
         {
             if(!strcmp(argv[x],"--logOSC")) echoToLog = TRUE;

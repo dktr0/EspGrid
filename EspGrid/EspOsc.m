@@ -36,7 +36,7 @@
     handlers = [[NSMutableArray alloc] init];
     subscribers = [[EspOscSubscribers alloc] init];
     [subscribers setSocket:udp];
-    echoToLog = FALSE;
+    echoToLog = false;
     return self;
 }
 
