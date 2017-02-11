@@ -27,8 +27,8 @@ typedef struct {
     char name[16];
     char machine[16];
     char ip[16];
-    int port;
-    int length;
+    unsigned int port;
+    unsigned int length;
     unsigned char opcode;
 } EspOpcode;
 
@@ -39,7 +39,7 @@ typedef struct {
 
 typedef struct {
     EspOpcode header;
-    int beaconCount;
+    unsigned int beaconCount;
     unsigned char majorVersion;
     unsigned char minorVersion;
     unsigned char subVersion;
