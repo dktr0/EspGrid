@@ -29,7 +29,7 @@ typedef struct {
     char ip[16];
     int port;
     int length;
-    char opcode;
+    unsigned char opcode;
 } EspOpcode;
 
 typedef struct {
@@ -40,10 +40,10 @@ typedef struct {
 typedef struct {
     EspOpcode header;
     int beaconCount;
-    char majorVersion;
-    char minorVersion;
-    char subVersion;
-    char syncMode;
+    unsigned char majorVersion;
+    unsigned char minorVersion;
+    unsigned char subVersion;
+    unsigned char syncMode;
 } EspBeaconOpcode;
 
 typedef struct {

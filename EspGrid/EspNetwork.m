@@ -74,7 +74,7 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
     [broadcast setHost:[[NSUserDefaults standardUserDefaults] objectForKey:@"broadcast"]];
 }
 
--(void) sendOldOpcode:(int)opcode withDictionary:(NSDictionary*)d
+-(void) sendOldOpcode:(unsigned int)opcode withDictionary:(NSDictionary*)d
 {
     @try
     {
@@ -204,7 +204,7 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
     [h handleOldOpcode:d];
 }
 
--(void) setHandler:(id)h forOpcode:(int)o
+-(void) setHandler:(id)h forOpcode:(unsigned int)o
 {
     NSAssert(o < ESPUDP_MAX_HANDLERS, @"attempt to add opcode handler beyond maximum");
     handlers[o] = h;

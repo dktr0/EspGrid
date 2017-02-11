@@ -40,11 +40,11 @@
 @property (nonatomic,assign) EspChannel* bridge;
 
 +(EspNetwork*) network;
--(void) sendOldOpcode:(int)opcode withDictionary:(NSDictionary*)d; // old method
+-(void) sendOldOpcode:(unsigned int)opcode withDictionary:(NSDictionary*)d; // old method
 -(void) sendOpcode:(EspOpcode*)opcode; // new method
 -(void) handleOpcode:(EspOpcode*)opcode; // new
 -(void) handleOldOpcode:(NSDictionary*)d; // old
--(void) setHandler:(id)h forOpcode:(int)o;
+-(void) setHandler:(id)h forOpcode:(unsigned int)o;
 -(void) broadcastAddressChanged; // signal that the broadcast address may have been changed
 
 @end
