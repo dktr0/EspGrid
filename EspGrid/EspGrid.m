@@ -67,6 +67,7 @@ LARGE_INTEGER performanceFrequency;
     NSLog(@"sizeof EspBeaconOpcode = %lu",sizeof(EspBeaconOpcode));
     NSLog(@"sizeof EspAckOpcode = %lu",sizeof(EspAckOpcode));
     NSLog(@"sizeof char = %lu",sizeof(char));
+    NSLog(@"sizeof unsigned char = %lu",sizeof(unsigned char));
     NSLog(@"sizeof int = %lu",sizeof(int));
     NSLog(@"sizeof long = %lu",sizeof(long));
     NSLog(@"sizeof EspTimeType = %lu",sizeof(EspTimeType));
