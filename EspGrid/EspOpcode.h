@@ -30,7 +30,7 @@ typedef struct {
     uint16_t port;
     uint16_t length;
     uint16_t opcode;
-} EspOpcode;
+} EspOpcode __attribute__((aligned(8)));
 
 typedef struct {
     EspOpcode header;
@@ -44,7 +44,7 @@ typedef struct {
     unsigned char minorVersion;
     unsigned char subVersion;
     unsigned char syncMode;
-} EspBeaconOpcode __attribute__((aligned(8)));
+} EspBeaconOpcode;
 
 typedef struct {
     EspOpcode header;
