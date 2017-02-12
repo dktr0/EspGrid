@@ -31,7 +31,9 @@ LARGE_INTEGER performanceFrequency;
 +(void) initialize
 {
     NSMutableDictionary* defs = [NSMutableDictionary dictionary];
-    NSString* random = [NSString stringWithFormat:@"unknown-%u",arc4random(),nil];
+    time_t t;
+    srand((unsigned)time(&t));
+    NSString* random = [NSString stringWithFormat:@"unknown-%u",rand(),nil];
     [defs setObject:random forKey:@"person"];
     [defs setObject:@"unknown" forKey:@"machine"];
     [defs setObject:@"255.255.255.255" forKey:@"broadcast"];
@@ -160,7 +162,7 @@ LARGE_INTEGER performanceFrequency;
     [defs addObserver:self forKeyPath:@"broadcast" options:NSKeyValueObservingOptionNew context:nil];
     [defs addObserver:self forKeyPath:@"person" options:NSKeyValueObservingOptionNew context:nil];
     [defs addObserver:self forKeyPath:@"machine" options:NSKeyValueObservingOptionNew context:nil];
-    
+
 	// Note: on GNUSTEP/WIN32 preferences at the command-line don't seem to persist
 	// unless, as in the following, we set them to their current values
 	[defs setValue:[defs valueForKey:@"person"] forKey:@"person"];
@@ -263,7 +265,7 @@ LARGE_INTEGER performanceFrequency;
         else { postProblem(@"received /esp/tempo/q with too many parameters", self); }
         return YES;
     }
-    
+
     else if([address isEqual:@"/esp/tempoCPU/q"])
     {
         EspBeat* beat = [EspBeat beat];
