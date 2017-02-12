@@ -27,19 +27,19 @@ typedef struct {
     char name[16];
     char machine[16];
     char ip[16];
-    unsigned int port;
-    unsigned int length;
-    unsigned char opcode;
-} EspOpcode __attribute__ ((aligned (8))); // should be 80 bytes
+    uint16_t port;
+    uint16_t length;
+    uint16_t opcode;
+} EspOpcode;
 
 typedef struct {
     EspOpcode header;
     char data[2048];
-} EspOldOpcode; // should be 2056 bytes
+} EspOldOpcode;
 
 typedef struct {
     EspOpcode header;
-    unsigned int beaconCount;
+    uint32_t beaconCount;
     unsigned char majorVersion;
     unsigned char minorVersion;
     unsigned char subVersion;
@@ -51,7 +51,7 @@ typedef struct {
     char nameRcvd[16];
     char machineRcvd[16];
     char ipRcvd[16];
-    long beaconCount;
+    uint32_t beaconCount;
     EspTimeType beaconSend;
     EspTimeType beaconReceive;
 } EspAckOpcode;
