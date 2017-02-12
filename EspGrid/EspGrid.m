@@ -239,6 +239,7 @@ LARGE_INTEGER performanceFrequency;
                         [NSNumber numberWithInt:seconds],
                         [NSNumber numberWithInt:nanoseconds],
                         [NSNumber numberWithInt:(int)n],nil];
+        NSLog(@"%@",msg);
         if([d count] == 0) [osc transmit:msg toHost:h port:p log:NO]; // respond directly to host and port of incoming msg
         else if([d count] == 1) [osc transmit:msg toHost:h port:[[d objectAtIndex:0] intValue] log:NO]; // explicit port, deduced host
         else if([d count] == 2) [osc transmit:msg toHost:[d objectAtIndex:1] port:[[d objectAtIndex:0] intValue] log:NO]; // explicit port+host
