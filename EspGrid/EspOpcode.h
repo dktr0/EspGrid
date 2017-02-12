@@ -44,7 +44,7 @@ typedef struct {
     unsigned char minorVersion;
     unsigned char subVersion;
     unsigned char syncMode;
-} EspBeaconOpcode;
+} EspBeaconOpcode __attribute__((aligned(8)));
 
 typedef struct {
     EspOpcode header;
