@@ -30,12 +30,12 @@ typedef struct {
     unsigned int port;
     unsigned int length;
     unsigned char opcode;
-} EspOpcode;
+} EspOpcode __attribute__ ((aligned (8))); // should be 80 bytes
 
 typedef struct {
     EspOpcode header;
     char data[2048];
-} EspOldOpcode;
+} EspOldOpcode; // should be 2056 bytes
 
 typedef struct {
     EspOpcode header;
