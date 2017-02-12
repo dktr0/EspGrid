@@ -71,7 +71,14 @@ LARGE_INTEGER performanceFrequency;
     NSLog(@"sizeof int = %lu",sizeof(int));
     NSLog(@"sizeof long = %lu",sizeof(long));
     NSLog(@"sizeof EspTimeType = %lu",sizeof(EspTimeType));
-
+    
+    // EspTimeType beaconSend;
+    // EspTimeType beaconReceive;
+    //  } EspAckOpcode;
+    EspAckOpcode acktest;
+    NSLog(@"offset of ack.beaconSend = %ld",(void*)&acktest.beaconSend - (void*)&acktest);
+    NSLog(@"offset of ack.beaconReceive = %ld",(void*)&acktest.beaconReceive - (void*)&acktest);
+    
     #ifdef _WIN32
     QueryPerformanceFrequency(&performanceFrequency);
     #endif
