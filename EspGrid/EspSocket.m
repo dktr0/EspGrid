@@ -131,6 +131,7 @@
 
         // get the receive time stamp as soon as possible
         EspTimeType receiveTime = monotonicTime();
+        NSLog(@"monotonicTimeStamp %lld",receiveTime);
         // (*(char*)(receiveBuffer+n)) = 0; // not sure why we were doing this - it seems unnecessary
         // validate the length of the received packet
         if(n>ESP_SOCKET_BUFFER_SIZE) { postProblem(@"received more data than buffer can handle",self); continue; }
