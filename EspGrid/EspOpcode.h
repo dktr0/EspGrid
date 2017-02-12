@@ -51,9 +51,9 @@ typedef struct {
     char nameRcvd[16];
     char machineRcvd[16];
     char ipRcvd[16];
-    uint32_t beaconCount;
     EspTimeType beaconSend;
     EspTimeType beaconReceive;
+    uint32_t beaconCount;
 } EspAckOpcode;
 
 typedef struct {
