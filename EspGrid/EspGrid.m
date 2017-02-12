@@ -226,11 +226,12 @@ LARGE_INTEGER performanceFrequency;
         EspBeat* beat = [EspBeat beat];
         BOOL on = [[beat on] boolValue];
         float tempo = [[beat tempo] floatValue];
-        EspTimeType time = [beat adjustedDownbeatTime];
+        EspTimeType beatTime = [beat adjustedDownbeatTime];
         EspTimeType monotonicToSystem = systemTime() - monotonicTime();
-        time += monotonicToSystem; // translate high performance time into epoch of normal system clock
+        EspTimeType time = beatTime + monotonicToSystem; // translate high performance time into epoch of normal system clock
         int seconds = (int)(time / (EspTimeType)1000000000);
         int nanoseconds = (int)(time % (EspTimeType)1000000000);
+        NSLog(@"beatTime=%lld   monotonicToSystem=%lld   time=%lld",beatTime,monotonicToSystem,time);
         long n = [[beat downbeatNumber] longValue];
         NSLog(@"about to /esp/tempo/r %d %f %d %d %d",on,tempo,seconds,nanoseconds,(int)n);
         NSArray* msg = [NSArray arrayWithObjects:@"/esp/tempo/r",
@@ -265,7 +266,7 @@ LARGE_INTEGER performanceFrequency;
         if([d count] == 0) [osc transmit:msg toHost:h port:p log:NO]; // respond directly to host and port of incoming msg
         else if([d count] == 1) [osc transmit:msg toHost:h port:[[d objectAtIndex:0] intValue] log:NO]; // explicit port, deduced host
         else if([d count] == 2) [osc transmit:msg toHost:[d objectAtIndex:1] port:[[d objectAtIndex:0] intValue] log:NO]; // explicit port+host
-        else { postProblem(@"received /esp/tempo/q with too many parameters", self); }
+        else { postProblem(@"received /esp/tempoCPU/q with too many parameters", self); }
         return YES;
     }
 
