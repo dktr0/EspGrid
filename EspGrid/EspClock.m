@@ -99,8 +99,8 @@
     ack.beaconCount = b->beaconCount;
     ack.beaconSend = b->header.sendTime;
     ack.beaconReceive = b->header.receiveTime;
-    NSLog(@"%lld %lld",b->header.sendTime,b->header.receiveTime);
-    NSLog(@"%lld %lld",ack.beaconSend,ack.beaconReceive);
+    // NSLog(@"%lld %lld",b->header.sendTime,b->header.receiveTime);
+    // NSLog(@"%lld %lld",ack.beaconSend,ack.beaconReceive);
     [network sendOpcode:(EspOpcode*)&ack];
 }
 

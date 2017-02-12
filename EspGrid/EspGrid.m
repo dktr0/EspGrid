@@ -63,6 +63,7 @@ LARGE_INTEGER performanceFrequency;
 -(id) init
 {
     self = [super init];
+    
     NSLog(@"sizeof EspOpcode = %lu",sizeof(EspOpcode));
     NSLog(@"sizeof EspBeaconOpcode = %lu",sizeof(EspBeaconOpcode));
     NSLog(@"sizeof EspAckOpcode = %lu",sizeof(EspAckOpcode));
@@ -71,10 +72,6 @@ LARGE_INTEGER performanceFrequency;
     NSLog(@"sizeof int = %lu",sizeof(int));
     NSLog(@"sizeof long = %lu",sizeof(long));
     NSLog(@"sizeof EspTimeType = %lu",sizeof(EspTimeType));
-    
-    // EspTimeType beaconSend;
-    // EspTimeType beaconReceive;
-    //  } EspAckOpcode;
     EspAckOpcode acktest;
     NSLog(@"offset of ack.beaconSend = %ld",(void*)&acktest.beaconSend - (void*)&acktest);
     NSLog(@"offset of ack.beaconReceive = %ld",(void*)&acktest.beaconReceive - (void*)&acktest);
@@ -232,8 +229,8 @@ LARGE_INTEGER performanceFrequency;
         EspTimeType time = [beat adjustedDownbeatTime];
         EspTimeType monotonicToSystem = systemTime() - monotonicTime();
         time += monotonicToSystem; // translate high performance time into epoch of normal system clock
-        int seconds = (int)(time / 1000000000);
-        int nanoseconds = (int)(time % 1000000000);
+        int seconds = (int)(time / (EspTimeType)1000000000);
+        int nanoseconds = (int)(time % (EspTimeType)1000000000);
         long n = [[beat downbeatNumber] longValue];
         NSArray* msg = [NSArray arrayWithObjects:@"/esp/tempo/r",
                         [NSNumber numberWithInt:on],
