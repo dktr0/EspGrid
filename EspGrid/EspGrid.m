@@ -60,22 +60,35 @@ LARGE_INTEGER performanceFrequency;
     return sharedGrid;
 }
 
+-(void) protocolTests
+{
+    int e = 0;
+    e+=[self sizeOrOffset:sizeof(EspTimeType) shouldBe:8 name:@"sizeof(EspTimeType)"];
+    e+=[self sizeOrOffset:sizeof(EspOpcode) shouldBe:72 name:@"sizeof(EspOpcode)"];
+    e+=[self sizeOrOffset:sizeof(EspBeaconOpcode) shouldBe:80 name:@"sizeof(EspBeaconOpcode)"];
+    e+=[self sizeOrOffset:sizeof(EspAckOpcode) shouldBe:144 name:@"sizeof(EspAckOpcode)"];
+    e+=[self sizeOrOffset:sizeof(EspPeerInfoOpcode) shouldBe:160 name:@"sizeof(EspPeerInfoOpcode)"];
+    EspAckOpcode acktest;
+    e+=[self sizeOrOffset:((void*)&acktest.beaconSend-(void*)&acktest) shouldBe:120 name:@"offset of EspAckOpcode.beaconSend"];
+    e+=[self sizeOrOffset:((void*)&acktest.beaconReceive-(void*)&acktest) shouldBe:128 name:@"offset of EspAckOpcode.beaconSend"];
+    if(e != 0)
+    {
+        NSLog(@"Because there are one or more protocol warnings above, this build of espgridd may fail to communicate with other instances of espgridd. This is either a bug in the software or a problem with the build environment.");
+    }
+}
+
+-(int) sizeOrOffset:(size_t)s shouldBe:(size_t)t name:(NSString*)name
+{
+    if(s != t) {
+        NSLog(@"***WARNING*** %@ should be %lu but is %lu",name,t,s);
+        return 1;
+    } else return 0;
+}
+
 -(id) init
 {
     self = [super init];
-    
-    NSLog(@"sizeof EspOpcode = %lu",sizeof(EspOpcode));
-    NSLog(@"sizeof EspBeaconOpcode = %lu",sizeof(EspBeaconOpcode));
-    NSLog(@"sizeof EspAckOpcode = %lu",sizeof(EspAckOpcode));
-    NSLog(@"sizeof char = %lu",sizeof(char));
-    NSLog(@"sizeof unsigned char = %lu",sizeof(unsigned char));
-    NSLog(@"sizeof int = %lu",sizeof(int));
-    NSLog(@"sizeof long = %lu",sizeof(long));
-    NSLog(@"sizeof EspTimeType = %lu",sizeof(EspTimeType));
-    EspAckOpcode acktest;
-    NSLog(@"offset of ack.beaconSend = %ld",(void*)&acktest.beaconSend - (void*)&acktest);
-    NSLog(@"offset of ack.beaconReceive = %ld",(void*)&acktest.beaconReceive - (void*)&acktest);
-    
+    [self protocolTests];
     #ifdef _WIN32
     QueryPerformanceFrequency(&performanceFrequency);
     #endif

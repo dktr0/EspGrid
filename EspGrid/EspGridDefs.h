@@ -76,9 +76,7 @@ inline static EspTimeType systemTime(void) {
  // OS X and Linux (MINGW/GNUSTEP)
     struct timeval t;
     gettimeofday(&t, NULL);
-    EspTimeType w = ((EspTimeType)t.tv_sec*(EspTimeType)1000000000)+((EspTimeType)t.tv_usec*(EspTimeType)1000);
-    return w;
-    //return (t.tv_sec*1000000000) + (t.tv_usec*1000);
+    return ((EspTimeType)t.tv_sec*(EspTimeType)1000000000)+((EspTimeType)t.tv_usec*(EspTimeType)1000);
 #else
  // Windows (MINGW/GNUSTEP)
   SYSTEMTIME s;
@@ -111,10 +109,7 @@ inline static EspTimeType monotonicTime(void) {
 	// Linux (GNUSTEP)
     struct timespec t;
     clock_gettime(CLOCK_MONOTONIC,&t);
-    // NSLog(@"in monotonic time %ld %ld",t.tv_sec,t.tv_nsec);
-    EspTimeType w = (EspTimeType)t.tv_sec*(EspTimeType)1000000000+(EspTimeType)t.tv_nsec;
-    // return (t.tv_sec*1000000000) + (t.tv_nsec);
-    return w;
+    return (EspTimeType)t.tv_sec*(EspTimeType)1000000000+(EspTimeType)t.tv_nsec;
 #endif
 #endif
 }
