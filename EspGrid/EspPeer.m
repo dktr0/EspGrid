@@ -102,11 +102,14 @@
     EspTimeType beaconReceive = opcode->beaconReceive;
     EspTimeType ackSend = opcode->header.sendTime;
     EspTimeType ackReceive = opcode->header.receiveTime;
+    NSLog(@"%lld %lld %lld %lld",beaconSend,beaconReceive,ackSend,ackReceive);
     
     // from these times we can calculate roundtrip time, and interval peer spent preparing ACK, on each clock
     // and then each of those can be tracked immediately, lowest value or average value
     EspTimeType ackPrepare = ackSend - beaconReceive;
+    NSLog(@"ackPrepare %lld",ackPrepare);
     EspTimeType roundtrip = ackReceive - beaconSend;
+    NSLog(@"roundtrip %lld",roundtrip);
     
     recentLatency = (roundtrip - ackPrepare) / 2;
     if(recentLatency < lowestLatency) lowestLatency = recentLatency;
