@@ -21,7 +21,7 @@
 
 #define ESPGRID_MAJORVERSION 0
 #define ESPGRID_MINORVERSION 57 // changes to external/internal protocol MUST increment MINORVERSION
-#define ESPGRID_SUBVERSION 0
+#define ESPGRID_SUBVERSION 1
 
 #define ESP_NUMBER_OF_OPCODES 10
 #define ESP_OPCODE_BEACON 0

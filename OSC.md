@@ -12,12 +12,13 @@ Query: /esp/tempo/q [port::int32,optional] [host::string,optional]
 - and where host is an optional IP address to which the response should be sent, defaults to the host from which the query was sent
 - (this pattern is used in many other query and response pairs of EspGrid's OSC interface)
 
-Response: /esp/tempo/r on tempo seconds nanoseconds n length
+Response: /esp/tempo/r on tempo seconds nanoseconds n
 
 - on :: int32, where 1 is tempo running and 0 is tempo paused
 - tempo :: float32, is current tempo in beats per minute
 - seconds :: int32, is a reference time in seconds for the current metric grid
 - nanoseconds :: int32, is a reference time in nanoseconds (added to seconds) for the current metric grid
+- n :: int32, the number(count) of the beat which took or will take place at seconds+nanoseconds
 
 The following messages can be sent to EspGrid in order to change the parameters of the metre, as of the next whole number beat:
 

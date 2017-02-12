@@ -31,7 +31,8 @@ LARGE_INTEGER performanceFrequency;
 +(void) initialize
 {
     NSMutableDictionary* defs = [NSMutableDictionary dictionary];
-    [defs setObject:@"unknown" forKey:@"person"];
+    NSString* random = [NSString stringWithFormat:@"unknown-%u",arc4random(),nil];
+    [defs setObject:random forKey:@"person"];
     [defs setObject:@"unknown" forKey:@"machine"];
     [defs setObject:@"255.255.255.255" forKey:@"broadcast"];
     [defs setObject:[NSNumber numberWithInt:4] forKey:@"clockMode"]; // average reference beacon difference
@@ -246,16 +247,16 @@ LARGE_INTEGER performanceFrequency;
         EspTimeType time = beatTime + monotonicToSystem; // translate high performance time into epoch of normal system clock
         int seconds = (int)(time / (EspTimeType)1000000000);
         int nanoseconds = (int)(time % (EspTimeType)1000000000);
-        NSLog(@"beatTime=%lld   sTime=%lld   mTime=%lld   monotonicToSystem=%lld   time=%lld",beatTime,sTime,mTime,monotonicToSystem,time);
+        // NSLog(@"beatTime=%lld   sTime=%lld   mTime=%lld   monotonicToSystem=%lld   time=%lld",beatTime,sTime,mTime,monotonicToSystem,time);
         long n = [[beat downbeatNumber] longValue];
-        NSLog(@"about to /esp/tempo/r %d %f %d %d %d",on,tempo,seconds,nanoseconds,(int)n);
+        // NSLog(@"about to /esp/tempo/r %d %f %d %d %d",on,tempo,seconds,nanoseconds,(int)n);
         NSArray* msg = [NSArray arrayWithObjects:@"/esp/tempo/r",
                         [NSNumber numberWithInt:on],
                         [NSNumber numberWithFloat:tempo],
                         [NSNumber numberWithInt:seconds],
                         [NSNumber numberWithInt:nanoseconds],
                         [NSNumber numberWithInt:(int)n],nil];
-        NSLog(@"%@",msg);
+        // NSLog(@"%@",msg);
         if([d count] == 0) [osc transmit:msg toHost:h port:p log:NO]; // respond directly to host and port of incoming msg
         else if([d count] == 1) [osc transmit:msg toHost:h port:[[d objectAtIndex:0] intValue] log:NO]; // explicit port, deduced host
         else if([d count] == 2) [osc transmit:msg toHost:[d objectAtIndex:1] port:[[d objectAtIndex:0] intValue] log:NO]; // explicit port+host
@@ -269,8 +270,8 @@ LARGE_INTEGER performanceFrequency;
         BOOL on = [[beat on] boolValue];
         float tempo = [[beat tempo] floatValue];
         EspTimeType time = [beat adjustedDownbeatTime];
-        int seconds = (int)(time / 1000000000);
-        int nanoseconds = (int)(time % 1000000000);
+        int seconds = (int)(time / (EspTimeType)1000000000);
+        int nanoseconds = (int)(time % (EspTimeType)1000000000);
         long n = [[beat downbeatNumber] longValue];
         NSArray* msg = [NSArray arrayWithObjects:@"/esp/tempoCPU/r",
                         [NSNumber numberWithInt:on],
@@ -288,8 +289,8 @@ LARGE_INTEGER performanceFrequency;
     else if([address isEqual:@"/esp/clock/q"])
     {
         EspTimeType time = monotonicTime();
-        int seconds = (int)(time / 1000000000);
-        int nanoseconds = (int)(time % 1000000000);
+        int seconds = (int)(time / (EspTimeType)1000000000);
+        int nanoseconds = (int)(time % (EspTimeType)1000000000);
         NSArray* msg = [NSArray arrayWithObjects:@"/esp/clock/r",
                         [NSNumber numberWithInt:seconds],[NSNumber numberWithInt:nanoseconds],nil];
         if([d count] == 0) [osc transmit:msg toHost:h port:p log:NO]; // respond directly to host and port of incoming msg

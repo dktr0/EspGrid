@@ -238,7 +238,7 @@
             else if(t[0] == 'f') 
             { // append float data
                 float y = EspSwapFloat32([n floatValue]);
-                NSLog(@"%f %f",[n floatValue],y);
+                // NSLog(@"%f %f",[n floatValue],y);
                 [d appendBytes:&y length:4];
             } 
 	    }
