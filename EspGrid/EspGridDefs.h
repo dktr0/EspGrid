@@ -109,6 +109,7 @@ inline static EspTimeType monotonicTime(void) {
 	// Linux (GNUSTEP)
     struct timespec t;
     clock_gettime(CLOCK_MONOTONIC,&t);
+    NSLog(@"in monotonic time %ld %ld",t.tv_sec,t.tv_nsec);
     return (t.tv_sec*1000000000) + (t.tv_nsec);
 #endif
 #endif
