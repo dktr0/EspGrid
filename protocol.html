@@ -46,11 +46,12 @@
     <li>(this pattern is used in many other query and response pairs of EspGrid's OSC interface)</li>
 </ul></p>
 
-<p>Response: /esp/tempo/r on tempo seconds nanoseconds n length
+<p>Response: /esp/tempo/r on tempo seconds nanoseconds n
 <ul><li>on :: int32, where 1 is tempo running and 0 is tempo paused</li>
     <li>tempo :: float32, is current tempo in beats per minute</li>
     <li>seconds :: int32, is a reference time in seconds for the current metric grid</li>
     <li>nanoseconds :: int32, is a reference time in nanoseconds (added to seconds) for the current metric grid</li>
+    <li>n :: int32, is the number/count of the beat that occurs at seconds+nanoseconds</li>
 </ul></p>
 
 <p>The following messages can be sent to EspGrid in order to change the parameters of the metre, as of the next whole number beat:
