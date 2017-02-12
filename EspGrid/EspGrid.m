@@ -232,6 +232,7 @@ LARGE_INTEGER performanceFrequency;
         int seconds = (int)(time / (EspTimeType)1000000000);
         int nanoseconds = (int)(time % (EspTimeType)1000000000);
         long n = [[beat downbeatNumber] longValue];
+        NSLog(@"about to /esp/tempo/r %d %f %d %d %d",on,tempo,seconds,nanoseconds,(int)n);
         NSArray* msg = [NSArray arrayWithObjects:@"/esp/tempo/r",
                         [NSNumber numberWithInt:on],
                         [NSNumber numberWithFloat:tempo],
