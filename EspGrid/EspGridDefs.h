@@ -142,7 +142,13 @@ typedef uint32_t UInt32;
 typedef float Float32;
 typedef double Float64;
 inline static UInt32 EspSwapInt32(UInt32 x) { return htobe32(x); }
-inline static Float32 EspSwapFloat32(Float32 x) { return htobe32(x); }
+// inline static Float32 EspSwapFloat32(Float32 x) { return htobe32(x); }
+inline static Float32 EspSwapFloat32(const Float32 x) {
+    unsigned char* c = (unsigned char*)&x;
+    uint32_t y = c[3] + (c[2] << 8) + (c[1] << 16) + (c[0] << 24);
+    float z = *((float*)&y);
+    return z;
+}
 inline static Float64 EspSwapFloat64(double x) { return htobe64(x); }
 #endif
 
