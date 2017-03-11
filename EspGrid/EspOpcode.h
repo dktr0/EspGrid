@@ -39,7 +39,6 @@ typedef struct {
     EspTimeType sendTime;
     EspTimeType receiveTime;
     char name[16];
-    char machine[16];
     char ip[16];
     uint16_t port;
     uint16_t length;
@@ -63,7 +62,6 @@ typedef struct {
 typedef struct {
     EspOpcode header;
     char nameRcvd[16];
-    char machineRcvd[16];
     char ipRcvd[16];
     EspTimeType beaconSend;
     EspTimeType beaconReceive;
@@ -72,9 +70,8 @@ typedef struct {
 
 typedef struct {
     EspOpcode header;
-    char peerName[ESP_MAXNAMELENGTH];
-    char peerMachine[ESP_MAXNAMELENGTH];
-    char peerIp[ESP_MAXNAMELENGTH];
+    char peerName[16];
+    char peerIp[16];
     EspTimeType recentLatency;
     EspTimeType lowestLatency;
     EspTimeType averageLatency;
@@ -102,7 +99,6 @@ typedef struct {
   EspTimeType timeStamp;
   char keyPath[ESP_KVC_MAXKEYLENGTH];
   char authorityPerson[ESP_MAXNAMELENGTH];
-  char authorityMachine[ESP_MAXNAMELENGTH];
   int type;
   union KvcValue {
     char boolValue;
