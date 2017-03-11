@@ -128,7 +128,7 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
         // preserve originating ip address
         [d setObject:[packet objectForKey:@"ip"] forKey:@"originAddress"];
         [self handleOpcode:d];
-        
+
         // forward to all other channels
         // (individual channels might choose to ignore forwarding requests)
         [d removeObjectForKey:@"packetReceiveTime"];
@@ -143,7 +143,7 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
         [d removeObjectForKey:@"packetReceiveTime"];
         [d removeObjectForKey:@"packetSendTime"];
         [self handleOpcode:d];
-        
+
         // forward to all other channels
         // (individual channels might choose to ignore forwarding requests)
         [d removeObjectForKey:@"receiveTime"];
@@ -206,12 +206,9 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
 
 @end
 
-void copyNameAndMachineIntoOpcode(EspOpcode* opcode)
+void copyPersonIntoOpcode(EspOpcode* opcode)
 {
     const char* name = [[[NSUserDefaults standardUserDefaults] objectForKey:@"person"] cStringUsingEncoding:NSUTF8StringEncoding];
-    const char* machine = [[[NSUserDefaults standardUserDefaults] objectForKey:@"machine"] cStringUsingEncoding:NSUTF8StringEncoding];
     strncpy(opcode->name,name,16);
     opcode->name[15] = 0; // i.e. make sure only 15 readable characters are included
-    strncpy(opcode->machine,machine,16);
-    opcode->machine[15] = 0;
 }

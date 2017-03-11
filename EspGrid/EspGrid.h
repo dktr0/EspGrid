@@ -48,6 +48,6 @@
 -(EspClock*) clock;
 -(EspChat*) chat;
 
--(void) personOrMachineChanged;
+-(void) personChanged;
 
 @end

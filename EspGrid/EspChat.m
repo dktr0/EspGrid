@@ -49,7 +49,7 @@
     const char* msgCString = [msg cStringUsingEncoding:NSUTF8StringEncoding];
     strncpy(chat.text, msgCString, ESP_CHAT_MAXLENGTH);
     chat.text[ESP_CHAT_MAXLENGTH-1] = 0;
-    copyNameAndMachineIntoOpcode((EspOpcode*)&chat); // to fix: really should only be when defaults change...
+    copyPersonIntoOpcode((EspOpcode*)&chat); // to fix: really should only be when defaults change...
     [network sendOpcode:(EspOpcode*)&chat];
 
     // send to subscribers to external protocol

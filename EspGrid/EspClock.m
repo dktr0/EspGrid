@@ -45,30 +45,30 @@
     fluxIndex = 0;
     [self setFluxStatus:@"---"];
     self = [super init];
-    
+
     // setup BEACON opcode
     beacon.header.opcode = ESP_OPCODE_BEACON;
     beacon.header.length = sizeof(EspBeaconOpcode);
     beacon.majorVersion = ESPGRID_MAJORVERSION;
     beacon.minorVersion = ESPGRID_MINORVERSION;
     beacon.subVersion = ESPGRID_SUBVERSION;
-    copyNameAndMachineIntoOpcode((EspOpcode*)&beacon);
-    
+    copyPersonIntoOpcode((EspOpcode*)&beacon);
+
     // setup ACK opcode
     ack.header.opcode = ESP_OPCODE_ACK;
     ack.header.length = sizeof(EspAckOpcode);
-    copyNameAndMachineIntoOpcode((EspOpcode*)&ack);
-        
+    copyPersonIntoOpcode((EspOpcode*)&ack);
+
     countOfBeaconsIssued = 0;
     [self sendBeacon:nil]; // issue initial beacon
-    
+
     return self;
 }
 
--(void) personOrMachineChanged
+-(void) personChanged
 {
-    copyNameAndMachineIntoOpcode((EspOpcode*)&beacon);
-    copyNameAndMachineIntoOpcode((EspOpcode*)&ack);
+    copyPersonIntoOpcode((EspOpcode*)&beacon);
+    copyPersonIntoOpcode((EspOpcode*)&ack);
 }
 
 
@@ -92,15 +92,11 @@
 {
     strncpy(ack.nameRcvd,b->header.name,16);
     ack.nameRcvd[15] = 0; // i.e. make sure strings have only 15 readable characters in them
-    strncpy(ack.machineRcvd,b->header.machine,16);
-    ack.machineRcvd[15] = 0;
     strncpy(ack.ipRcvd,b->header.ip,16);
     ack.ipRcvd[15] = 0;
     ack.beaconCount = b->beaconCount;
     ack.beaconSend = b->header.sendTime;
     ack.beaconReceive = b->header.receiveTime;
-    // NSLog(@"%lld %lld",b->header.sendTime,b->header.receiveTime);
-    // NSLog(@"%lld %lld",ack.beaconSend,ack.beaconReceive);
     [network sendOpcode:(EspOpcode*)&ack];
 }
 
@@ -118,18 +114,18 @@
 -(void) handleOpcode:(EspOpcode*)opcode;
 {
     NSAssert(opcode->opcode == ESP_OPCODE_BEACON || opcode->opcode == ESP_OPCODE_ACK || opcode->opcode == ESP_OPCODE_PEERINFO,@"EspClock sent unrecognized opcode");
-    
+
     if(opcode->opcode==ESP_OPCODE_BEACON) {
-        postLog([NSString stringWithFormat:@"BEACON from %s-%s at %s",opcode->name,opcode->machine,opcode->ip],self);
+        postLog([NSString stringWithFormat:@"BEACON from %s at %s",opcode->name,opcode->ip],self);
         [self issueAck:(EspBeaconOpcode*)opcode];
         [peerList receivedBeacon:(EspBeaconOpcode*)opcode];
     }
-    
+
     if(opcode->opcode==ESP_OPCODE_ACK) {
         EspPeer* peer = [peerList receivedAck:(EspAckOpcode*)opcode]; // harvest data into peerlist
         [peer issuePeerInfoOpcode];
     }
-    
+
     if(opcode->opcode==ESP_OPCODE_PEERINFO) {
         [peerList receivedPeerInfo:(EspPeerInfoOpcode*)opcode];
     }
@@ -145,8 +141,8 @@
     if(peer) return [peer adjustmentForSyncMode:[self syncMode]];
     else {
         NSString* l = [NSString stringWithFormat:
-                       @"nil peer(%@,%@,%@) in [EspClock adjustmentForPeer]",
-                       [peer name],[peer machine],[peer ip],nil];
+                       @"nil peer(%@,%@) in [EspClock adjustmentForPeer]",
+                       [peer name],[peer ip],nil];
         postWarning(l, self);
         return 0;
     }

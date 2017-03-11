@@ -46,6 +46,6 @@
 -(EspTimeType) adjustmentForPeer:(EspPeer*)peer;
 -(void) updateflux:(EspTimeType)adjToAdj;
 -(void) sendBeacon:(NSTimer*)t;
--(void) personOrMachineChanged;
+-(void) personChanged;
 
 @end

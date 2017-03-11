@@ -44,7 +44,7 @@
     return [items count];
 }
 
--(void) shareCode:(NSString*)code withTitle:(NSString*)title 
+-(void) shareCode:(NSString*)code withTitle:(NSString*)title
 {
     EspCodeShareItem* item = [EspCodeShareItem createWithLocalContent:code title:title timeStamp:monotonicTime()];
     // *** NOTE: we have stamped codeshare items with local monotonic time
@@ -67,16 +67,11 @@
     if(name == nil) { postWarning(@"received ANNOUNCE_SHARE with no name",self); return; }
     if(![name isKindOfClass:[NSString class]]) { postWarning(@"received ANNOUNCE_SHARE with name not NSString",self); return; }
     if([name length]==0){ postWarning(@"received ANNOUNCE_SHARE with zero length name",self); return; }
-    
-    NSString* machine = [d objectForKey:@"sourceMachine"];
-    if(machine == nil) { postWarning(@"received ANNOUNCE_SHARE with no machine",self); return; }
-    if(![machine isKindOfClass:[NSString class]]) { postWarning(@"received ANNOUNCE_SHARE with machine not NSString",self); return; }
-    if([machine length]==0){ postWarning(@"received ANNOUNCE_SHARE with zero length machine",self); return; }
-    
+
     NSNumber* timeStamp = [d objectForKey:@"timeStamp"];
     if(timeStamp == nil) { postWarning(@"received ANNOUNCE_SHARE with no timeStamp",self); return; }
     if(![timeStamp isKindOfClass:[NSNumber class]]) { postWarning(@"received ANNOUNCE_SHARE with timeStamp not NSNumber",self); return; }
-    
+
     NSString* title = [d objectForKey:@"title"];
     if(title == nil) { postWarning(@"received ANNOUNCE_SHARE with no title",self); return; }
     if(![title isKindOfClass:[NSString class]]) { postWarning(@"received ANNOUNCE_SHARE with title not NSString",self); return; }
@@ -91,25 +86,24 @@
     EspCodeShareItem* item = nil;
     for(EspCodeShareItem* x in items)
     {
-        if([x isEqualToName:name machine:machine timeStamp:timeStamp])
+        if([x isEqualToName:name timeStamp:timeStamp])
         {
             item = x;
             break;
         }
     }
-   
+
     // 3. if item is not already present, then create a new EspCodeShareItem and add it to local array
     if(item == nil)
     {
         item = [EspCodeShareItem createWithGridSource:name
-                                              machine:machine
                                                 title:title
                                             timeStamp:[timeStamp doubleValue]
                                                length:[length longValue]];
         [self willChangeValueForKey:@"items"];
         [items addObject:item];
         [self didChangeValueForKey:@"items"];
-        NSString *log = [NSString stringWithFormat:@"received ANNOUNCE_SHARE from %@-%@ for timeStamp %@",name,machine,timeStamp];
+        NSString *log = [NSString stringWithFormat:@"received ANNOUNCE_SHARE from %@ for timeStamp %@",name,timeStamp];
         postLog(log, self);
     }
 }
@@ -118,12 +112,10 @@
 -(void) handleRequestShare:(NSDictionary*)d
 {
     NSString* sourceName = [d objectForKey:@"sourceName"];
-    NSString* sourceMachine = [d objectForKey:@"sourceMachine"];
     EspTimeType timeStamp = [[d objectForKey:@"timeStamp"] doubleValue];
     for(EspCodeShareItem* x in items)
     {
         if([[x sourceName] isEqualToString:sourceName] &&
-           [[x sourceMachine] isEqualToString:sourceMachine] &&
            [x timeStamp] == timeStamp)
         {
             [x deliverAllOnUdp:network];
@@ -136,14 +128,12 @@
 -(void) handleDeliverShare:(NSDictionary*)d
 {
     NSString* sourceName = [d objectForKey:@"sourceName"];
-    NSString* sourceMachine = [d objectForKey:@"sourceMachine"];
     EspTimeType timeStamp = [[d objectForKey:@"timeStamp"] doubleValue];
 
     EspCodeShareItem* item;
     for(EspCodeShareItem* x in items)
     {
         if([[x sourceName] isEqualToString:sourceName] &&
-           [[x sourceMachine] isEqualToString:sourceMachine] &&
            [x timeStamp] == timeStamp)
         {
             item = x;
@@ -151,13 +141,13 @@
         }
     }
     if(item == nil) return; // ? for now... later, receiving delivery of unknown items should start an entry
-    
+
     NSString* fragment = [d objectForKey:@"fragment"];
     unsigned long index = [[d objectForKey:@"index"] longValue];
     [item addFragment:fragment index:index];
     // [self copyShareToClipboardIfRequested:item]; // factoring this out for cross-platform dvpmt
-    NSLog(@"receiving DELIVER_SHARE for %@-%@ with timeStamp %lld (%ld of %ld)",
-          sourceName,sourceMachine,timeStamp,index+1,[item nFragments]);
+    NSLog(@"receiving DELIVER_SHARE for %@ with timeStamp %lld (%ld of %ld)",
+          sourceName,timeStamp,index+1,[item nFragments]);
 }
 
 -(void) handleOpcode:(EspOpcode *)opcode
@@ -168,25 +158,21 @@
 -(void) handleOldOpcode:(NSDictionary*)d
 {
     int opcode = [[d objectForKey:@"opcode"] intValue];
-    
+
     if(opcode == ESP_OPCODE_ANNOUNCESHARE) // receiving ANNOUNCE_SHARE
     {
         [self handleAnnounceShare:d];
     }
     else if(opcode == ESP_OPCODE_REQUESTSHARE) // receiving REQUEST_SHARE
     {
-        NSString* l = [NSString stringWithFormat:@"receiving REQUEST_SHARE for %@ on %@-%@",
-                       [d valueForKey:@"timeStamp"],[d valueForKey:@"sourceName"],[d valueForKey:@"sourceMachine"]];
+        NSString* l = [NSString stringWithFormat:@"receiving REQUEST_SHARE for %@ on %@",
+                       [d valueForKey:@"timeStamp"],[d valueForKey:@"sourceName"]];
         postLog(l,self);
-        // we should change this so that any machine can respond to a request if it has the goods...
+        // we should change this so that any grid instance can respond to a request if it has the goods...
         NSString* ourName = [[NSUserDefaults standardUserDefaults] stringForKey:@"person"];
-        if([[d valueForKey:@"sourceName"] isEqual:ourName]) 
+        if([[d valueForKey:@"sourceName"] isEqual:ourName])
         {
-            NSString* ourMachine = [[NSUserDefaults standardUserDefaults] stringForKey:@"machine"];
-            if([[d valueForKey:@"sourceMachine"] isEqual:ourMachine]) 
-            {
-                [self handleRequestShare:d];
-            }
+          [self handleRequestShare:d];
         }
     }
     else if(opcode == ESP_OPCODE_DELIVERSHARE) // receiving DELIVER_SHARE

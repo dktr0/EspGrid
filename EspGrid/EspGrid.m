@@ -35,7 +35,6 @@ LARGE_INTEGER performanceFrequency;
     srand((unsigned)time(&t));
     NSString* random = [NSString stringWithFormat:@"unknown-%u",rand(),nil];
     [defs setObject:random forKey:@"person"];
-    [defs setObject:@"unknown" forKey:@"machine"];
     [defs setObject:@"255.255.255.255" forKey:@"broadcast"];
     [defs setObject:[NSNumber numberWithInt:4] forKey:@"clockMode"]; // average reference beacon difference
     [[NSUserDefaults standardUserDefaults] registerDefaults:defs];
@@ -45,9 +44,8 @@ LARGE_INTEGER performanceFrequency;
 -(void) logUserDefaults
 {
     NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
-    NSLog(@" person=%@ machine=%@ broadcast=%@ clockMode=%@",
+    NSLog(@" person=%@ broadcast=%@ clockMode=%@",
           [defs objectForKey:@"person"],
-          [defs objectForKey:@"machine"],
           [defs objectForKey:@"broadcast"],
           [defs objectForKey:@"clockMode"]);
 }
@@ -126,8 +124,6 @@ LARGE_INTEGER performanceFrequency;
 
     [osc addHandler:self forAddress:@"/esp/person/s"]; // set name of person
     [osc addHandler:self forAddress:@"/esp/person/q"]; // query name, response: /esp/person/r
-    [osc addHandler:self forAddress:@"/esp/machine/s"]; // etc...
-    [osc addHandler:self forAddress:@"/esp/machine/q"];
     [osc addHandler:self forAddress:@"/esp/broadcast/s"];
     [osc addHandler:self forAddress:@"/esp/broadcast/q"];
     [osc addHandler:self forAddress:@"/esp/clockMode/s"];
@@ -158,26 +154,24 @@ LARGE_INTEGER performanceFrequency;
 
     NSUserDefaults* defs= [NSUserDefaults standardUserDefaults];
     [[self clock] changeSyncMode:[[defs valueForKey:@"clockMode"] intValue]];
+    [defs addObserver:self forKeyPath:@"person" options:NSKeyValueObservingOptionNew context:nil];
     [defs addObserver:self forKeyPath:@"clockMode" options:NSKeyValueObservingOptionNew context:nil];
     [defs addObserver:self forKeyPath:@"broadcast" options:NSKeyValueObservingOptionNew context:nil];
-    [defs addObserver:self forKeyPath:@"person" options:NSKeyValueObservingOptionNew context:nil];
-    [defs addObserver:self forKeyPath:@"machine" options:NSKeyValueObservingOptionNew context:nil];
 
-	// Note: on GNUSTEP/WIN32 preferences at the command-line don't seem to persist
-	// unless, as in the following, we set them to their current values
-	[defs setValue:[defs valueForKey:@"person"] forKey:@"person"];
-	[defs setValue:[defs valueForKey:@"machine"] forKey:@"machine"];
-	[defs setValue:[defs valueForKey:@"broadcast"] forKey:@"broadcast"];
-	[defs setValue:[defs valueForKey:@"clockMode"] forKey:@"clockMode"];
-	[defs synchronize];
+    // Note: on GNUSTEP/WIN32 preferences at the command-line don't seem to persist
+    // unless, as in the following, we set them to their current values
+    [defs setValue:[defs valueForKey:@"person"] forKey:@"person"];
+    [defs setValue:[defs valueForKey:@"broadcast"] forKey:@"broadcast"];
+    [defs setValue:[defs valueForKey:@"clockMode"] forKey:@"clockMode"];
+    [defs synchronize];
 
     return self;
 }
 
--(void) personOrMachineChanged
+-(void) personChanged
 {
-    [[EspClock clock] personOrMachineChanged];
-    [[EspPeerList peerList] personOrMachineChanged];
+    [[EspClock clock] personChanged];
+    [[EspPeerList peerList] personChanged];
 }
 
 
@@ -313,17 +307,6 @@ LARGE_INTEGER performanceFrequency;
                  port:p];
     }
 
-    else if([address isEqual:@"/esp/machine/s"])
-        return [self setDefault:@"machine" withParameters:d];
-    else if([address isEqual:@"/esp/machine/q"])
-    {
-        [osc response:@"/esp/machine/r"
-                value:[[NSUserDefaults standardUserDefaults] stringForKey:@"machine"]
-              toQuery:d
-             fromHost:h
-                 port:p];
-    }
-
     else if([address isEqual:@"/esp/broadcast/s"])
         return [self setDefault:@"broadcast" withParameters:d];
     else if([address isEqual:@"/esp/broadcast/q"])
@@ -384,7 +367,7 @@ LARGE_INTEGER performanceFrequency;
 -(void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context
 {
     if([keyPath isEqualToString:@"broadcast"]) [[EspNetwork network] broadcastAddressChanged];
-    else if([keyPath isEqualToString:@"person"] || [keyPath isEqualToString:@"machine"]) [self personOrMachineChanged];
+    else if([keyPath isEqualToString:@"person"]) [self personChanged];
     else if([keyPath isEqualToString:@"clockMode"]) [[self clock] changeSyncMode:[[[NSUserDefaults standardUserDefaults] valueForKey:@"clockMode"] intValue]];
     else NSLog(@"PROBLEM: received KVO notification for unexpected keyPath %@",keyPath);
 }
