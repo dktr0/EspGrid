@@ -21,15 +21,15 @@
 
 #include "EspGridDefs.h"
 
-#define ESP_NUMBER_OF_OPCODES 10
+#define ESP_NUMBER_OF_OPCODES 14
 #define ESP_OPCODE_BEACON 0
 #define ESP_OPCODE_ACK 1
 #define ESP_OPCODE_PEERINFO 4
+#define ESP_OPCODE_INT 10
+#define ESP_OPCODE_FLOAT 11
+#define ESP_OPCODE_TIME 12
+#define ESP_OPCODE_STRING 13
 #define ESP_OPCODE_CHATSEND 2
-#define ESP_OPCODE_KVC 3
-#define ESP_OPCODE_ANNOUNCESHARE 5
-#define ESP_OPCODE_REQUESTSHARE 6
-#define ESP_OPCODE_DELIVERSHARE 7
 #define ESP_OPCODE_OSCNOW 8
 #define ESP_OPCODE_OSCFUTURE 9
 
@@ -38,8 +38,8 @@
 typedef struct {
     EspTimeType sendTime;
     EspTimeType receiveTime;
-    char name[16];
-    char ip[16];
+    char name[ESP_MAXNAMELENGTH];
+    char ip[ESP_MAXNAMELENGTH];
     uint16_t port;
     uint16_t length;
     uint16_t opcode;
@@ -61,8 +61,8 @@ typedef struct {
 
 typedef struct {
     EspOpcode header;
-    char nameRcvd[16];
-    char ipRcvd[16];
+    char nameRcvd[ESP_MAXNAMELENGTH];
+    char ipRcvd[ESP_MAXNAMELENGTH];
     EspTimeType beaconSend;
     EspTimeType beaconReceive;
     uint32_t beaconCount;
@@ -70,8 +70,8 @@ typedef struct {
 
 typedef struct {
     EspOpcode header;
-    char peerName[16];
-    char peerIp[16];
+    char peerName[ESP_MAXNAMELENGTH];
+    char peerIp[ESP_MAXNAMELENGTH];
     EspTimeType recentLatency;
     EspTimeType lowestLatency;
     EspTimeType averageLatency;
@@ -86,32 +86,39 @@ typedef struct {
     char text[ESP_CHAT_MAXLENGTH];
 } EspChatOpcode;
 
-#define ESP_KVC_MAXKEYLENGTH 32
+#define ESP_SCOPE_SYSTEM 0
+#define ESP_SCOPE_GLOBAL 1
+#define ESP_SCOPE_LOCAL 2
 
-#define ESP_KVCTYPE_BOOL 1
-#define ESP_KVCTYPE_DOUBLE 2
-#define ESP_KVCTYPE_TIME 3
-#define ESP_KVCTYPE_INT 4
-#define ESP_KVCTYPE_BEAT 5
+typedef struct {
+  char key[ESP_MAXNAMELENGTH];
+  char authority[ESP_MAXNAMELENGTH];
+  EspTimeType timeStamp;
+  char scope;
+} EspVariableInfo;
 
 typedef struct {
   EspOpcode header;
-  EspTimeType timeStamp;
-  char keyPath[ESP_KVC_MAXKEYLENGTH];
-  char authorityPerson[ESP_MAXNAMELENGTH];
-  int type;
-  union KvcValue {
-    char boolValue;
-    double doubleValue;
-    EspTimeType timeValue;
-    int intValue;
-      struct {
-          char on;
-          double tempo;
-          EspTimeType downbeatTime;
-          int number;
-      } beatValue;
-  } value;
-} EspKvcOpcode;
+  EspVariableInfo info;
+  uint32_t value;
+} EspIntOpcode;
+
+typedef struct {
+  EspOpcode header;
+  EspVariableInfo info;
+  Float32 value;
+} EspFloatOpcode;
+
+typedef struct {
+  EspOpcode header;
+  EspVariableInfo info;
+  EspTimeType value;
+} EspTimeOpcode;
+
+typedef struct {
+  EspOpcode header;
+  EspVariableInfo info;
+  char* value;
+} EspStringOpcode;
 
 #endif /* EspOpcode_h */
