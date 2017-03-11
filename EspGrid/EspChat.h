@@ -22,8 +22,9 @@
 
 @interface EspChat : NSObject <EspNetworkDelegate,EspHandleOsc>
 {
-  EspNetwork* network;
-  EspOsc* osc;
+    EspNetwork* network;
+    EspOsc* osc;
+    EspChatOpcode chat;
 }
 
 -(void) sendMessage:(NSString*)msg;

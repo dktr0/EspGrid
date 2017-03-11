@@ -21,6 +21,20 @@
 
 #include "EspGridDefs.h"
 
+#define ESP_NUMBER_OF_OPCODES 10
+#define ESP_OPCODE_BEACON 0
+#define ESP_OPCODE_ACK 1
+#define ESP_OPCODE_PEERINFO 4
+#define ESP_OPCODE_CHATSEND 2
+#define ESP_OPCODE_KVC 3
+#define ESP_OPCODE_ANNOUNCESHARE 5
+#define ESP_OPCODE_REQUESTSHARE 6
+#define ESP_OPCODE_DELIVERSHARE 7
+#define ESP_OPCODE_OSCNOW 8
+#define ESP_OPCODE_OSCFUTURE 9
+
+#define ESP_MAXNAMELENGTH 16
+
 typedef struct {
     EspTimeType sendTime;
     EspTimeType receiveTime;
@@ -58,14 +72,50 @@ typedef struct {
 
 typedef struct {
     EspOpcode header;
-    char peerName[16];
-    char peerMachine[16];
-    char peerIp[16];
+    char peerName[ESP_MAXNAMELENGTH];
+    char peerMachine[ESP_MAXNAMELENGTH];
+    char peerIp[ESP_MAXNAMELENGTH];
     EspTimeType recentLatency;
     EspTimeType lowestLatency;
     EspTimeType averageLatency;
     EspTimeType refBeacon;
-    EspTimeType refBeaconAverage;    
+    EspTimeType refBeaconAverage;
 } EspPeerInfoOpcode;
+
+#define ESP_CHAT_MAXLENGTH 256
+
+typedef struct {
+    EspOpcode header;
+    char text[ESP_CHAT_MAXLENGTH];
+} EspChatOpcode;
+
+#define ESP_KVC_MAXKEYLENGTH 32
+
+#define ESP_KVCTYPE_BOOL 1
+#define ESP_KVCTYPE_DOUBLE 2
+#define ESP_KVCTYPE_TIME 3
+#define ESP_KVCTYPE_INT 4
+#define ESP_KVCTYPE_BEAT 5
+
+typedef struct {
+  EspOpcode header;
+  EspTimeType timeStamp;
+  char keyPath[ESP_KVC_MAXKEYLENGTH];
+  char authorityPerson[ESP_MAXNAMELENGTH];
+  char authorityMachine[ESP_MAXNAMELENGTH];
+  int type;
+  union KvcValue {
+    char boolValue;
+    double doubleValue;
+    EspTimeType timeValue;
+    int intValue;
+      struct {
+          char on;
+          double tempo;
+          EspTimeType downbeatTime;
+          int number;
+      } beatValue;
+  } value;
+} EspKvcOpcode;
 
 #endif /* EspOpcode_h */

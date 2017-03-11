@@ -56,7 +56,7 @@
     [self setDownbeatNumber:[NSNumber numberWithInt:0]];
     beatsIssued = 0;
     kvc = [EspKeyValueController keyValueController];
-    [kvc addKeyPath:@"beat.params"];
+    [kvc addKeyPath:@"beat.params" type:ESP_KVCTYPE_BEAT];
     return self;
 }
 
@@ -72,14 +72,15 @@
     return params;
 }
 
+
 -(void) setParams:(NSDictionary *)p
 {
     if(params != NULL) [params release];
     params = [p copy];
     NSAssert(params != NULL,@"EspBeat params dictionary is null");
-    [self setDownbeatNumber:[params objectForKey:@"n"]];
-    [self setTempo:[params objectForKey:@"bpm"]];
-    [self setDownbeatTime:[params objectForKey:@"time"]];
+    [self setDownbeatNumber:[params objectForKey:@"downbeatNumber"]];
+    [self setTempo:[params objectForKey:@"tempo"]];
+    [self setDownbeatTime:[params objectForKey:@"downbeatTime"]];
     [self setOn:[params objectForKey:@"on"]];
 }
 
@@ -88,9 +89,9 @@
     // this method creates a dictionary containing all tempo parameters and then
     // shares it to other EspGrid instances via the EspKeyValueController class
     NSDictionary* d = [NSDictionary dictionaryWithObjectsAndKeys:
-                       [NSNumber numberWithLongLong:t],@"time",
-                       [NSNumber numberWithDouble:bpm],@"bpm",
-                       [NSNumber numberWithLong:n],@"n",
+                       [NSNumber numberWithLongLong:t],@"downbeatTime",
+                       [NSNumber numberWithDouble:bpm],@"tempo",
+                       [NSNumber numberWithLong:n],@"downbeatNumber",
                        [NSNumber numberWithBool:o],@"on",nil];
     [kvc setValue:d forKeyPath:@"beat.params"];
 }
