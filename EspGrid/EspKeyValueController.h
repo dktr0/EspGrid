@@ -36,7 +36,11 @@
     EspNetwork* network;
     EspClock* clock;
     EspPeerList* peerList;
-    EspKvcOpcode kvc;
+
+    EspIntOpcode intOpcode;
+    EspFloatOpcode floatOpcode;
+    EspTimeOpcode timeOpcode;
+    EspStringOpcode stringOpcode;
 }
 @property (nonatomic,assign) NSObject* model;
 -(void) addKeyPath:(NSString*)keyPath type:(int)t;

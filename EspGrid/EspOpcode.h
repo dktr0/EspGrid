@@ -21,15 +21,16 @@
 
 #include "EspGridDefs.h"
 
-#define ESP_NUMBER_OF_OPCODES 14
+#define ESP_NUMBER_OF_OPCODES 15
 #define ESP_OPCODE_BEACON 0
 #define ESP_OPCODE_ACK 1
+#define ESP_OPCODE_CHATSEND 2
 #define ESP_OPCODE_PEERINFO 4
 #define ESP_OPCODE_INT 10
 #define ESP_OPCODE_FLOAT 11
 #define ESP_OPCODE_TIME 12
 #define ESP_OPCODE_STRING 13
-#define ESP_OPCODE_CHATSEND 2
+#define ESP_OPCODE_METRE 14
 #define ESP_OPCODE_OSCNOW 8
 #define ESP_OPCODE_OSCFUTURE 9
 
@@ -91,7 +92,7 @@ typedef struct {
 #define ESP_SCOPE_LOCAL 2
 
 typedef struct {
-  char key[ESP_MAXNAMELENGTH];
+  char path[ESP_MAXNAMELENGTH];
   char authority[ESP_MAXNAMELENGTH];
   EspTimeType timeStamp;
   char scope;
@@ -118,7 +119,20 @@ typedef struct {
 typedef struct {
   EspOpcode header;
   EspVariableInfo info;
-  char* value;
+  char value[1024];
 } EspStringOpcode;
+
+typedef struct {
+  EspTimeType time;
+  uint32_t on;
+  uint32_t beat;
+  Float32 tempo;
+} EspMetre;
+
+typedef struct {
+  EspOpcode header;
+  EspVariableInfo info;
+  EspMetre metre;
+} EspMetreOpcode;
 
 #endif /* EspOpcode_h */
