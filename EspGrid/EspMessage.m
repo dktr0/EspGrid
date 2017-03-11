@@ -141,7 +141,7 @@
 -(void) handleOldOpcode:(NSDictionary*)d;
 {
     int opcode = [[d objectForKey:@"opcode"] intValue];
-    
+
     if(opcode==ESP_OPCODE_OSCNOW) {
         NSMutableArray* params = [NSMutableArray arrayWithArray:[d objectForKey:@"params"]];
         [osc transmit:params log:NO];
@@ -150,8 +150,7 @@
     if(opcode==ESP_OPCODE_OSCFUTURE) {
         EspTimeType t = [[d objectForKey:@"time"] longLongValue]; // trigger time in other's terms
         NSString* name = [d objectForKey:@"name"];
-        NSString* machine = [d objectForKey:@"machine"];
-        EspPeer* peer = [peerList findPeerWithName:name andMachine:machine];
+        EspPeer* peer = [peerList findPeerWithName:name];
         if(peer == nil)
         {
             postLog(@"dropping OSCFUTURE from unknown peer", self);

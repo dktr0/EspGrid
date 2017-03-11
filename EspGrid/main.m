@@ -26,7 +26,6 @@ int main(int argc, const char * argv[])
     {
         NSLog(@" --help (gets help, run without this in order to launch grid)");
         NSLog(@" -person [name] (sets performer name on grid, only needed when changing)");
-        NSLog(@" -machine [name] (sets machine name on grid, only needed when changing)");
         NSLog(@" -broadcast [address] [(sets LAN broadcast address, only needed when changing)");
         NSLog(@" -clockMode [value] (sets clock mode, possible values: 0 1 2)");
         NSLog(@" --logOSC (log info about OSC messages sent and received)");
@@ -51,4 +50,3 @@ int main(int argc, const char * argv[])
     }
     return 0;
 }
-

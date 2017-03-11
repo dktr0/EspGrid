@@ -16,7 +16,7 @@
 //  You should have received a copy of the GNU General Public License
 //  along with EspGrid.  If not, see <http://www.gnu.org/licenses/>.
 
-#import "EspPeerList.h" 
+#import "EspPeerList.h"
 #import "EspGridDefs.h"
 
 @implementation EspPeerList
@@ -49,7 +49,6 @@
     NSUserDefaults* x = [NSUserDefaults standardUserDefaults];
     EspPeer* d = [[EspPeer alloc] init];
     [d setName:[x stringForKey:@"person"]];
-    [d setMachine:[x stringForKey:@"machine"]];
     [d setIp:@"unknown"];
     [d setMajorVersion:ESPGRID_MAJORVERSION];
     [d setMinorVersion:ESPGRID_MINORVERSION];
@@ -66,8 +65,7 @@
 {
     // find or add the peer from whom the beacon has come
     NSString* name = [NSString stringWithCString:opcode->header.name encoding:NSUTF8StringEncoding];
-    NSString* machine = [NSString stringWithCString:opcode->header.machine encoding:NSUTF8StringEncoding];
-    EspPeer* peer = [self findPeerWithName:name andMachine:machine];
+    EspPeer* peer = [self findPeerWithName:name];
     if(peer == nil) peer = [self addNewPeer:opcode]; // note: only a BEACON can add a new peer
     [self willChangeValueForKey:@"peers"];
     [peer processBeacon:opcode];
@@ -79,16 +77,14 @@
 {
     // find or add the peer from whom the ack has come
     NSString* name = [NSString stringWithCString:opcode->header.name encoding:NSUTF8StringEncoding];
-    NSString* machine = [NSString stringWithCString:opcode->header.machine encoding:NSUTF8StringEncoding];
-    EspPeer* peer = [self findPeerWithName:name andMachine:machine];
+    EspPeer* peer = [self findPeerWithName:name];
     if(peer == nil) return nil; // note: we don't do anything with a given peer unless we have received a prior BEACON
-    
+
     // who is the ack for?
     NSString* ackForName = [NSString stringWithCString:opcode->nameRcvd encoding:NSUTF8StringEncoding];
-    NSString* ackForMachine = [NSString stringWithCString:opcode->machineRcvd encoding:NSUTF8StringEncoding];
-    EspPeer* ackFor = [self findPeerWithName:ackForName andMachine:ackForMachine];
-    if(ackFor == nil) { NSLog(@"ACK for unknown peer %@-%@",ackForName,ackForMachine); return nil; } // note: we don't do anything with a given peer unless we have received a prior BEACON
-    
+    EspPeer* ackFor = [self findPeerWithName:ackForName];
+    if(ackFor == nil) { NSLog(@"ACK for unknown peer %@",ackForName); return nil; } // note: we don't do anything with a given peer unless we have received a prior BEACON
+
     // process the ACK within the pertinent EspPeer instance...
     [self willChangeValueForKey:@"peers"];
     if(ackFor == selfInPeerList) [peer processAckForSelf:opcode peerCount:(int)[peers count]];
@@ -101,22 +97,19 @@
 -(void) receivedPeerInfo:(EspPeerInfoOpcode*)opcode
 {
     NSString* name1 = [NSString stringWithCString:opcode->header.name encoding:NSUTF8StringEncoding];
-    NSString* machine1 = [NSString stringWithCString:opcode->header.machine encoding:NSUTF8StringEncoding];
-    EspPeer* peer1 = [self findPeerWithName:name1 andMachine:machine1];
+    EspPeer* peer1 = [self findPeerWithName:name1];
     if(peer1 == nil) { // note: we don't do anything with a given peer unless we have received a prior BEACON
         postLog(@"received PEERINFO from peer before receiving BEACON from that peer",self);
         return;
     }
     NSString* name2 = [NSString stringWithCString:opcode->peerName encoding:NSUTF8StringEncoding];
-    NSString* machine2 = [NSString stringWithCString:opcode->peerMachine encoding:NSUTF8StringEncoding];
-    EspPeer* peer2 = [self findPeerWithName:name2 andMachine:machine2];
+    EspPeer* peer2 = [self findPeerWithName:name2];
     if(peer2 == nil) { // note: we don't do anything with a given peer unless we have received a prior BEACON
         postLog(@"received PEERINFO about a peer before receiving BEACON from that peer",self);
         return;
     }
-    postLog([NSString stringWithFormat:@"PEERINFO from %s-%s-%s re %s-%s-%s",
-             opcode->header.name,opcode->header.machine,opcode->header.ip,
-             opcode->peerName,opcode->peerMachine,opcode->peerIp,nil],self);
+    postLog([NSString stringWithFormat:@"PEERINFO from %s-%s re %s-%s",
+             opcode->header.name,opcode->header.ip,opcode->peerName,opcode->peerIp,nil],self);
     postLog([NSString stringWithFormat:@" recentLatency=%lld",opcode->recentLatency,nil],self);
     postLog([NSString stringWithFormat:@" lowestLatency=%lld",opcode->lowestLatency,nil],self);
     postLog([NSString stringWithFormat:@" averageLatency=%lld",opcode->averageLatency,nil],self);
@@ -131,31 +124,30 @@
 {
     // extract parameters from dictionary passed from opcode
     NSString* name = [NSString stringWithCString:opcode->header.name encoding:NSUTF8StringEncoding];
-    NSString* machine = [NSString stringWithCString:opcode->header.machine encoding:NSUTF8StringEncoding];
     NSString* ip = [NSString stringWithCString:opcode->header.ip encoding:NSUTF8StringEncoding];
     char theirMajorVersion = opcode->majorVersion;
     char theirMinorVersion = opcode->minorVersion;
-    
+
     // check EspGrid version of peer/sender and warn in cases of mismatch
     if(theirMajorVersion < ESPGRID_MAJORVERSION ||
        (theirMajorVersion==ESPGRID_MAJORVERSION && theirMinorVersion < ESPGRID_MINORVERSION))
     {
-        NSString* s = [NSString stringWithFormat:@"%@-%@ is running old EspGrid %hhu.%2hhu",name,machine,theirMajorVersion,theirMinorVersion];
+        NSString* s = [NSString stringWithFormat:@"%@ is running old EspGrid %hhu.%2hhu",name,theirMajorVersion,theirMinorVersion];
         postWarning(s,self);
     }
     else if(theirMajorVersion > ESPGRID_MAJORVERSION ||
             (theirMajorVersion==ESPGRID_MAJORVERSION && theirMinorVersion > ESPGRID_MINORVERSION))
     {
-        NSString* s = [NSString stringWithFormat:@"%@-%@ is running newer EspGrid %hhu.%2hhu",name,machine,theirMajorVersion,theirMinorVersion];
+        NSString* s = [NSString stringWithFormat:@"%@ is running newer EspGrid %hhu.%2hhu",name,theirMajorVersion,theirMinorVersion];
         postWarning(s,self);
     }
-    
+
     // add new peer to peerlist
     [self willChangeValueForKey:@"peers"];
     EspPeer* x = [[EspPeer alloc] init];
     [peers addObject:x];
     [self didChangeValueForKey:@"peers"];
-    postLog([NSString stringWithFormat:@"adding %@-%@ at %@",name,machine,ip], self);
+    postLog([NSString stringWithFormat:@"adding %@ at %@",name,ip], self);
     [self updateStatus];
     return x;
 }
@@ -168,20 +160,16 @@
     else [self setStatus:@"no peers found yet"];
 }
 
--(void) personOrMachineChanged
+-(void) personChanged
 {
     NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
     [selfInPeerList setName:[defs stringForKey:@"person"]];
-    [selfInPeerList setMachine:[defs stringForKey:@"machine"]];
-    for(EspPeer* x in peers) [x personOrMachineChanged];
+    for(EspPeer* x in peers) [x personChanged];
 }
 
--(EspPeer*) findPeerWithName:(NSString*)name andMachine:(NSString*)machine
+-(EspPeer*) findPeerWithName:(NSString*)name
 {
-    for(EspPeer* x in peers) if([[x name] isEqualToString:name] && [[x machine] isEqualToString:machine])
-    {
-        return x;
-    }
+    for(EspPeer* x in peers) if([[x name] isEqualToString:name]) return x;
     return nil;
 }
 

@@ -23,9 +23,8 @@
 
 @interface EspPeer : NSObject
 {
-    // properties 
+    // properties
   NSString* name;
-  NSString* machine;
   NSString* ip;
   char majorVersion;
   char minorVersion;
@@ -41,7 +40,7 @@
   EspTimeType refBeacon,refBeaconAverage;
 
     EspPeerInfoOpcode peerinfo;
-    
+
     // instance variables
     EspTimeType* adjustments;
     EspMovingAverage* averageLatencyObj;
@@ -49,7 +48,6 @@
 }
 // these are set/updated from BEACON opcode
 @property (copy) NSString* name;
-@property (copy) NSString* machine;
 @property (copy) NSString* ip;
 @property (assign) char majorVersion;
 @property (assign) char minorVersion;
@@ -74,6 +72,6 @@
 -(EspTimeType) adjustmentForSyncMode:(int)mode;
 -(void) issuePeerInfoOpcode;
 
--(void) personOrMachineChanged;
+-(void) personChanged;
 
 @end

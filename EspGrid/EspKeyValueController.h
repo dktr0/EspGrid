@@ -26,7 +26,6 @@
 {
     NSMutableArray* keyPaths;
     NSMutableDictionary* authorityNames;
-    NSMutableDictionary* authorityMachines;
     NSMutableDictionary* authorities;
     NSMutableDictionary* timeStamps;
     NSMutableDictionary* values;

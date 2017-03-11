@@ -37,7 +37,7 @@
     // setup CHAT opcode
     chat.header.opcode = ESP_OPCODE_CHATSEND;
     chat.header.length = sizeof(EspChatOpcode);
-    copyNameAndMachineIntoOpcode((EspOpcode*)&chat);
+    copyPersonIntoOpcode((EspOpcode*)&chat);
 
     return self;
 }

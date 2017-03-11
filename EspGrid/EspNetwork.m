@@ -82,7 +82,6 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
         postLog(log, nil);
         NSMutableDictionary* e = [NSMutableDictionary dictionaryWithDictionary:d];
         [e setValue:[[NSUserDefaults standardUserDefaults] objectForKey:@"person"] forKey:@"name"];
-        [e setValue:[[NSUserDefaults standardUserDefaults] objectForKey:@"machine"] forKey:@"machine"];
         for(EspChannel* c in channels) [c sendOldOpcode:opcode withDictionary:e]; // send on all channels
     }
     @catch (NSException* exception)
@@ -155,17 +154,16 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
 -(void) handleOpcode: (EspOpcode*)opcode
 {
     const char* ourName = [[[NSUserDefaults standardUserDefaults] stringForKey:@"person"] cStringUsingEncoding:NSUTF8StringEncoding];
-    const char* ourMach = [[[NSUserDefaults standardUserDefaults] stringForKey:@"machine"] cStringUsingEncoding:NSUTF8StringEncoding];
-    if(!strcmp(opcode->name,ourName) && !strcmp(opcode->machine, ourMach)) return; // ignore our own opcodes
+    if(!strcmp(opcode->name,ourName)) return; // ignore our own opcodes
     id<EspNetworkDelegate> h = handlers[opcode->opcode];
     if(h == nil) {
-        NSString* s = [NSString stringWithFormat:@"no handler for opcode %d from %s-%s at %s",
-                       opcode->opcode,opcode->name,opcode->machine,opcode->ip];
+        NSString* s = [NSString stringWithFormat:@"no handler for opcode %d from %s at %s",
+                       opcode->opcode,opcode->name,opcode->ip,nil];
         postProblem(s,self);
         return;
     }
-    NSString* log = [NSString stringWithFormat:@"received %s(%d) from %s-%s at %s",
-                     opcodeName[opcode->opcode],opcode->opcode,opcode->name,opcode->machine,opcode->ip,nil];
+    NSString* log = [NSString stringWithFormat:@"received %s(%d) from %s at %s",
+                     opcodeName[opcode->opcode],opcode->opcode,opcode->name,opcode->ip,nil];
     postLog(log, nil);
     [h handleOpcode:opcode];
 }
@@ -175,23 +173,19 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
 {
     if([[d objectForKey:@"name"] isEqual:[[NSUserDefaults standardUserDefaults] stringForKey:@"person"]])
     {
-        if([[d objectForKey:@"machine"] isEqual:[[NSUserDefaults standardUserDefaults] stringForKey:@"machine"]])
-        {
-            return; // name and machine are our own - so don't process message
-        }
+        return;
     }
     int opcode = [[d objectForKey:@"opcode"] intValue];
     id<EspNetworkDelegate> h = handlers[opcode];
     if(h == nil) {
-        NSString* s = [NSString stringWithFormat:@"no handler for opcode %d from %@-%@ at %@",opcode,[d objectForKey:@"name"],[d objectForKey:@"machine"],[d objectForKey:@"originAddress"]];
+        NSString* s = [NSString stringWithFormat:@"no handler for opcode %d from %@ at %@",opcode,[d objectForKey:@"name"],[d objectForKey:@"originAddress"]];
         postProblem(s,self);
         return;
     }
-    NSString* log = [NSString stringWithFormat:@"received %s(%d) from %@-%@ at %@",
+    NSString* log = [NSString stringWithFormat:@"received %s(%d) from %@ at %@",
                      opcodeName[opcode],
                      opcode,
                      [d objectForKey:@"name"],
-                     [d objectForKey:@"machine"],
                      [d objectForKey:@"originAddress"]];
     postLog(log, nil);
     [h handleOldOpcode:d];

@@ -34,11 +34,11 @@
 -(EspPeer*) receivedBeacon:(EspBeaconOpcode*)opcode;
 -(EspPeer*) receivedAck:(EspAckOpcode*)opcode;
 -(void) receivedPeerInfo:(EspPeerInfoOpcode*)opcode;
--(EspPeer*) findPeerWithName:(NSString*)name andMachine:(NSString*)machine;
+-(EspPeer*) findPeerWithName:(NSString*)name;
 -(EspPeer*) addNewPeer:(EspBeaconOpcode*)opcode;
 -(void) addSelfToPeerList;
 -(void) updateStatus;
 
--(void) personOrMachineChanged;
+-(void) personChanged;
 
 @end

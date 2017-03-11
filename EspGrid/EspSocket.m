@@ -144,8 +144,7 @@
         strncpy(opcode->ip, inet_ntoa(them.sin_addr), 16);
         opcode->ip[15]=0;
         opcode->port = ntohs(them.sin_port);
-        opcode->name[15] = 0; // sanitize received name and machine strings just in case
-        opcode->machine[15] = 0;
+        opcode->name[15] = 0; // sanitize received name just in case
 
         // pass the sanitized opcode to delegate object (likely an EspChannel)
         @try {
@@ -193,7 +192,6 @@ static void inline sendData(int socketRef,const void* data,size_t length,NSStrin
     NSAssert(n!=ESP_OPCODE_BEACON,@"attempt to send new opcode BEACON with sendOldOpcode");
     NSAssert(n!=ESP_OPCODE_ACK,@"attempt to send new opcode ACK with sendOldOpcode");
     NSAssert([d objectForKey:@"name"]!=NULL,@"attempt to send old opcode without name key in dictionary");
-    NSAssert([d objectForKey:@"machine"]!=NULL,@"attempt to send old opcode without machine key in dictionary");
     NSAssert(transmitBuffer != NULL,@"attempt to send old opcode without transmit buffer allocated");
 
     // serialize the dictionary for transmission, and check it isn't too big for buffer
@@ -214,8 +212,6 @@ static void inline sendData(int socketRef,const void* data,size_t length,NSStrin
     opcode->header.length = (int)sizeof(EspOpcode) + (int)[data length];
     strncpy(opcode->header.name,[[d objectForKey:@"name"] cStringUsingEncoding:NSUTF8StringEncoding],16);
     opcode->header.name[15] = 0;
-    strncpy(opcode->header.machine,[[d objectForKey:@"machine"] cStringUsingEncoding:NSUTF8StringEncoding],16);
-    opcode->header.machine[15] = 0;
     memcpy(transmitBuffer+sizeof(EspOpcode),[data bytes],[data length]);
     opcode->header.sendTime = monotonicTime();
 

@@ -38,7 +38,6 @@
     peerList = [EspPeerList peerList];
     keyPaths = [[NSMutableArray alloc] init];
     authorityNames = [[NSMutableDictionary alloc] init];
-    authorityMachines = [[NSMutableDictionary alloc] init];
     authorities = [[NSMutableDictionary alloc] init];
     timeStamps = [[NSMutableDictionary alloc] init];
     values = [[NSMutableDictionary alloc] init];
@@ -46,7 +45,7 @@
 
     kvc.header.opcode = ESP_OPCODE_KVC;
     kvc.header.length = sizeof(EspKvcOpcode);
-    copyNameAndMachineIntoOpcode((EspOpcode*)&kvc);
+    copyPersonIntoOpcode((EspOpcode*)&kvc);
 
     [NSTimer scheduledTimerWithTimeInterval:0.030
                                      target:self
@@ -60,7 +59,6 @@
 {
     [keyPaths release];
     [authorityNames release];
-    [authorityMachines release];
     [authorities release];
     [timeStamps release];
     [values release];
@@ -84,7 +82,6 @@
     [timeStamps setObject:[NSNumber numberWithLongLong:monotonicTime()] forKey:keyPath];
     EspPeer* selfInPeerList = [peerList selfInPeerList];
     [authorityNames setObject:[selfInPeerList name] forKey:keyPath];
-    [authorityMachines setObject:[selfInPeerList machine] forKey:keyPath];
     [authorities setObject:selfInPeerList forKey:keyPath];
     [self broadcastKeyPath:keyPath];
 }
@@ -104,22 +101,19 @@
 
     // also: don't broadcast values when we aren't the authority, unless authority is AWOL...
     NSString* authorityPerson = [authorityNames objectForKey:keyPath];
-    NSString* authorityMachine = [authorityMachines objectForKey:keyPath];
-    EspPeer* authority = [peerList findPeerWithName:authorityPerson andMachine:authorityMachine];
+    EspPeer* authority = [peerList findPeerWithName:authorityPerson];
     if(authority != [peerList selfInPeerList])
     {
         EspTimeType t = monotonicTime() - [authority lastBeacon];
         if(t < 10000000000) return;
     }
 
-    copyNameAndMachineIntoOpcode((EspOpcode*)&kvc); // to fix: should only be copied when defaults change
+    copyPersonIntoOpcode((EspOpcode*)&kvc); // to fix: should only be copied when defaults change
     kvc.timeStamp = [[timeStamps objectForKey:keyPath] longLongValue];
     strncpy(kvc.keyPath,[keyPath cStringUsingEncoding:NSUTF8StringEncoding],ESP_KVC_MAXKEYLENGTH);
     kvc.keyPath[ESP_KVC_MAXKEYLENGTH-1] = 0;
     strncpy(kvc.authorityPerson,[authorityPerson cStringUsingEncoding:NSUTF8StringEncoding],ESP_MAXNAMELENGTH);
     kvc.authorityPerson[ESP_MAXNAMELENGTH-1] = 0;
-    strncpy(kvc.authorityMachine,[authorityMachine cStringUsingEncoding:NSUTF8StringEncoding],ESP_MAXNAMELENGTH);
-    kvc.authorityMachine[ESP_MAXNAMELENGTH-1] = 0;
     kvc.type = [[types objectForKey:keyPath] intValue];
     if(kvc.type == ESP_KVCTYPE_BOOL) kvc.value.boolValue = [[values objectForKey:keyPath] boolValue];
     else if(kvc.type == ESP_KVCTYPE_BOOL) kvc.value.doubleValue = [[values objectForKey:keyPath] doubleValue];
@@ -155,7 +149,6 @@
       return;
     }
     NSString* authorityPerson = [NSString stringWithCString:rcvd->authorityPerson encoding:NSUTF8StringEncoding];
-    NSString* authorityMachine = [NSString stringWithCString:rcvd->authorityMachine encoding:NSUTF8StringEncoding];
     id value;
     if(rcvd->type == ESP_KVCTYPE_BOOL) value = [NSNumber numberWithBool:rcvd->value.boolValue];
     else if(rcvd->type == ESP_KVCTYPE_DOUBLE) value = [NSNumber numberWithDouble:rcvd->value.doubleValue];
@@ -172,10 +165,10 @@
       postLog([NSString stringWithFormat:@"dropping KVC with unrecognized type field %d",rcvd->type],self);
       return;
     }
-    EspPeer* newAuthority = [peerList findPeerWithName:authorityPerson andMachine:authorityMachine];
+    EspPeer* newAuthority = [peerList findPeerWithName:authorityPerson];
     if(newAuthority == nil) {
-        postLog([NSString stringWithFormat:@"dropping KVC with unknown authority): %@-%@",
-                 authorityPerson,authorityMachine], self);
+        postLog([NSString stringWithFormat:@"dropping KVC with unknown authority): %@",
+                 authorityPerson], self);
         return;
     }
     EspTimeType t2 = rcvd->timeStamp + [clock adjustmentForPeer:newAuthority];
@@ -188,7 +181,6 @@
         [values setObject:value forKey:keyPath];
         [timeStamps setObject:[NSNumber numberWithLongLong:rcvd->timeStamp] forKey:keyPath];
         [authorityNames setObject:[authorityPerson copy] forKey:keyPath];
-        [authorityMachines setObject:[authorityMachine copy] forKey:keyPath];
         [authorities setObject:newAuthority forKey:keyPath];
         postLog([NSString stringWithFormat:@"new value %@ for key %@",keyPath,value],self);
     }

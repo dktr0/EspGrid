@@ -24,7 +24,6 @@
 
 // these are updated by BEACON opcode
 @synthesize name;
-@synthesize machine;
 @synthesize ip;
 @synthesize majorVersion;
 @synthesize minorVersion;
@@ -47,12 +46,12 @@
     averageLatencyObj = [[EspMovingAverage alloc] initWithLength:12];
     lowestLatency = 100000000000; // 100 seconds should be enough?
     refBeaconAverageObj = [[EspMovingAverage alloc] initWithLength:12];
-    
+
     // initial setup of PEERINFO opcode
     peerinfo.header.opcode = ESP_OPCODE_PEERINFO;
     peerinfo.header.length = sizeof(EspPeerInfoOpcode);
-    copyNameAndMachineIntoOpcode((EspOpcode*)&peerinfo);
-    
+    copyPersonIntoOpcode((EspOpcode*)&peerinfo);
+
     return self;
 }
 
@@ -64,15 +63,14 @@
     [super dealloc];
 }
 
--(void) personOrMachineChanged
+-(void) personChanged
 {
-    copyNameAndMachineIntoOpcode((EspOpcode*)&peerinfo);
+    copyPersonIntoOpcode((EspOpcode*)&peerinfo);
 }
 
 -(void) processBeacon:(EspBeaconOpcode*)opcode
 {
     [self setName:[NSString stringWithCString:opcode->header.name encoding:NSUTF8StringEncoding]];
-    [self setMachine:[NSString stringWithCString:opcode->header.machine encoding:NSUTF8StringEncoding]];
     [self setIp:[NSString stringWithCString:opcode->header.ip encoding:NSUTF8StringEncoding]];
     [self setMajorVersion:opcode->majorVersion];
     [self setMinorVersion:opcode->minorVersion];
@@ -85,8 +83,6 @@
     // preload name, machine and ip into peerinfo opcode
     strncpy(peerinfo.peerName,opcode->header.name,16);
     peerinfo.peerName[15] = 0;
-    strncpy(peerinfo.peerMachine,opcode->header.machine,16);
-    peerinfo.peerMachine[15] = 0;
     strncpy(peerinfo.peerIp,opcode->header.ip,16);
     peerinfo.peerIp[15] = 0;
 }
@@ -96,25 +92,25 @@
     // when we receive an ACK to our own beacon, we can use the information it contains
     // to form various estimates of the latency between ourselves and the peer sending the ACK
     // Note: this method does not verify that the ACK is indeed meant for this peer
-    
+
     // these are clock measurements included with the ACK opcode, or added by send/receive
     EspTimeType beaconSend = opcode->beaconSend;
     EspTimeType beaconReceive = opcode->beaconReceive;
     EspTimeType ackSend = opcode->header.sendTime;
     EspTimeType ackReceive = opcode->header.receiveTime;
     // NSLog(@"%lld %lld %lld %lld",beaconSend,beaconReceive,ackSend,ackReceive);
-    
+
     // from these times we can calculate roundtrip time, and interval peer spent preparing ACK, on each clock
     // and then each of those can be tracked immediately, lowest value or average value
     EspTimeType ackPrepare = ackSend - beaconReceive;
     // NSLog(@"ackPrepare %lld",ackPrepare);
     EspTimeType roundtrip = ackReceive - beaconSend;
     // NSLog(@"roundtrip %lld",roundtrip);
-    
+
     recentLatency = (roundtrip - ackPrepare) / 2;
     if(recentLatency < lowestLatency) lowestLatency = recentLatency;
     averageLatency = [averageLatencyObj push:recentLatency];
-    
+
     adjustments[0] = ackReceive - (ackSend + recentLatency);
     adjustments[1] = ackReceive - (ackSend + lowestLatency);
     adjustments[2] = ackReceive - (ackSend + averageLatency);
@@ -130,7 +126,7 @@
 
 -(void) dumpAdjustments
 {
-    NSLog(@"adjustments for %@-%@:",name,machine);
+    NSLog(@"adjustments for %@",name);
     for(int x=0;x<5;x++) NSLog(@" adjustment[%d]=%lld",x,adjustments[x]);
 }
 
@@ -138,7 +134,7 @@
 {
     // when we receive an ACK to someone else' beacon, we can use the information it contains
     // to form reference beacon style estimates of the difference between their clocks and our clocks
-        
+
     long incomingBeaconCount = opcode->beaconCount;
     long storedBeaconCount = [other beaconCount];
     if(incomingBeaconCount == storedBeaconCount)
