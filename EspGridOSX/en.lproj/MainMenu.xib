@@ -264,17 +264,6 @@
                                                 <action selector="helpPeerList:" target="494" id="4073"/>
                                             </connections>
                                         </button>
-                                        <button verticalHuggingPriority="750" id="4106">
-                                            <rect key="frame" x="11" y="10" width="178" height="32"/>
-                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                                            <buttonCell key="cell" type="push" title="Show Detailed PeerList" bezelStyle="rounded" alignment="center" borderStyle="border" imageScaling="proportionallyDown" inset="2" id="4107">
-                                                <behavior key="behavior" pushIn="YES" lightByBackground="YES" lightByGray="YES"/>
-                                                <font key="font" metaFont="system"/>
-                                            </buttonCell>
-                                            <connections>
-                                                <action selector="showDetailedPeerList:" target="-1" id="4108"/>
-                                            </connections>
-                                        </button>
                                         <scrollView autohidesScrollers="YES" horizontalLineScroll="19" horizontalPageScroll="10" verticalLineScroll="19" verticalPageScroll="10" usesPredominantAxisScrolling="NO" id="3831">
                                             <rect key="frame" x="17" y="58" width="339" height="189"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
