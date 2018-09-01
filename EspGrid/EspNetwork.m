@@ -30,7 +30,12 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
     opcodeName[ESP_OPCODE_ACK] = "ACK";
     opcodeName[ESP_OPCODE_PEERINFO] = "PEERINFO";
     opcodeName[ESP_OPCODE_CHATSEND] = "CHATSEND";
-    opcodeName[ESP_OPCODE_KVC] = "KVC";
+    opcodeName[ESP_OPCODE_INT] = "INT";
+    opcodeName[ESP_OPCODE_FLOAT] = "FLOAT";
+    opcodeName[ESP_OPCODE_STRING] = "STRING";
+    opcodeName[ESP_OPCODE_TIME] = "TIME";
+    opcodeName[ESP_OPCODE_METRE] = "METRE";
+    
     opcodeName[ESP_OPCODE_ANNOUNCESHARE] = "ANNOUNCESHARE";
     opcodeName[ESP_OPCODE_REQUESTSHARE]="REQUESTSHARE";
     opcodeName[ESP_OPCODE_DELIVERSHARE]="DELIVERSHARE";

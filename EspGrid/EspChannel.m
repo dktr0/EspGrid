@@ -52,8 +52,15 @@
 {
     NSAssert([[NSThread currentThread] isMainThread],@"attempt to process opcode outside main thread");
     EspOpcode* opcode = (EspOpcode*)[data bytes];
-    if(opcode->opcode == ESP_OPCODE_BEACON || opcode->opcode == ESP_OPCODE_ACK || opcode->opcode == ESP_OPCODE_PEERINFO
-       || opcode->opcode == ESP_OPCODE_CHATSEND || opcode->opcode == ESP_OPCODE_KVC)
+    if(opcode->opcode == ESP_OPCODE_BEACON ||
+       opcode->opcode == ESP_OPCODE_ACK ||
+       opcode->opcode == ESP_OPCODE_PEERINFO ||
+       opcode->opcode == ESP_OPCODE_CHATSEND ||
+       opcode->opcode == ESP_OPCODE_INT ||
+       opcode->opcode == ESP_OPCODE_FLOAT ||
+       opcode->opcode == ESP_OPCODE_STRING ||
+       opcode->opcode == ESP_OPCODE_TIME ||
+       opcode->opcode == ESP_OPCODE_METRE)
     {
         // received opcode is a new-style opcode
         [self afterOpcodeReceived:opcode];

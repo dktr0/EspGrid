@@ -30,6 +30,7 @@
     NSMutableDictionary* timeStamps;
     NSMutableDictionary* values;
     NSMutableDictionary* types;
+    NSMutableDictionary* scopes;
     int broadcastIndex;
     NSObject* model;
     EspOsc* osc;
@@ -41,9 +42,10 @@
     EspFloatOpcode floatOpcode;
     EspTimeOpcode timeOpcode;
     EspStringOpcode stringOpcode;
+    EspMetreOpcode metreOpcode;
 }
 @property (nonatomic,assign) NSObject* model;
--(void) addKeyPath:(NSString*)keyPath type:(int)t;
+-(void) addKeyPath:(NSString*)keyPath type:(int)t scope:(int)s;
 -(void) broadcastKeyPath:(NSString*)keyPath;
 -(EspTimeType) clockAdjustmentForAuthority:(NSString*)keyPath;
 +(EspKeyValueController*) keyValueController;

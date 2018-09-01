@@ -110,10 +110,11 @@ LARGE_INTEGER performanceFrequency;
     [network setHandler:[EspClock clock] forOpcode:ESP_OPCODE_ACK];
     [network setHandler:[EspClock clock] forOpcode:ESP_OPCODE_PEERINFO];
     [network setHandler:[EspChat chat] forOpcode:ESP_OPCODE_CHATSEND];
-    [network setHandler:[EspKeyValueController keyValueController] forOpcode:ESP_OPCODE_KVC];
-    [network setHandler:[EspCodeShare codeShare] forOpcode:ESP_OPCODE_ANNOUNCESHARE];
-    [network setHandler:[EspCodeShare codeShare] forOpcode:ESP_OPCODE_REQUESTSHARE];
-    [network setHandler:[EspCodeShare codeShare] forOpcode:ESP_OPCODE_DELIVERSHARE];
+    [network setHandler:[EspKeyValueController keyValueController] forOpcode:ESP_OPCODE_INT];
+    [network setHandler:[EspKeyValueController keyValueController] forOpcode:ESP_OPCODE_FLOAT];
+    [network setHandler:[EspKeyValueController keyValueController] forOpcode:ESP_OPCODE_TIME];
+    [network setHandler:[EspKeyValueController keyValueController] forOpcode:ESP_OPCODE_STRING];
+    [network setHandler:[EspKeyValueController keyValueController] forOpcode:ESP_OPCODE_METRE];
     [network setHandler:[EspMessage message] forOpcode:ESP_OPCODE_OSCNOW];
     [network setHandler:[EspMessage message] forOpcode:ESP_OPCODE_OSCFUTURE];
 

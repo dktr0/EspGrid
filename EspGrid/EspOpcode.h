@@ -22,6 +22,8 @@
 #include "EspGridDefs.h"
 
 #define ESP_NUMBER_OF_OPCODES 15
+
+// new-style opcodes
 #define ESP_OPCODE_BEACON 0
 #define ESP_OPCODE_ACK 1
 #define ESP_OPCODE_CHATSEND 2
@@ -31,6 +33,11 @@
 #define ESP_OPCODE_TIME 12
 #define ESP_OPCODE_STRING 13
 #define ESP_OPCODE_METRE 14
+
+// old-style opcodes
+#define ESP_OPCODE_ANNOUNCESHARE 5
+#define ESP_OPCODE_REQUESTSHARE 6
+#define ESP_OPCODE_DELIVERSHARE 7
 #define ESP_OPCODE_OSCNOW 8
 #define ESP_OPCODE_OSCFUTURE 9
 
@@ -116,10 +123,12 @@ typedef struct {
   EspTimeType value;
 } EspTimeOpcode;
 
+#define ESP_MAX_STRINGOPCODELENGTH 1024
+
 typedef struct {
   EspOpcode header;
   EspVariableInfo info;
-  char value[1024];
+  char value[ESP_MAX_STRINGOPCODELENGTH];
 } EspStringOpcode;
 
 typedef struct {

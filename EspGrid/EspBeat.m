@@ -56,7 +56,7 @@
     [self setDownbeatNumber:[NSNumber numberWithInt:0]];
     beatsIssued = 0;
     kvc = [EspKeyValueController keyValueController];
-    [kvc addKeyPath:@"beat.params" type:ESP_KVCTYPE_BEAT];
+    [kvc addKeyPath:@"beat.params" type:ESP_OPCODE_METRE scope:ESP_SCOPE_GLOBAL];
     return self;
 }
 

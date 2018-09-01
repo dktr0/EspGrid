@@ -41,19 +41,6 @@
 		064EF35315CB889700005A16 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 064EF35215CB889700005A16 /* UIKit.framework */; };
 		064EF35515CB889700005A16 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 064EF35415CB889700005A16 /* Foundation.framework */; };
 		064EF35715CB889700005A16 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 064EF35615CB889700005A16 /* CoreGraphics.framework */; };
-		064EF35D15CB889700005A16 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 064EF35B15CB889700005A16 /* InfoPlist.strings */; };
-		064EF35F15CB889700005A16 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 064EF35E15CB889700005A16 /* main.m */; };
-		064EF36315CB889700005A16 /* EspAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 064EF36215CB889700005A16 /* EspAppDelegate.m */; };
-		064EF36615CB889700005A16 /* EspFirstViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 064EF36515CB889700005A16 /* EspFirstViewController.m */; };
-		064EF36815CB889700005A16 /* first.png in Resources */ = {isa = PBXBuildFile; fileRef = 064EF36715CB889700005A16 /* first.png */; };
-		064EF36A15CB889800005A16 /* first@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 064EF36915CB889800005A16 /* first@2x.png */; };
-		064EF36D15CB889800005A16 /* EspSecondViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 064EF36C15CB889800005A16 /* EspSecondViewController.m */; };
-		064EF36F15CB889800005A16 /* second.png in Resources */ = {isa = PBXBuildFile; fileRef = 064EF36E15CB889800005A16 /* second.png */; };
-		064EF37115CB889800005A16 /* second@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 064EF37015CB889800005A16 /* second@2x.png */; };
-		064EF37415CB889800005A16 /* EspFirstViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 064EF37215CB889800005A16 /* EspFirstViewController_iPhone.xib */; };
-		064EF37715CB889800005A16 /* EspFirstViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 064EF37515CB889800005A16 /* EspFirstViewController_iPad.xib */; };
-		064EF37A15CB889800005A16 /* EspSecondViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 064EF37815CB889800005A16 /* EspSecondViewController_iPhone.xib */; };
-		064EF37D15CB889800005A16 /* EspSecondViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 064EF37B15CB889800005A16 /* EspSecondViewController_iPad.xib */; };
 		064EF38415CB8C9F00005A16 /* EspPeerList.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A260015C90E2E00BC5E8D /* EspPeerList.m */; };
 		064EF38715CB8D8500005A16 /* EspKeyValueController.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25FA15C90E2E00BC5E8D /* EspKeyValueController.m */; };
 		064EF38A15CB8DFB00005A16 /* EspClock.m in Sources */ = {isa = PBXBuildFile; fileRef = 060A25F215C90E2E00BC5E8D /* EspClock.m */; };
@@ -140,8 +127,6 @@
 		060A25F415C90E2E00BC5E8D /* EspCodeShare.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspCodeShare.m; sourceTree = "<group>"; };
 		060A25F515C90E2E00BC5E8D /* EspGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspGrid.h; sourceTree = "<group>"; };
 		060A25F615C90E2E00BC5E8D /* EspGrid.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspGrid.m; sourceTree = "<group>"; };
-		060A25F715C90E2E00BC5E8D /* EspJack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspJack.h; sourceTree = "<group>"; };
-		060A25F815C90E2E00BC5E8D /* EspJack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspJack.m; sourceTree = "<group>"; };
 		060A25F915C90E2E00BC5E8D /* EspKeyValueController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspKeyValueController.h; sourceTree = "<group>"; };
 		060A25FA15C90E2E00BC5E8D /* EspKeyValueController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspKeyValueController.m; sourceTree = "<group>"; };
 		060A25FF15C90E2E00BC5E8D /* EspPeerList.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspPeerList.h; sourceTree = "<group>"; };
@@ -167,24 +152,6 @@
 		064EF35215CB889700005A16 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		064EF35415CB889700005A16 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		064EF35615CB889700005A16 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = Library/Frameworks/CoreGraphics.framework; sourceTree = DEVELOPER_DIR; };
-		064EF35A15CB889700005A16 /* EspGridTouchTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "EspGridTouchTest-Info.plist"; sourceTree = "<group>"; };
-		064EF35C15CB889700005A16 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		064EF35E15CB889700005A16 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		064EF36015CB889700005A16 /* EspGridTouchTest-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EspGridTouchTest-Prefix.pch"; sourceTree = "<group>"; };
-		064EF36115CB889700005A16 /* EspAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EspAppDelegate.h; sourceTree = "<group>"; };
-		064EF36215CB889700005A16 /* EspAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EspAppDelegate.m; sourceTree = "<group>"; };
-		064EF36415CB889700005A16 /* EspFirstViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EspFirstViewController.h; sourceTree = "<group>"; };
-		064EF36515CB889700005A16 /* EspFirstViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EspFirstViewController.m; sourceTree = "<group>"; };
-		064EF36715CB889700005A16 /* first.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = first.png; sourceTree = "<group>"; };
-		064EF36915CB889800005A16 /* first@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "first@2x.png"; sourceTree = "<group>"; };
-		064EF36B15CB889800005A16 /* EspSecondViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EspSecondViewController.h; sourceTree = "<group>"; };
-		064EF36C15CB889800005A16 /* EspSecondViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = EspSecondViewController.m; sourceTree = "<group>"; };
-		064EF36E15CB889800005A16 /* second.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = second.png; sourceTree = "<group>"; };
-		064EF37015CB889800005A16 /* second@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "second@2x.png"; sourceTree = "<group>"; };
-		064EF37315CB889800005A16 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/EspFirstViewController_iPhone.xib; sourceTree = "<group>"; };
-		064EF37615CB889800005A16 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/EspFirstViewController_iPad.xib; sourceTree = "<group>"; };
-		064EF37915CB889800005A16 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/EspSecondViewController_iPhone.xib; sourceTree = "<group>"; };
-		064EF37C15CB889800005A16 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/EspSecondViewController_iPad.xib; sourceTree = "<group>"; };
 		06534E841BDBD8620051E388 /* EspOscSubscribers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EspOscSubscribers.h; sourceTree = "<group>"; };
 		06534E851BDBD8620051E388 /* EspOscSubscribers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EspOscSubscribers.m; sourceTree = "<group>"; };
 		06534E891BDBD9510051E388 /* EspHandleOsc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EspHandleOsc.h; sourceTree = "<group>"; };
@@ -337,8 +304,6 @@
 				060A25F515C90E2E00BC5E8D /* EspGrid.h */,
 				060A25F615C90E2E00BC5E8D /* EspGrid.m */,
 				063BE05518259F1000B31C18 /* main.m */,
-				060A25F715C90E2E00BC5E8D /* EspJack.h */,
-				060A25F815C90E2E00BC5E8D /* EspJack.m */,
 			);
 			path = EspGrid;
 			sourceTree = "<group>";
@@ -379,39 +344,6 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		064EF35815CB889700005A16 /* EspGridTouchTest */ = {
-			isa = PBXGroup;
-			children = (
-				064EF36115CB889700005A16 /* EspAppDelegate.h */,
-				064EF36215CB889700005A16 /* EspAppDelegate.m */,
-				064EF36415CB889700005A16 /* EspFirstViewController.h */,
-				064EF36515CB889700005A16 /* EspFirstViewController.m */,
-				064EF36715CB889700005A16 /* first.png */,
-				064EF36915CB889800005A16 /* first@2x.png */,
-				064EF36B15CB889800005A16 /* EspSecondViewController.h */,
-				064EF36C15CB889800005A16 /* EspSecondViewController.m */,
-				064EF36E15CB889800005A16 /* second.png */,
-				064EF37015CB889800005A16 /* second@2x.png */,
-				064EF37215CB889800005A16 /* EspFirstViewController_iPhone.xib */,
-				064EF37515CB889800005A16 /* EspFirstViewController_iPad.xib */,
-				064EF37815CB889800005A16 /* EspSecondViewController_iPhone.xib */,
-				064EF37B15CB889800005A16 /* EspSecondViewController_iPad.xib */,
-				064EF35915CB889700005A16 /* Supporting Files */,
-			);
-			path = EspGridTouchTest;
-			sourceTree = "<group>";
-		};
-		064EF35915CB889700005A16 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				064EF35A15CB889700005A16 /* EspGridTouchTest-Info.plist */,
-				064EF35B15CB889700005A16 /* InfoPlist.strings */,
-				064EF35E15CB889700005A16 /* main.m */,
-				064EF36015CB889700005A16 /* EspGridTouchTest-Prefix.pch */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
 		0699368F15C90761002F64AF = {
 			isa = PBXGroup;
 			children = (
@@ -421,7 +353,6 @@
 				06B51764163080E10036A44B /* Default-568h@2x.png */,
 				060A25EC15C90E2E00BC5E8D /* EspGrid */,
 				060A260715C90E2E00BC5E8D /* EspGridOSX */,
-				064EF35815CB889700005A16 /* EspGridTouchTest */,
 				06C3436C163F664000F72BE8 /* EspGridUnitTests */,
 				060ABC3317E0C0830031AE8F /* espgridd */,
 				0699369D15C90761002F64AF /* Frameworks */,
@@ -613,15 +544,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				064EF35D15CB889700005A16 /* InfoPlist.strings in Resources */,
-				064EF36815CB889700005A16 /* first.png in Resources */,
-				064EF36A15CB889800005A16 /* first@2x.png in Resources */,
-				064EF36F15CB889800005A16 /* second.png in Resources */,
-				064EF37115CB889800005A16 /* second@2x.png in Resources */,
-				064EF37415CB889800005A16 /* EspFirstViewController_iPhone.xib in Resources */,
-				064EF37715CB889800005A16 /* EspFirstViewController_iPad.xib in Resources */,
-				064EF37A15CB889800005A16 /* EspSecondViewController_iPhone.xib in Resources */,
-				064EF37D15CB889800005A16 /* EspSecondViewController_iPad.xib in Resources */,
 				06B51765163080E10036A44B /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -696,10 +618,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				064EF35F15CB889700005A16 /* main.m in Sources */,
-				064EF36315CB889700005A16 /* EspAppDelegate.m in Sources */,
-				064EF36615CB889700005A16 /* EspFirstViewController.m in Sources */,
-				064EF36D15CB889800005A16 /* EspSecondViewController.m in Sources */,
 				064EF38415CB8C9F00005A16 /* EspPeerList.m in Sources */,
 				064EF38715CB8D8500005A16 /* EspKeyValueController.m in Sources */,
 				064EF38A15CB8DFB00005A16 /* EspClock.m in Sources */,
@@ -797,46 +715,6 @@
 				060A260F15C90E2E00BC5E8D /* en */,
 			);
 			name = MainMenu.xib;
-			sourceTree = "<group>";
-		};
-		064EF35B15CB889700005A16 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				064EF35C15CB889700005A16 /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-		064EF37215CB889800005A16 /* EspFirstViewController_iPhone.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				064EF37315CB889800005A16 /* en */,
-			);
-			name = EspFirstViewController_iPhone.xib;
-			sourceTree = "<group>";
-		};
-		064EF37515CB889800005A16 /* EspFirstViewController_iPad.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				064EF37615CB889800005A16 /* en */,
-			);
-			name = EspFirstViewController_iPad.xib;
-			sourceTree = "<group>";
-		};
-		064EF37815CB889800005A16 /* EspSecondViewController_iPhone.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				064EF37915CB889800005A16 /* en */,
-			);
-			name = EspSecondViewController_iPhone.xib;
-			sourceTree = "<group>";
-		};
-		064EF37B15CB889800005A16 /* EspSecondViewController_iPad.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				064EF37C15CB889800005A16 /* en */,
-			);
-			name = EspSecondViewController_iPad.xib;
 			sourceTree = "<group>";
 		};
 		06C3436F163F664000F72BE8 /* InfoPlist.strings */ = {

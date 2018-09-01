@@ -42,6 +42,7 @@
     timeStamps = [[NSMutableDictionary alloc] init];
     values = [[NSMutableDictionary alloc] init];
     types = [[NSMutableDictionary alloc] init];
+    scopes = [[NSMutableDictionary alloc] init];
 
     intOpcode.header.opcode = ESP_OPCODE_INT;
     intOpcode.header.length = sizeof(EspIntOpcode);
@@ -51,6 +52,8 @@
     timeOpcode.header.length = sizeof(EspTimeOpcode);
     stringOpcode.header.opcode = ESP_OPCODE_STRING;
     stringOpcode.header.length = sizeof(EspStringOpcode);
+    metreOpcode.header.opcode = ESP_OPCODE_METRE;
+    metreOpcode.header.length = sizeof(EspMetreOpcode);
 
     [NSTimer scheduledTimerWithTimeInterval:0.030
                                      target:self
@@ -68,15 +71,17 @@
     [timeStamps release];
     [values release];
     [types release];
+    [scopes release];
     [super dealloc];
 }
 
--(void)addKeyPath:(NSString*)keyPath type:(int)t
+-(void)addKeyPath:(NSString*)keyPath type:(int)t scope:(int)s
 {
-    if(t!=ESP_KVCTYPE_BOOL && t!=ESP_KVCTYPE_DOUBLE && t!=ESP_KVCTYPE_TIME && t!= ESP_KVCTYPE_INT && t!=ESP_KVCTYPE_BEAT)
+    if(t!=ESP_OPCODE_INT && t!=ESP_OPCODE_FLOAT && t!=ESP_OPCODE_TIME && t!= ESP_OPCODE_STRING && t!=ESP_OPCODE_METRE)
       NSAssert(false,@"EspKeyValueController: attempt to addKeyPath with unrecognized type");
     [keyPaths addObject:[keyPath copy]];
     [types setObject:[NSNumber numberWithInt:t] forKey:keyPath];
+    [scopes setObject:[NSNumber numberWithInt:s] forKey:keyPath];
     [timeStamps setObject:[NSNumber numberWithLongLong:0] forKey:keyPath];
 }
 
@@ -113,26 +118,54 @@
         if(t < 10000000000) return;
     }
 
-    copyPersonIntoOpcode((EspOpcode*)&kvc); // to fix: should only be copied when defaults change
-    kvc.timeStamp = [[timeStamps objectForKey:keyPath] longLongValue];
-    strncpy(kvc.keyPath,[keyPath cStringUsingEncoding:NSUTF8StringEncoding],ESP_KVC_MAXKEYLENGTH);
-    kvc.keyPath[ESP_KVC_MAXKEYLENGTH-1] = 0;
-    strncpy(kvc.authorityPerson,[authorityPerson cStringUsingEncoding:NSUTF8StringEncoding],ESP_MAXNAMELENGTH);
-    kvc.authorityPerson[ESP_MAXNAMELENGTH-1] = 0;
-    kvc.type = [[types objectForKey:keyPath] intValue];
-    if(kvc.type == ESP_KVCTYPE_BOOL) kvc.value.boolValue = [[values objectForKey:keyPath] boolValue];
-    else if(kvc.type == ESP_KVCTYPE_BOOL) kvc.value.doubleValue = [[values objectForKey:keyPath] doubleValue];
-    else if(kvc.type == ESP_KVCTYPE_BOOL) kvc.value.timeValue = [[values objectForKey:keyPath] longLongValue];
-    else if(kvc.type == ESP_KVCTYPE_BOOL) kvc.value.intValue = [[values objectForKey:keyPath] intValue];
-    else if(kvc.type == ESP_KVCTYPE_BEAT) {
-        id beatParams = [values objectForKey:keyPath];
-        kvc.value.beatValue.on = [[beatParams objectForKey:@"on"] boolValue];
-        kvc.value.beatValue.tempo = [[beatParams objectForKey:@"tempo"] doubleValue];
-        kvc.value.beatValue.downbeatTime = [[beatParams objectForKey:@"downbeatTime"] longLongValue];
-        kvc.value.beatValue.number = [[beatParams objectForKey:@"downbeatNumber"] intValue];
+    EspOpcode* opcode = (EspOpcode*)&intOpcode;
+    EspVariableInfo* info = &intOpcode.info;
+    id value = [values objectForKey:keyPath];
+    int type = [[types objectForKey:keyPath] intValue];
+    if(type == ESP_OPCODE_INT)
+    {
+        intOpcode.value = [value intValue];
+        info = &intOpcode.info;
+        opcode = (EspOpcode*)&intOpcode;
+    }
+    else if(type == ESP_OPCODE_FLOAT)
+    {
+        floatOpcode.value = [value floatValue];
+        info = &floatOpcode.info;
+        opcode = (EspOpcode*)&floatOpcode;
+    }
+    else if(type == ESP_OPCODE_STRING)
+    {
+        strncpy(stringOpcode.value,[value cStringUsingEncoding:NSUTF8StringEncoding],ESP_MAX_STRINGOPCODELENGTH);
+        stringOpcode.value[ESP_MAX_STRINGOPCODELENGTH-1] = 0;
+        info = &stringOpcode.info;
+        opcode = (EspOpcode*)&stringOpcode;
+    }
+    else if(type == ESP_OPCODE_TIME)
+    {
+        timeOpcode.value = [value longLongValue];
+        info = &timeOpcode.info;
+        opcode = (EspOpcode*)&timeOpcode;
+    }
+    else if(type == ESP_OPCODE_METRE)
+    {
+        metreOpcode.metre.time = [[value objectForKey:@"time"] longLongValue]; // EspTimeType
+        metreOpcode.metre.on = [[value objectForKey:@"on"] boolValue]; // uint32_t
+        metreOpcode.metre.beat = [[value objectForKey:@"beat"] intValue]; // uint32_t
+        metreOpcode.metre.tempo = [[value objectForKey:@"tempo"] floatValue]; // Float32
+        info = &metreOpcode.info;
+        opcode = (EspOpcode*)&metreOpcode;
     }
     else NSAssert(false,@"invalid kvc type in EspKeyValueController broadcast method");
-    [network sendOpcode:(EspOpcode*)&kvc];
+    // transfer information that all kvc opcodes have in common into the opcode
+    copyPersonIntoOpcode(opcode);
+    info->timeStamp = [[timeStamps objectForKey:keyPath] longLongValue];
+    strncpy(info->path,[keyPath cStringUsingEncoding:NSUTF8StringEncoding],ESP_MAXNAMELENGTH);
+    info->path[ESP_MAXNAMELENGTH-1] = 0;
+    strncpy(info->authority,[authorityPerson cStringUsingEncoding:NSUTF8StringEncoding],ESP_MAXNAMELENGTH);
+    info->authority[ESP_MAXNAMELENGTH-1] = 0;
+    info->scope = [[scopes objectForKey:keyPath] intValue];
+    [network sendOpcode:opcode];
 }
 
 -(EspTimeType) clockAdjustmentForAuthority:(NSString*)keyPath
@@ -156,7 +189,7 @@
     NSString* authorityHandle = [NSString stringWithCString:info->authority encoding:NSUTF8StringEncoding];
     EspPeer* authority = [peerList findPeerWithName:authorityHandle];
     if(authority == nil) {
-        postLog([NSString stringWithFormat:@"dropping KVC from unknown handle %@",authorityHandle], self);
+        postLog([NSString stringWithFormat:@"dropping KVC from unknown authority %@",authorityHandle], self);
         return;
     }
     EspTimeType t2 = info->timeStamp + [clock adjustmentForPeer:authority];
@@ -189,11 +222,11 @@
         postLog([NSString stringWithFormat:@"dropping string opcode with excessive length %d",opcode->length], self);
         return;
       }
-      if(opcode->length < ((&(s->value)) - &s) {
+      /* if(opcode->length < ((&(s->value)) - &s) {
         postLog([NSString stringWithFormat:@"dropping too-short string opcode, length=%d",opcode->length], self);
-        return;
-      }
-      *(s+opcode->length-1)=0;
+        return; // not sure what this was for anymore?
+      } */
+//      *(s+opcode->length-1)=0;
       value = [NSString stringWithCString:s->value encoding:NSUTF8StringEncoding];
     }
     else if(opcode->opcode == ESP_OPCODE_TIME) {
@@ -203,10 +236,10 @@
     else if(opcode->opcode == ESP_OPCODE_METRE) {
       EspMetreOpcode* m = (EspMetreOpcode*)opcode;
       value = [NSDictionary dictionaryWithObjectsAndKeys:
-        [NSNumber numberWithInt:m->value.on],@"on",
-        [NSNumber numberWithFloat:m->value.tempo],@"tempo",
-        [NSNumber numberWithLongLong:m->value.time],@"time",
-        [NSNumber numberWithInt:m->value.beat],@"beat",nil];
+        [NSNumber numberWithInt:m->metre.on],@"on",
+        [NSNumber numberWithFloat:m->metre.tempo],@"tempo",
+        [NSNumber numberWithLongLong:m->metre.time],@"time",
+        [NSNumber numberWithInt:m->metre.beat],@"beat",nil];
     }
 
     // for SYSTEM scope values only, update something in the state of EspGrid
@@ -219,9 +252,9 @@
     // and for both SYSTEM and GLOBAL scope, update values stored "here"
     else {
       [values setObject:value forKey:path];
-      [timeStamps setObject:[NSNumber numberWithLongLong:rcvd->timeStamp] forKey:path];
+      [timeStamps setObject:[NSNumber numberWithLongLong:info->timeStamp] forKey:path];
       [authorityNames setObject:[authority copy] forKey:path];
-      [authorities setObject:newAuthority forKey:path];
+      [authorities setObject:authority forKey:path];
       postLog([NSString stringWithFormat:@"new value %@ for system/global key %@",value,path],self);
     }
 }
