@@ -37,8 +37,8 @@
 
 @synthesize on;
 @synthesize tempo;
-@synthesize downbeatTime;
-@synthesize downbeatNumber;
+@synthesize time;
+@synthesize beat;
 
 +(EspBeat*) beat
 {
@@ -52,11 +52,12 @@
     self = [super init];
     [self setOn:[NSNumber numberWithBool:NO]];
     [self setTempo:[NSNumber numberWithDouble:120.0]];
-    [self setDownbeatTime:[NSNumber numberWithLongLong:0]];
-    [self setDownbeatNumber:[NSNumber numberWithInt:0]];
+    [self setTime:[NSNumber numberWithLongLong:0]];
+    [self setBeat:[NSNumber numberWithInt:0]];
     beatsIssued = 0;
     kvc = [EspKeyValueController keyValueController];
-    [kvc addKeyPath:@"beat.params" type:ESP_OPCODE_METRE scope:ESP_SCOPE_GLOBAL];
+    params = NULL;
+    [kvc addKeyPath:@"beat.params" type:ESP_OPCODE_METRE scope:ESP_SCOPE_SYSTEM];
     return self;
 }
 
@@ -65,7 +66,6 @@
     [self stopTicking];
     [super dealloc];
 }
-
 
 -(NSDictionary*) params
 {
@@ -78,9 +78,9 @@
     if(params != NULL) [params release];
     params = [p copy];
     NSAssert(params != NULL,@"EspBeat params dictionary is null");
-    [self setDownbeatNumber:[params objectForKey:@"downbeatNumber"]];
+    [self setBeat:[params objectForKey:@"beat"]];
     [self setTempo:[params objectForKey:@"tempo"]];
-    [self setDownbeatTime:[params objectForKey:@"downbeatTime"]];
+    [self setTime:[params objectForKey:@"time"]];
     [self setOn:[params objectForKey:@"on"]];
 }
 
@@ -89,13 +89,12 @@
     // this method creates a dictionary containing all tempo parameters and then
     // shares it to other EspGrid instances via the EspKeyValueController class
     NSDictionary* d = [NSDictionary dictionaryWithObjectsAndKeys:
-                       [NSNumber numberWithLongLong:t],@"downbeatTime",
+                       [NSNumber numberWithLongLong:t],@"time",
                        [NSNumber numberWithDouble:bpm],@"tempo",
-                       [NSNumber numberWithLong:n],@"downbeatNumber",
+                       [NSNumber numberWithLong:n],@"beat",
                        [NSNumber numberWithBool:o],@"on",nil];
     [kvc setValue:d forKeyPath:@"beat.params"];
 }
-
 
 -(void) turnBeatOn
 {
@@ -111,7 +110,7 @@
     EspTimeType elapsedTime = monotonicTime() - [self adjustedDownbeatTime];
     EspTimeType nanosPerBeat = 60000000000.0 / [tempo doubleValue];
     EspTimeType elapsedBeats = elapsedTime / nanosPerBeat;
-    beatsIssued = elapsedBeats + [downbeatNumber longValue];
+    beatsIssued = elapsedBeats + [beat longValue];
     EspTimeType t = monotonicTime() + 100000000; // fixed 100ms latency compensation for now
     double f = [[self tempo] doubleValue];
     [self atTime:t tempo:f beatNumber:beatsIssued on:NO];
@@ -133,7 +132,7 @@
         EspTimeType nanosPerBeat = 60000000000.0 / [tempo doubleValue];
         EspTimeType elapsedBeats = elapsedTime / nanosPerBeat;
         EspTimeType nextTime = downbeat + (elapsedBeats*nanosPerBeat) + nanosPerBeat;
-        unsigned long nextBeat = [downbeatNumber unsignedLongValue] + elapsedBeats + 1;
+        unsigned long nextBeat = [beat unsignedLongValue] + elapsedBeats + 1;
         [self atTime:nextTime tempo:newBpm beatNumber:nextBeat on:YES];
     }
 }
@@ -141,7 +140,7 @@
 
 -(EspTimeType) adjustedDownbeatTime
 {
-    if([on boolValue]) return [downbeatTime longLongValue] + [kvc clockAdjustmentForAuthority:@"beat.params"];
+    if([on boolValue]) return [time longLongValue] + [kvc clockAdjustmentForAuthority:@"beat.params"];
     else return 0;
 }
 

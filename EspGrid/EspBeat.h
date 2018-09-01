@@ -24,16 +24,16 @@
     EspKeyValueController* kvc;
     NSNumber* on;
     NSNumber* tempo;
-    NSNumber* downbeatTime;
-    NSNumber* downbeatNumber;
+    NSNumber* time;
+    NSNumber* beat;
     NSDictionary* params;
     unsigned long beatsIssued;
 }
 @property (retain) NSDictionary* params;
 @property (retain) NSNumber* on;
 @property (retain) NSNumber* tempo;
-@property (retain) NSNumber* downbeatTime;
-@property (retain) NSNumber* downbeatNumber;
+@property (retain) NSNumber* time;
+@property (retain) NSNumber* beat;
 
 -(void) turnBeatOn;
 -(void) turnBeatOff;
