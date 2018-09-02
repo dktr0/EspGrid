@@ -264,7 +264,7 @@
         NSLog(@"2");
       [timeStamps setObject:[NSNumber numberWithLongLong:info->timeStamp] forKey:path];
         NSLog(@"3");
-        [authorityNames setObject:[authority copy] forKey:path];
+        [authorityNames setObject:[[authority name] copy] forKey:path]; // *** exception here
         NSLog(@"4");
       [authorities setObject:authority forKey:path];
       postLog([NSString stringWithFormat:@"new value %@ for system/global key %@",value,path],self);
