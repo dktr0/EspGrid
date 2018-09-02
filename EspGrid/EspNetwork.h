@@ -35,6 +35,7 @@
     NSMutableArray* channels;
     EspChannel* broadcast;
     EspChannel* bridge;
+    char name[ESP_MAXNAMELENGTH];
 }
 @property (nonatomic,assign) EspChannel* broadcast;
 @property (nonatomic,assign) EspChannel* bridge;
@@ -46,9 +47,8 @@
 -(void) handleOldOpcode:(NSDictionary*)d; // old
 -(void) setHandler:(id)h forOpcode:(unsigned int)o;
 -(void) broadcastAddressChanged; // signal that the broadcast address may have been changed
+-(void) nameChanged; // signal that unique name for this instance may have changed
 
 @end
-
-void copyNameAndMachineIntoOpcode(EspOpcode* opcode); // this will go into some opcode-related file eventually
 
 

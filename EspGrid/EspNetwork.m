@@ -64,9 +64,17 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
         bridge = [[EspChannel alloc] init];
         [bridge setDelegate:self];
     }
+    
+    [self nameChanged];
     return self;
 }
 
+-(void) nameChanged
+{
+    const char* ourName = [[[NSUserDefaults standardUserDefaults] stringForKey:@"person"] cStringUsingEncoding:NSUTF8StringEncoding];
+    strncpy(name,ourName,ESP_MAXNAMELENGTH-1);
+    name[ESP_MAXNAMELENGTH-1] = 0;
+}
 
 -(void) dealloc
 {
@@ -158,8 +166,7 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
 
 -(void) handleOpcode: (EspOpcode*)opcode
 {
-    const char* ourName = [[[NSUserDefaults standardUserDefaults] stringForKey:@"person"] cStringUsingEncoding:NSUTF8StringEncoding];
-    if(!strcmp(opcode->name,ourName)) return; // ignore our own opcodes
+    if(!strncmp(opcode->name,name,ESP_MAXNAMELENGTH-1)) return; // ignore our own opcodes
     id<EspNetworkDelegate> h = handlers[opcode->opcode];
     if(h == nil) {
         NSString* s = [NSString stringWithFormat:@"no handler for opcode %d from %s at %s",
@@ -208,6 +215,6 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
 void copyPersonIntoOpcode(EspOpcode* opcode)
 {
     const char* name = [[[NSUserDefaults standardUserDefaults] objectForKey:@"person"] cStringUsingEncoding:NSUTF8StringEncoding];
-    strncpy(opcode->name,name,16);
-    opcode->name[15] = 0; // i.e. make sure only 15 readable characters are included
+    strncpy(opcode->name,name,ESP_MAXNAMELENGTH-1);
+    opcode->name[ESP_MAXNAMELENGTH-1] = 0;
 }

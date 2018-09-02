@@ -53,6 +53,8 @@ typedef struct {
     uint16_t opcode;
 } EspOpcode __attribute__((aligned(8)));
 
+void copyPersonIntoOpcode(EspOpcode* opcode); // defined in EspNetwork.m
+
 typedef struct {
     EspOpcode header;
     char data[2048];

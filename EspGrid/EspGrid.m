@@ -171,6 +171,7 @@ LARGE_INTEGER performanceFrequency;
 
 -(void) personChanged
 {
+    [[EspNetwork network] nameChanged];
     [[EspClock clock] personChanged];
     [[EspPeerList peerList] personChanged];
 }
