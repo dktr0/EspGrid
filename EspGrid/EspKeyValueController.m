@@ -204,7 +204,7 @@
       return;
     }
     if(t2 <= t1) return; // if this is NOT most current info, return without updating anything
-
+    NSLog(@"extracting value from KVC opcode...");
     // extract value of opcode for storage
     id value;
     if(opcode->opcode == ESP_OPCODE_INT) {
