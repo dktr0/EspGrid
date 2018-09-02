@@ -261,8 +261,11 @@
     {
         NSLog(@"scope is SYSTEM/GLOBAL, updating values stored here");
       [values setObject:value forKey:path];
+        NSLog(@"2");
       [timeStamps setObject:[NSNumber numberWithLongLong:info->timeStamp] forKey:path];
-      [authorityNames setObject:[authority copy] forKey:path];
+        NSLog(@"3");
+        [authorityNames setObject:[authority copy] forKey:path];
+        NSLog(@"4");
       [authorities setObject:authority forKey:path];
       postLog([NSString stringWithFormat:@"new value %@ for system/global key %@",value,path],self);
     }
