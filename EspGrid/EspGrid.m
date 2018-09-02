@@ -33,7 +33,7 @@ LARGE_INTEGER performanceFrequency;
     NSMutableDictionary* defs = [NSMutableDictionary dictionary];
     time_t t;
     srand((unsigned)time(&t));
-    NSString* random = [NSString stringWithFormat:@"unknown-%u",rand(),nil];
+    NSString* random = [NSString stringWithFormat:@"?%u",rand(),nil];
     [defs setObject:random forKey:@"person"];
     [defs setObject:@"255.255.255.255" forKey:@"broadcast"];
     [defs setObject:[NSNumber numberWithInt:4] forKey:@"clockMode"]; // average reference beacon difference
