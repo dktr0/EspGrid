@@ -234,23 +234,32 @@
       value = [NSNumber numberWithLongLong:t->value];
     }
     else if(opcode->opcode == ESP_OPCODE_METRE) {
+        NSLog(@"processing ESP_OPCODE_METRE");
       EspMetreOpcode* m = (EspMetreOpcode*)opcode;
       value = [NSDictionary dictionaryWithObjectsAndKeys:
         [NSNumber numberWithInt:m->metre.on],@"on",
         [NSNumber numberWithFloat:m->metre.tempo],@"tempo",
         [NSNumber numberWithLongLong:m->metre.time],@"time",
         [NSNumber numberWithInt:m->metre.beat],@"beat",nil];
+        NSLog(@"finished processing ESP_OPCODE_METRE");
     }
 
     // for SYSTEM scope values only, update something in the state of EspGrid
-    if(info->scope == ESP_SCOPE_SYSTEM) [model setValue:value forKeyPath:path];
+    if(info->scope == ESP_SCOPE_SYSTEM)
+    {
+        NSLog(@"scope is SYSTEM, setting value in model");
+      [model setValue:value forKeyPath:path];
+    }
     // for LOCAL scope values, just store values in corresponding entry in peerList
     if(info->scope == ESP_SCOPE_LOCAL) {
+        NSLog(@"scope is LOCAL, setting value in peerlist");
       [authority storeValue:value forPath:path];
       postLog([NSString stringWithFormat:@"new value %@ for %@ from %@",value,path,authorityHandle],self);
     }
     // and for both SYSTEM and GLOBAL scope, update values stored "here"
-    else {
+    if(info ->scope == ESP_SCOPE_GLOBAL || info->scope == ESP_SCOPE_SYSTEM)
+    {
+        NSLog(@"scope is SYSTEM/GLOBAL, updating values stored here");
       [values setObject:value forKey:path];
       [timeStamps setObject:[NSNumber numberWithLongLong:info->timeStamp] forKey:path];
       [authorityNames setObject:[authority copy] forKey:path];
