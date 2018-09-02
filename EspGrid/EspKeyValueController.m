@@ -194,7 +194,7 @@
     }
     EspTimeType t2 = info->timeStamp + [clock adjustmentForPeer:authority];
     EspTimeType t1 = 0;
-    if(info->scope == ESP_SCOPE_GLOBAL) {
+    if(info->scope == ESP_SCOPE_GLOBAL || info->scope == ESP_SCOPE_SYSTEM) {
       EspPeer* oldAuthority = [authorities objectForKey:path];
       if(oldAuthority != nil) t1 = [[timeStamps objectForKey:path] longLongValue] + [clock adjustmentForPeer:oldAuthority];
     }
