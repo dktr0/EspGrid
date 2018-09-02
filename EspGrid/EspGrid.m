@@ -65,13 +65,13 @@ LARGE_INTEGER performanceFrequency;
 {
     int e = 0;
     e+=[self sizeOrOffset:sizeof(EspTimeType) shouldBe:8 name:@"sizeof(EspTimeType)"];
-    e+=[self sizeOrOffset:sizeof(EspOpcode) shouldBe:72 name:@"sizeof(EspOpcode)"];
-    e+=[self sizeOrOffset:sizeof(EspBeaconOpcode) shouldBe:80 name:@"sizeof(EspBeaconOpcode)"];
-    e+=[self sizeOrOffset:sizeof(EspAckOpcode) shouldBe:144 name:@"sizeof(EspAckOpcode)"];
-    e+=[self sizeOrOffset:sizeof(EspPeerInfoOpcode) shouldBe:160 name:@"sizeof(EspPeerInfoOpcode)"];
+    e+=[self sizeOrOffset:sizeof(EspOpcode) shouldBe:56 name:@"sizeof(EspOpcode)"];
+    e+=[self sizeOrOffset:sizeof(EspBeaconOpcode) shouldBe:64 name:@"sizeof(EspBeaconOpcode)"];
+    e+=[self sizeOrOffset:sizeof(EspAckOpcode) shouldBe:112 name:@"sizeof(EspAckOpcode)"];
+    e+=[self sizeOrOffset:sizeof(EspPeerInfoOpcode) shouldBe:128 name:@"sizeof(EspPeerInfoOpcode)"];
     EspAckOpcode acktest;
-    e+=[self sizeOrOffset:((void*)&acktest.beaconSend-(void*)&acktest) shouldBe:120 name:@"offset of EspAckOpcode.beaconSend"];
-    e+=[self sizeOrOffset:((void*)&acktest.beaconReceive-(void*)&acktest) shouldBe:128 name:@"offset of EspAckOpcode.beaconSend"];
+    e+=[self sizeOrOffset:((void*)&acktest.beaconSend-(void*)&acktest) shouldBe:88 name:@"offset of EspAckOpcode.beaconSend"];
+    e+=[self sizeOrOffset:((void*)&acktest.beaconReceive-(void*)&acktest) shouldBe:96 name:@"offset of EspAckOpcode.beaconSend"];
     if(e != 0)
     {
         NSLog(@"Because there are one or more protocol warnings above, this build of espgridd may fail to communicate with other instances of espgridd. This is either a bug in the software or a problem with the build environment.");
