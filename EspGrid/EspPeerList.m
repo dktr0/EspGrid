@@ -83,8 +83,13 @@
     // who is the ack for?
     NSString* ackForName = [NSString stringWithCString:opcode->nameRcvd encoding:NSUTF8StringEncoding];
     EspPeer* ackFor = [self findPeerWithName:ackForName];
-    if(ackFor == nil) { NSLog(@"ACK for unknown peer %@",ackForName); return nil; } // note: we don't do anything with a given peer unless we have received a prior BEACON
-
+    if(ackFor == nil)
+    {
+        // note: we don't do anything with a given peer unless we have received a prior BEACON
+        NSString* m = [NSString stringWithFormat:@"ACK for unknown peer %@",ackForName];
+        postProtocolLow(m,self);
+        return nil;
+    }
     // process the ACK within the pertinent EspPeer instance...
     [self willChangeValueForKey:@"peers"];
     if(ackFor == selfInPeerList) [peer processAckForSelf:opcode peerCount:(int)[peers count]];
@@ -99,22 +104,22 @@
     NSString* name1 = [NSString stringWithCString:opcode->header.name encoding:NSUTF8StringEncoding];
     EspPeer* peer1 = [self findPeerWithName:name1];
     if(peer1 == nil) { // note: we don't do anything with a given peer unless we have received a prior BEACON
-        postLog(@"received PEERINFO from peer before receiving BEACON from that peer",self);
+        postProtocolLow(@"received PEERINFO from peer before receiving BEACON from that peer",self);
         return;
     }
     NSString* name2 = [NSString stringWithCString:opcode->peerName encoding:NSUTF8StringEncoding];
     EspPeer* peer2 = [self findPeerWithName:name2];
     if(peer2 == nil) { // note: we don't do anything with a given peer unless we have received a prior BEACON
-        postLog(@"received PEERINFO about a peer before receiving BEACON from that peer",self);
+        postProtocolLow(@"received PEERINFO about a peer before receiving BEACON from that peer",self);
         return;
     }
-    postLog([NSString stringWithFormat:@"PEERINFO from %s-%s re %s-%s",
+    postProtocolLow([NSString stringWithFormat:@"PEERINFO from %s-%s re %s-%s",
              opcode->header.name,opcode->header.ip,opcode->peerName,opcode->peerIp,nil],self);
-    postLog([NSString stringWithFormat:@" recentLatency=%lld",opcode->recentLatency,nil],self);
-    postLog([NSString stringWithFormat:@" lowestLatency=%lld",opcode->lowestLatency,nil],self);
-    postLog([NSString stringWithFormat:@" averageLatency=%lld",opcode->averageLatency,nil],self);
-    postLog([NSString stringWithFormat:@" refBeacon=%lld",opcode->refBeacon,nil],self);
-    postLog([NSString stringWithFormat:@" refBeaconAverage=%lld",opcode->refBeaconAverage,nil],self);
+    postProtocolLow([NSString stringWithFormat:@" recentLatency=%lld",opcode->recentLatency,nil],self);
+    postProtocolLow([NSString stringWithFormat:@" lowestLatency=%lld",opcode->lowestLatency,nil],self);
+    postProtocolLow([NSString stringWithFormat:@" averageLatency=%lld",opcode->averageLatency,nil],self);
+    postProtocolLow([NSString stringWithFormat:@" refBeacon=%lld",opcode->refBeacon,nil],self);
+    postProtocolLow([NSString stringWithFormat:@" refBeaconAverage=%lld",opcode->refBeaconAverage,nil],self);
     [peer1 dumpAdjustments];
     [peer2 dumpAdjustments];
 }
@@ -133,13 +138,13 @@
        (theirMajorVersion==ESPGRID_MAJORVERSION && theirMinorVersion < ESPGRID_MINORVERSION))
     {
         NSString* s = [NSString stringWithFormat:@"%@ is running old EspGrid %hhu.%2hhu",name,theirMajorVersion,theirMinorVersion];
-        postWarning(s,self);
+        postCritical(s,self);
     }
     else if(theirMajorVersion > ESPGRID_MAJORVERSION ||
             (theirMajorVersion==ESPGRID_MAJORVERSION && theirMinorVersion > ESPGRID_MINORVERSION))
     {
         NSString* s = [NSString stringWithFormat:@"%@ is running newer EspGrid %hhu.%2hhu",name,theirMajorVersion,theirMinorVersion];
-        postWarning(s,self);
+        postCritical(s,self);
     }
 
     // add new peer to peerlist
@@ -147,7 +152,7 @@
     EspPeer* x = [[EspPeer alloc] init];
     [peers addObject:x];
     [self didChangeValueForKey:@"peers"];
-    postLog([NSString stringWithFormat:@"adding %@ at %@",name,ip], self);
+    postEvent([NSString stringWithFormat:@"adding %@ at %@",name,ip], self);
     [self updateStatus];
     return x;
 }

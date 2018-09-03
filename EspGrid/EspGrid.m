@@ -24,9 +24,6 @@ LARGE_INTEGER performanceFrequency;
 #endif
 
 @implementation EspGrid
-@synthesize versionString;
-@synthesize title;
-@synthesize highVolumePosts;
 
 +(void) initialize
 {
@@ -90,21 +87,19 @@ LARGE_INTEGER performanceFrequency;
 {
     self = [super init];
     [self protocolTests];
+    logVerbosity = 1;
     #ifdef _WIN32
     QueryPerformanceFrequency(&performanceFrequency);
     #endif
-    highVolumePosts = NO;
-    versionString = [NSString stringWithFormat:@"version %d.%2d.%d",
+    NSString* versionString = [NSString stringWithFormat:@"version %d.%2d.%d",
                      ESPGRID_MAJORVERSION,ESPGRID_MINORVERSION,ESPGRID_SUBVERSION];
-    postLog(versionString,nil);
-    title = [NSString stringWithFormat:@"by David Ogborn"];
-    postLog(title,nil);
+    postCritical(versionString,nil);
 
     [self logUserDefaults];
 
     EspKeyValueController* kvc = [EspKeyValueController keyValueController];
     [kvc setModel:self];
-
+    
     EspNetwork* network = [EspNetwork network];
     [network setHandler:[EspClock clock] forOpcode:ESP_OPCODE_BEACON];
     [network setHandler:[EspClock clock] forOpcode:ESP_OPCODE_ACK];
@@ -410,46 +405,68 @@ void appendToLogFile(NSString* s)
 
 void postChat(NSString* s)
 {
-    NSLog(@"%@",s);
+    postEvent(s,nil);
     [EspGrid postChat:s];
 }
 
-void postWarning(NSString* s,id sender)
+void postWarning(NSString* s,id sender) // DEPRECATED
 {
+    postCritical(s,sender);
+}
+
+void postProblem(NSString* s,id sender) // DEPRECATED
+{
+    postCritical(s,sender);
+}
+
+void postLog(NSString* s,id sender) // DEPRECATED - some calls should be postEvent, others postProtocolLow, etc
+{
+    postEvent(s,sender);
+}
+
+void postLogHighVolume(NSString* s,id sender) // DEPRECATED
+{
+    postProtocolHigh(s,sender);
+}
+
+// Verbosity levels
+// 0 = only start-up, critical exceptions, chat messages - postCritical
+// 1 = (default) only "interesting events" - postEvent
+// 2 = "v" low volume external and internal protocol events - postProtocolLow
+// 3 = "vv" all external and internal protocol events - postProtocolHigh
+
+void postCritical(NSString* s, id sender)
+{
+    postLogWithLevel(s,sender,0);
+}
+
+void postEvent(NSString* s, id sender)
+{
+    postLogWithLevel(s,sender,1);
+}
+
+void postProtocolLow(NSString* s, id sender)
+{
+    postLogWithLevel(s,sender,2);
+}
+
+void postProtocolHigh(NSString* s, id sender)
+{
+    postLogWithLevel(s,sender,3);
+}
+
+static int logVerbosity = 1;
+
+void postLogWithLevel(NSString* s, id sender, int level)
+{
+    if(logVerbosity < level) return;
     NSString* className = NSStringFromClass([sender class]);
     NSString* x;
     if(sender) x = [NSString stringWithFormat:@"%lld %@: %@",monotonicTime(),className,s];
-    else x = [NSString stringWithFormat:@"%lld %@",monotonicTime(),s];
-    NSLog(@"%@",x);
-    [EspGrid postChat:x];
-    [EspGrid postLog:x];
-}
-
-void postProblem(NSString* s,id sender)
-{
-    NSString* className = NSStringFromClass([sender class]);
-    NSString* x;
-    if(sender) x = [NSString stringWithFormat:@"%lld %@: %@",monotonicTime(),className,s];
-    else x = [NSString stringWithFormat:@"%lld %@",monotonicTime(),s];
-    NSLog(@"%@",x);
-    [EspGrid postChat:x];
-    [EspGrid postLog:x];
-}
-
-void postLog(NSString* s,id sender)
-{
-    NSString* className = NSStringFromClass([sender class]);
-    NSString* x;
-    if(sender) x = [NSString stringWithFormat:@"%lld %@: %@",monotonicTime(),className,s];
-    else x = [NSString stringWithFormat:@"%lld %@",monotonicTime(),s];
+    else x = [NSString stringWithFormat:@"%lld: %@",monotonicTime(),s];
     NSLog(@"%@",x);
     [EspGrid postLog:x];
-}
-
-void postLogHighVolume(NSString* s,id sender)
-{
-    if(![[EspGrid grid] highVolumePosts])return;
-    postLog(s,sender);
+    if(level == 0) [EspGrid postChat:x]; // so that critical problems go to chat window in GUI
 }
 
 @end

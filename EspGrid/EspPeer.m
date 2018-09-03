@@ -126,8 +126,13 @@
 
 -(void) dumpAdjustments
 {
-    NSLog(@"adjustments for %@",name);
-    for(int x=0;x<5;x++) NSLog(@" adjustment[%d]=%lld",x,adjustments[x]);
+    NSString* m = [NSString stringWithFormat:@"adjustments for %@",name];
+    postProtocolLow(m,nil);
+    for(int x=0;x<5;x++)
+    {
+        m = [NSString stringWithFormat:@" adjustment[%d]=%lld",x,adjustments[x]];
+        postProtocolLow(m,nil);
+    }
 }
 
 -(void) processAck:(EspAckOpcode*)opcode forOther:(EspPeer*)other

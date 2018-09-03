@@ -74,19 +74,19 @@
         @try { address = [NSString stringWithUTF8String:data]; }
         @catch (NSException *exception)
         {
-            postWarning(@"unable to parse OSC address from received data (exception)",self);
+            postCritical(@"unable to parse OSC address from received data (exception)",self);
             return;
         }
         if(address == nil)
         {
-            postWarning(@"unable to parse OSC address from received data (nil result)",self);
+            postCritical(@"unable to parse OSC address from received data (nil result)",self);
             return;
         }
         while(data[i] != 0 && i<limit) i++;
         i = i + (4-(i%4));
     
         // parse the format string
-        if(i>=limit) { postWarning(@"received OSC without format string",self); return; }
+        if(i>=limit) { postCritical(@"received OSC without format string",self); return; }
         NSString* format = [NSString stringWithUTF8String:data+i+1];
         unsigned long nParams = [format length];
         while(data[i] != 0) i++;
@@ -104,7 +104,7 @@
             
             if(c == 'i')
             {
-                if(i>=limit) { postWarning(@"OSC message missing int parameter",self); return; }
+                if(i>=limit) { postCritical(@"OSC message missing int parameter",self); return; }
                 int r = *((int*)(data+i));
                 int swapped = EspSwapInt32(r);
 				NSLog(@"int %d",swapped);
@@ -114,7 +114,7 @@
             }
             else if(c == 'f')
             {
-                if(i>=limit) { postWarning(@"OSC message missing float parameter",self); return; }
+                if(i>=limit) { postCritical(@"OSC message missing float parameter",self); return; }
 				UInt32 r = *((UInt32*)(data+i));
 				r = EspSwapInt32(r);
                 float f =   *((float *)(&r));
@@ -124,19 +124,19 @@
             }
             else if(c == 's')
             {
-                if(i>=limit) { postWarning(@"OSC message missing string parameter",self); return; }
+                if(i>=limit) { postCritical(@"OSC message missing string parameter",self); return; }
                 
                 // *** still need to add better protection/recovery here against ill-formatted OSC
                 NSString* s;
                 @try { s = [NSString stringWithUTF8String:data+i]; }
                 @catch (NSException* e)
                 {
-                    postWarning(@"unable to parse OSC string parameter (exception)",self);
+                    postCritical(@"unable to parse OSC string parameter (exception)",self);
                     return;
                 }
                 if(s == nil)
                 {
-                    postWarning(@"unable to parse OSC string parameter (nil result)",self);
+                    postCritical(@"unable to parse OSC string parameter (nil result)",self);
                     return;
                 }
                 [params addObject:s];
@@ -148,18 +148,19 @@
         
         if(i>limit)
         {
-            postWarning(@"unable to parse OSC parameters (parsing beyond limit)", self);
+            postCritical(@"unable to parse OSC parameters (parsing beyond limit)", self);
             return;
         }
         
         if(echoToLog)
         {
+            // TODO: resolve contradiction here between old echoToLog setting and new verbosity settings
             NSMutableString* s = [NSMutableString stringWithFormat:@"OSC received from %@:%d: %@ ",h,p,address];
             for(id x in params)
             {
                 [s appendString:[NSString stringWithFormat:@"%@ ",x,nil]];
             }
-            postLog(s,nil);
+            postProtocolHigh(s,nil);
         }
         
         // call any registered handler, passing the address and params
@@ -175,13 +176,13 @@
         if(c == 0)
         {
             NSString* l = [NSString stringWithFormat:@"public protocol received unknown OSC address %@",address];
-            postProblem(l, self);
+            postCritical(l, self);
         }
     }
     @catch (NSException* exception)
     {
         NSString* msg = [NSString stringWithFormat:@"EXCEPTION in dataReceived: %@: %@",[exception name],[exception reason]];
-        postProblem(msg, self);
+        postCritical(msg, self);
         @throw;
     }
 }

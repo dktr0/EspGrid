@@ -90,7 +90,7 @@
 {
     if([address isEqual:@"/esp/chat/send"])
     {
-        if([d count]<1){postProblem(@"received /esp/chat/send with no parameters",self); return NO;}
+        if([d count]<1){postCritical(@"received /esp/chat/send with no parameters",self); return NO;}
         NSMutableString* msg = [[NSMutableString alloc] init];
         for(int i=0;i<[d count];i++)
         {

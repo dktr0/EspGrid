@@ -90,7 +90,8 @@
     // if we get here, match was not found, so add entry
     NSArray* n = [NSArray arrayWithObjects:host,[NSNumber numberWithInt:port],nil];
     [subscribers addObject:n];
-    NSLog(@"subscribed %@:%d",host,port);
+    NSString* msg = [NSString stringWithFormat:@"subscribed %@:%d",host,port];
+    postProtocolLow(msg,self);
 }
 
 -(void) unsubscribeHost:(NSString*)host port:(int)port
@@ -108,7 +109,8 @@
     if(found != nil) // a match was found so remove it
     {
         [subscribers removeObject:found];
-        NSLog(@"unsubscribed %@:%d",host,port);
+        NSString* msg = [NSString stringWithFormat:@"unsubscribed %@:%d",host,port];
+        postProtocolLow(msg,self);
     }
 }
 

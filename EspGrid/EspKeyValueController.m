@@ -189,7 +189,7 @@
     NSString* authorityHandle = [NSString stringWithCString:info->authority encoding:NSUTF8StringEncoding];
     EspPeer* authority = [peerList findPeerWithName:authorityHandle];
     if(authority == nil) {
-        postLog([NSString stringWithFormat:@"dropping KVC from unknown authority %@",authorityHandle], self);
+        postProtocolHigh([NSString stringWithFormat:@"dropping KVC from unknown authority %@",authorityHandle], self);
         return;
     }
     EspTimeType t2 = info->timeStamp + [clock adjustmentForPeer:authority];
@@ -200,11 +200,11 @@
     }
     else if(info->scope == ESP_SCOPE_LOCAL) t1 = [authority adjustedTimeForPath:path];
     else {
-      postLog([NSString stringWithFormat:@"dropping KVC with invalid scope %d",info->scope], self);
+      postCritical([NSString stringWithFormat:@"dropping KVC with invalid scope %d",info->scope], self);
       return;
     }
     if(t2 <= t1) return; // if this is NOT most current info, return without updating anything
-    NSLog(@"extracting value from KVC opcode...");
+
     // extract value of opcode for storage
     id value;
     if(opcode->opcode == ESP_OPCODE_INT) {
@@ -219,7 +219,7 @@
       EspStringOpcode* s = (EspStringOpcode*)opcode;
       // protect against various possible buffer over/underwrites
       if(opcode->length > sizeof(EspStringOpcode)) {
-        postLog([NSString stringWithFormat:@"dropping string opcode with excessive length %d",opcode->length], self);
+        postCritical([NSString stringWithFormat:@"dropping string opcode with excessive length %d",opcode->length], self);
         return;
       }
       /* if(opcode->length < ((&(s->value)) - &s) {
@@ -234,14 +234,12 @@
       value = [NSNumber numberWithLongLong:t->value];
     }
     else if(opcode->opcode == ESP_OPCODE_METRE) {
-        NSLog(@"processing ESP_OPCODE_METRE");
       EspMetreOpcode* m = (EspMetreOpcode*)opcode;
       value = [NSDictionary dictionaryWithObjectsAndKeys:
         [NSNumber numberWithInt:m->metre.on],@"on",
         [NSNumber numberWithFloat:m->metre.tempo],@"tempo",
         [NSNumber numberWithLongLong:m->metre.time],@"time",
         [NSNumber numberWithInt:m->metre.beat],@"beat",nil];
-        NSLog(@"finished processing ESP_OPCODE_METRE");
     }
 
     // for SYSTEM scope values only, update something in the state of EspGrid
@@ -260,14 +258,11 @@
     if(info ->scope == ESP_SCOPE_GLOBAL || info->scope == ESP_SCOPE_SYSTEM)
     {
         NSLog(@"scope is SYSTEM/GLOBAL, updating values stored here");
-      [values setObject:value forKey:path];
-        NSLog(@"2");
-      [timeStamps setObject:[NSNumber numberWithLongLong:info->timeStamp] forKey:path];
-        NSLog(@"3");
-        [authorityNames setObject:[[authority name] copy] forKey:path]; // *** exception here
-        NSLog(@"4");
-      [authorities setObject:authority forKey:path];
-      postLog([NSString stringWithFormat:@"new value %@ for system/global key %@",value,path],self);
+        [values setObject:value forKey:path];
+        [timeStamps setObject:[NSNumber numberWithLongLong:info->timeStamp] forKey:path];
+        [authorityNames setObject:[[authority name] copy] forKey:path];
+        [authorities setObject:authority forKey:path];
+        postLog([NSString stringWithFormat:@"new value %@ for system/global key %@",value,path],self);
     }
 }
 

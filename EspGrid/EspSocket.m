@@ -31,14 +31,14 @@
 {
     self = [super init];
     transmitData = [[NSMutableData alloc] initWithLength:ESP_SOCKET_BUFFER_SIZE];
-    if(!transmitData) { postProblem(@"unable to allocate transmitData", self); }
+    if(!transmitData) { postCritical(@"unable to allocate transmitData", self); }
     transmitBuffer = (void*)[transmitData bytes];
     receiveData = [[NSMutableData alloc] initWithLength:ESP_SOCKET_BUFFER_SIZE];
-    if(!receiveData) { postProblem(@"unable to allocate receiveData", self); }
+    if(!receiveData) { postCritical(@"unable to allocate receiveData", self); }
     receiveBuffer = (void*)[receiveData bytes];
-    if(!receiveData) { postProblem(@"unable to allocate receiveData", self); }
+    if(!receiveData) { postCritical(@"unable to allocate receiveData", self); }
     socketRef = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-    if(socketRef == -1) { postProblem(@"unable to create socket",self); }
+    if(socketRef == -1) { postCritical(@"unable to create socket",self); }
     #ifndef _WIN32
     int reuseOn = 1;
     #else
@@ -81,7 +81,7 @@
     #ifndef _WIN32
     int timestamp = 1;
     int r = setsockopt(socketRef, SOL_SOCKET, SO_TIMESTAMP, &timestamp, sizeof(timestamp));
-    if(r!=0) postProblem(@"unable to set socket option", self);
+    if(r!=0) postCritical(@"unable to set socket option", self);
     #endif
 
     // us.sin_len = sizeof(struct sockaddr_in); // probably needs to be commented out on Linux, seems to ok without on Cocoa too though
@@ -91,12 +91,12 @@
     memset(&(us.sin_zero), 0, sizeof(us.sin_zero));
     if (bind(socketRef, (const struct sockaddr*)&us, sizeof(us)) < 0) {
         NSString* s = [NSString stringWithFormat:@"unable to bind to port %d",p];
-        postProblem(s,self);
+        postCritical(s,self);
         close(socketRef);
         return NO;
     }
     NSString* l = [NSString stringWithFormat:@"bound to UDP port %d",p];
-    postLog(l,self);
+    postEvent(l,self);
     return YES;
 }
 
@@ -134,11 +134,11 @@
         // NSLog(@"monotonicTimeStamp %lld",receiveTime);
         // (*(char*)(receiveBuffer+n)) = 0; // not sure why we were doing this - it seems unnecessary
         // validate the length of the received packet
-        if(n>ESP_SOCKET_BUFFER_SIZE) { postProblem(@"received more data than buffer can handle",self); continue; }
-        else if(n==0) { postProblem(@"received network data of length 0",self); continue; }
+        if(n>ESP_SOCKET_BUFFER_SIZE) { postCritical(@"received more data than buffer can handle",self); continue; }
+        else if(n==0) { postCritical(@"received network data of length 0",self); continue; }
         else if(n==-1) { NSLog(@"***udpReceiveLoop error: %s",strerror(errno)); continue; }
         EspOpcode* opcode = (EspOpcode*)receiveBuffer;
-        if(n != opcode->length) { postProblem(@"packet length doesn't match opcode length",self); continue; }
+        if(n != opcode->length) { postCritical(@"packet length doesn't match opcode length",self); continue; }
         // if we get this far, length of received packet is valid (and it is highly likely it is indeed an opcode)
         opcode->receiveTime = receiveTime;
         strncpy(opcode->ip, inet_ntoa(them.sin_addr), 16);
@@ -152,7 +152,7 @@
         }
         @catch (NSException* exception) {
             NSString* msg = [NSString stringWithFormat:@"EXCEPTION in udpReceiveLoop: %@: %@",[exception name],[exception  reason]];
-            postProblem(msg, nil);
+            postCritical(msg, nil);
             @throw;
         }
         #ifdef GNUSTEP

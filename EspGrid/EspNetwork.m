@@ -92,7 +92,7 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
     @try
     {
         NSString* log = [NSString stringWithFormat:@"sending (old) opcode %s(%d)",opcodeName[opcode],opcode];
-        postLog(log, nil);
+        postProtocolLow(log, nil);
         NSMutableDictionary* e = [NSMutableDictionary dictionaryWithDictionary:d];
         [e setValue:[[NSUserDefaults standardUserDefaults] objectForKey:@"person"] forKey:@"name"];
         for(EspChannel* c in channels) [c sendOldOpcode:opcode withDictionary:e]; // send on all channels
@@ -101,7 +101,7 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
     {
         NSString* msg = [NSString stringWithFormat:@"EXCEPTION sending %s(%d): %@: %@",
                          opcodeName[opcode],opcode,[exception name],[exception reason]];
-        postProblem(msg, self);
+        postCritical(msg, self);
         @throw;
     }
 }
@@ -109,7 +109,7 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
 -(void) sendOpcode:(EspOpcode*)opcode
 {
     NSString* log = [NSString stringWithFormat:@"sending opcode %s(%d)",opcodeName[opcode->opcode],opcode->opcode];
-    postLog(log, nil);
+    postProtocolLow(log, nil);
     for(EspChannel* c in channels) [c sendOpcode:opcode]; // send on all channels
 }
 
@@ -171,12 +171,12 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
     if(h == nil) {
         NSString* s = [NSString stringWithFormat:@"no handler for opcode %d from %s at %s",
                        opcode->opcode,opcode->name,opcode->ip,nil];
-        postProblem(s,self);
+        postCritical(s,self);
         return;
     }
     NSString* log = [NSString stringWithFormat:@"received %s(%d) from %s at %s",
                      opcodeName[opcode->opcode],opcode->opcode,opcode->name,opcode->ip,nil];
-    postLog(log, nil);
+    postProtocolLow(log, nil); // *** really should use opcode to decide whether protocolLow or protocolHigh
     [h handleOpcode:opcode];
 }
 
@@ -191,7 +191,7 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
     id<EspNetworkDelegate> h = handlers[opcode];
     if(h == nil) {
         NSString* s = [NSString stringWithFormat:@"no handler for opcode %d from %@ at %@",opcode,[d objectForKey:@"name"],[d objectForKey:@"originAddress"]];
-        postProblem(s,self);
+        postCritical(s,self);
         return;
     }
     NSString* log = [NSString stringWithFormat:@"received %s(%d) from %@ at %@",
@@ -199,7 +199,7 @@ char* opcodeName[ESP_NUMBER_OF_OPCODES];
                      opcode,
                      [d objectForKey:@"name"],
                      [d objectForKey:@"originAddress"]];
-    postLog(log, nil);
+    postProtocolLow(log, nil);
     [h handleOldOpcode:d];
 }
 

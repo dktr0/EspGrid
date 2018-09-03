@@ -74,7 +74,7 @@
 
 -(void) changeSyncMode:(int)mode
 {
-    NSLog(@"changing clock mode to %d",mode);
+    postEvent([NSString stringWithFormat:@"changing clock mode to %d",mode],self);
     [self setSyncMode:mode];
     [[peerList selfInPeerList] setSyncMode:mode];
 }
@@ -116,7 +116,7 @@
     NSAssert(opcode->opcode == ESP_OPCODE_BEACON || opcode->opcode == ESP_OPCODE_ACK || opcode->opcode == ESP_OPCODE_PEERINFO,@"EspClock sent unrecognized opcode");
 
     if(opcode->opcode==ESP_OPCODE_BEACON) {
-        postLog([NSString stringWithFormat:@"BEACON from %s at %s",opcode->name,opcode->ip],self);
+        postProtocolLow([NSString stringWithFormat:@"BEACON from %s at %s",opcode->name,opcode->ip],self);
         [self issueAck:(EspBeaconOpcode*)opcode];
         [peerList receivedBeacon:(EspBeaconOpcode*)opcode];
     }
@@ -143,7 +143,7 @@
         NSString* l = [NSString stringWithFormat:
                        @"nil peer(%@,%@) in [EspClock adjustmentForPeer]",
                        [peer name],[peer ip],nil];
-        postWarning(l, self);
+        postCritical(l, self);
         return 0;
     }
 }

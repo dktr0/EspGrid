@@ -30,13 +30,13 @@
 
 @interface EspGrid: NSObject <EspHandleOsc>
 {
-    NSString* versionString;
-    NSString* title;
-    BOOL highVolumePosts;
+//    NSString* versionString;
+//    NSString* title;
+//    BOOL highVolumePosts;
 }
-@property (readonly) NSString* versionString;
-@property (readonly) NSString* title;
-@property (assign) BOOL highVolumePosts;
+//@property (readonly) NSString* versionString;
+//@property (readonly) NSString* title;
+//@property (assign) BOOL highVolumePosts;
 
 +(EspGrid*) grid;
 +(void) postChat:(NSString*)m;
