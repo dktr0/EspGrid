@@ -245,19 +245,19 @@
     // for SYSTEM scope values only, update something in the state of EspGrid
     if(info->scope == ESP_SCOPE_SYSTEM)
     {
-        NSLog(@"scope is SYSTEM, setting value in model");
+      //  NSLog(@"scope is SYSTEM, setting value in model");
       [model setValue:value forKeyPath:path];
     }
     // for LOCAL scope values, just store values in corresponding entry in peerList
     if(info->scope == ESP_SCOPE_LOCAL) {
-        NSLog(@"scope is LOCAL, setting value in peerlist");
+       // NSLog(@"scope is LOCAL, setting value in peerlist");
       [authority storeValue:value forPath:path];
       postLog([NSString stringWithFormat:@"new value %@ for %@ from %@",value,path,authorityHandle],self);
     }
     // and for both SYSTEM and GLOBAL scope, update values stored "here"
     if(info ->scope == ESP_SCOPE_GLOBAL || info->scope == ESP_SCOPE_SYSTEM)
     {
-        NSLog(@"scope is SYSTEM/GLOBAL, updating values stored here");
+        // NSLog(@"scope is SYSTEM/GLOBAL, updating values stored here");
         [values setObject:value forKey:path];
         [timeStamps setObject:[NSNumber numberWithLongLong:info->timeStamp] forKey:path];
         [authorityNames setObject:[[authority name] copy] forKey:path];
