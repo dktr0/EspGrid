@@ -34,6 +34,7 @@ LARGE_INTEGER performanceFrequency;
     [defs setObject:random forKey:@"person"];
     [defs setObject:@"255.255.255.255" forKey:@"broadcast"];
     [defs setObject:[NSNumber numberWithInt:4] forKey:@"clockMode"]; // average reference beacon difference
+    [defs setObject:[NSNumber numberWithInt:1] forKey:@"verbosity"]; // critical and "events" only - no protocol msgs
     [[NSUserDefaults standardUserDefaults] registerDefaults:defs];
 }
 
@@ -41,10 +42,13 @@ LARGE_INTEGER performanceFrequency;
 -(void) logUserDefaults
 {
     NSUserDefaults* defs = [NSUserDefaults standardUserDefaults];
-    NSLog(@" person=%@ broadcast=%@ clockMode=%@",
+    NSString*m = [NSString stringWithFormat:@" person=%@ broadcast=%@ clockMode=%@ verbosity=%@",
           [defs objectForKey:@"person"],
           [defs objectForKey:@"broadcast"],
-          [defs objectForKey:@"clockMode"]);
+          [defs objectForKey:@"clockMode"],
+                  [defs objectForKey:@"verbosity"]];
+    logVerbosity = [[defs objectForKey:@"verbosity"] intValue];
+    postCritical(m,nil);
 }
 
 +(EspGrid*) grid
