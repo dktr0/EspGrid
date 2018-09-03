@@ -25,6 +25,8 @@ LARGE_INTEGER performanceFrequency;
 
 @implementation EspGrid
 
+static int logVerbosity = 1;
+
 +(void) initialize
 {
     NSMutableDictionary* defs = [NSMutableDictionary dictionary];
@@ -458,8 +460,6 @@ void postProtocolHigh(NSString* s, id sender)
 {
     postLogWithLevel(s,sender,3);
 }
-
-static int logVerbosity = 1;
 
 void postLogWithLevel(NSString* s, id sender, int level)
 {
