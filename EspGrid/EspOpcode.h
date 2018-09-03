@@ -62,7 +62,7 @@ typedef struct {
 
 typedef struct {
     EspOpcode header;
-    uint32_t beaconCount;
+    int32_t beaconCount;
     unsigned char majorVersion;
     unsigned char minorVersion;
     unsigned char subVersion;
@@ -75,7 +75,7 @@ typedef struct {
     char ipRcvd[ESP_MAXNAMELENGTH];
     EspTimeType beaconSend;
     EspTimeType beaconReceive;
-    uint32_t beaconCount;
+    int32_t beaconCount;
 } EspAckOpcode;
 
 typedef struct {
@@ -110,7 +110,7 @@ typedef struct {
 typedef struct {
   EspOpcode header;
   EspVariableInfo info;
-  uint32_t value;
+  int32_t value;
 } EspIntOpcode;
 
 typedef struct {
@@ -135,8 +135,8 @@ typedef struct {
 
 typedef struct {
   EspTimeType time;
-  uint32_t on;
-  uint32_t beat;
+  int32_t on;
+  int32_t beat;
   Float32 tempo;
 } EspMetre;
 

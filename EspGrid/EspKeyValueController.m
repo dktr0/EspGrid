@@ -150,8 +150,8 @@
     else if(type == ESP_OPCODE_METRE)
     {
         metreOpcode.metre.time = [[value objectForKey:@"time"] longLongValue]; // EspTimeType
-        metreOpcode.metre.on = [[value objectForKey:@"on"] boolValue]; // uint32_t
-        metreOpcode.metre.beat = [[value objectForKey:@"beat"] intValue]; // uint32_t
+        metreOpcode.metre.on = [[value objectForKey:@"on"] intValue]; // int32_t
+        metreOpcode.metre.beat = [[value objectForKey:@"beat"] intValue]; // int32_t
         metreOpcode.metre.tempo = [[value objectForKey:@"tempo"] floatValue]; // Float32
         info = &metreOpcode.info;
         opcode = (EspOpcode*)&metreOpcode;
