@@ -100,6 +100,8 @@ static int logVerbosity = 1;
     NSString* versionString = [NSString stringWithFormat:@"version %d.%2d.%d",
                      ESPGRID_MAJORVERSION,ESPGRID_MINORVERSION,ESPGRID_SUBVERSION];
     postCritical(versionString,nil);
+    NSString* clockString = [NSString stringWithFormat:@"system=%lld monotonic=%lld",systemTime(),monotonicTime()];
+    postCritical(clockString,nil);
 
     [self logUserDefaults];
 
