@@ -248,16 +248,20 @@ static int logVerbosity = 1;
         EspTimeType time = beatTime + monotonicToSystem; // translate high performance time into epoch of normal system clock
         int seconds = (int)(time / (EspTimeType)1000000000);
         int nanoseconds = (int)(time % (EspTimeType)1000000000);
-        // NSLog(@"beatTime=%lld   sTime=%lld   mTime=%lld   monotonicToSystem=%lld   time=%lld",beatTime,sTime,mTime,monotonicToSystem,time);
         long n = [[beat beat] longValue];
-        // NSLog(@"about to /esp/tempo/r %d %f %d %d %d",on,tempo,seconds,nanoseconds,(int)n);
+        if(logVerbosity>=2)
+        {
+            NSString* x = [NSString stringWithFormat:@"beatTime(monotonic)=%lld   systemTime=%lld   monotonicTime=%lld difference=%lld beatTime(system)=%lld", beatTime, sTime, mTime, monotonicToSystem, time];
+            postProtocolLow(x,nil);
+            x = [NSString stringWithFormat:@"about to send /esp/tempo/r %d %f %d %d %d",on,tempo,seconds,nanoseconds,(int)n];
+            postProtocolLow(x,nil);
+        }
         NSArray* msg = [NSArray arrayWithObjects:@"/esp/tempo/r",
                         [NSNumber numberWithInt:on],
                         [NSNumber numberWithFloat:tempo],
                         [NSNumber numberWithInt:seconds],
                         [NSNumber numberWithInt:nanoseconds],
                         [NSNumber numberWithInt:(int)n],nil];
-        // NSLog(@"%@",msg);
         if([d count] == 0) [osc transmit:msg toHost:h port:p log:NO]; // respond directly to host and port of incoming msg
         else if([d count] == 1) [osc transmit:msg toHost:h port:[[d objectAtIndex:0] intValue] log:NO]; // explicit port, deduced host
         else if([d count] == 2) [osc transmit:msg toHost:[d objectAtIndex:1] port:[[d objectAtIndex:0] intValue] log:NO]; // explicit port+host
