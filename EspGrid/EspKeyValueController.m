@@ -244,6 +244,10 @@
                 postProtocolLow([NSString stringWithFormat:@"dropping KVC because adjusted time stamp older than previous info (authority %@)", [oldAuthority name]], self);
                 return;
             }
+            else if(adjustedTimeOfOldInfo == adjustedTimeOfNewInfo)
+            {
+                return; // silently drop opcode old time and new time are exactly identical
+            }
         } // ... and if there is no previous authority then the new information must be the most current!
     }
     else if(info->scope == ESP_SCOPE_LOCAL)
