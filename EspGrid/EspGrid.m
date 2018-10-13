@@ -242,6 +242,11 @@ static int logVerbosity = 1;
         BOOL on = [[beat on] boolValue];
         float tempo = [[beat tempo] floatValue];
         EspTimeType beatTime = [beat adjustedDownbeatTime];
+        if(beatTime == 0)
+        {
+            postCritical(@"*** not responding to /esp/tempo/q because of error in adjustedDownbeatTime",self);
+            return YES;
+        }
         EspTimeType sTime = systemTime();
         EspTimeType mTime = monotonicTime();
         EspTimeType monotonicToSystem = sTime - mTime;
@@ -275,6 +280,11 @@ static int logVerbosity = 1;
         BOOL on = [[beat on] boolValue];
         float tempo = [[beat tempo] floatValue];
         EspTimeType time = [beat adjustedDownbeatTime];
+        if(time == 0)
+        {
+            postCritical(@"*** not responding to /esp/tempoCPU/q because of error in adjustedDownbeatTime",self);
+            return YES;
+        }
         int seconds = (int)(time / (EspTimeType)1000000000);
         int nanoseconds = (int)(time % (EspTimeType)1000000000);
         long n = [[beat beat] longValue];

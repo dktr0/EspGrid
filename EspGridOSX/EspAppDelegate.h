@@ -31,7 +31,6 @@
     IBOutlet NSTextField* espClockFlux;
     IBOutlet NSButton* beatOn;
     IBOutlet NSTextField* beatTempo;
-    IBOutlet NSTextField* beatCycleLength;
     IBOutlet NSTextField* espChatMsg;
     IBOutlet NSTextView* espChatOutput;
     

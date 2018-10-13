@@ -38,6 +38,8 @@
 @synthesize recentLatency,lowestLatency,averageLatency;
 @synthesize refBeacon,refBeaconAverage;
 
+@synthesize validBeaconReceived, validAckForSelfReceived, validAckForOtherReceived;
+
 -(id) init
 {
     self = [super init];
@@ -51,7 +53,11 @@
     peerinfo.header.opcode = ESP_OPCODE_PEERINFO;
     peerinfo.header.length = sizeof(EspPeerInfoOpcode);
     copyPersonIntoOpcode((EspOpcode*)&peerinfo);
-
+    
+    validBeaconReceived = false;
+    validAckForSelfReceived = false;
+    validAckForOtherReceived = false;
+    
     return self;
 }
 
@@ -70,6 +76,13 @@
 
 -(void) processBeacon:(EspBeaconOpcode*)opcode
 {
+    if(opcode->header.receiveTime == 0)
+    {
+        NSString* m = [NSString stringWithFormat:@"*** invalid beacon with receive timestamp 0 from %@",name];
+        postCritical(m,self);
+        return;
+    }
+    validBeaconReceived = true;
     [self setName:[NSString stringWithCString:opcode->header.name encoding:NSUTF8StringEncoding]];
     [self setIp:[NSString stringWithCString:opcode->header.ip encoding:NSUTF8StringEncoding]];
     [self setMajorVersion:opcode->majorVersion];
@@ -98,30 +111,64 @@
     EspTimeType beaconReceive = opcode->beaconReceive;
     EspTimeType ackSend = opcode->header.sendTime;
     EspTimeType ackReceive = opcode->header.receiveTime;
-    // NSLog(@"%lld %lld %lld %lld",beaconSend,beaconReceive,ackSend,ackReceive);
 
     // from these times we can calculate roundtrip time, and interval peer spent preparing ACK, on each clock
     // and then each of those can be tracked immediately, lowest value or average value
     EspTimeType ackPrepare = ackSend - beaconReceive;
-    // NSLog(@"ackPrepare %lld",ackPrepare);
     EspTimeType roundtrip = ackReceive - beaconSend;
-    // NSLog(@"roundtrip %lld",roundtrip);
-
+    
     recentLatency = (roundtrip - ackPrepare) / 2;
     if(recentLatency < lowestLatency) lowestLatency = recentLatency;
     averageLatency = [averageLatencyObj push:recentLatency];
+    
+    if(beaconSend <= 0)
+    {
+        NSString* m = [NSString stringWithFormat:@"*** invalid ACK for self with beaconSend timestamp <= 0 from %@",name];
+        postCritical(m,self);
+        return;
+    }
+    if(beaconReceive <= 0)
+    {
+        NSString* m = [NSString stringWithFormat:@"*** invalid ACK for self with beaconReceive timestamp <= 0 from %@",name];
+        postCritical(m,self);
+        return;
+    }
+    if(ackSend <= 0)
+    {
+        NSString* m = [NSString stringWithFormat:@"*** invalid ACK for self with ackSend timestamp <= 0 from %@",name];
+        postCritical(m,self);
+        return;
+    }
+    if(ackReceive <= 0)
+    {
+        NSString* m = [NSString stringWithFormat:@"*** invalid ACK for self with ackReceive timestamp <= 0 from %@",name];
+        postCritical(m,self);
+        return;
+    }
+    if(ackPrepare <= 0)
+    {
+        NSString* m = [NSString stringWithFormat:@"*** invalid ACK for self with ackPrepare duration <= 0 from %@",name];
+        postCritical(m,self);
+        return;
+    }
+    if(roundtrip <= 0)
+    {
+        NSString* m = [NSString stringWithFormat:@"*** invalid ACK for self with roundtrip duration <= 0 from %@",name];
+        postCritical(m,self);
+        return;
+    }
+    if(recentLatency <= 0)
+    {
+        NSString* m = [NSString stringWithFormat:@"*** invalid ACK for self with recentLatency <= 0 from %@",name];
+        postCritical(m,self);
+        return;
+    }
+    validAckForSelfReceived = true;
 
     adjustments[0] = ackReceive - (ackSend + recentLatency);
     adjustments[1] = ackReceive - (ackSend + lowestLatency);
     adjustments[2] = ackReceive - (ackSend + averageLatency);
 
-    // if there are fewer than 3 peers, fill in temp. values for ref beacon adjustments
-    // based on these latency calculations
-    if(count<3)
-    {
-        adjustments[3] = adjustments[0];
-        adjustments[4] = adjustments[2];
-    }
 }
 
 -(void) dumpAdjustments
@@ -140,20 +187,81 @@
     // when we receive an ACK to someone else' beacon, we can use the information it contains
     // to form reference beacon style estimates of the difference between their clocks and our clocks
 
+    if([other validBeaconReceived] == false)
+    {
+        NSString* m = [NSString stringWithFormat:@"*** ignoring ACK for %@ received from %@ without prior beacon received",[other name],name];
+        postCritical(m,self);
+        return;
+    }
+    
     long incomingBeaconCount = opcode->beaconCount;
     long storedBeaconCount = [other beaconCount];
     if(incomingBeaconCount == storedBeaconCount)
     {
         EspTimeType incomingBeaconTime = opcode->beaconReceive;
         EspTimeType storedBeaconTime = [other lastBeacon];
+        if(incomingBeaconTime <= 0)
+        {
+            NSString* m = [NSString stringWithFormat:@"*** invalid ACK for %@ from %@ with incomingBeaconTime <= 0",[other name],name];
+            postCritical(m,self);
+            return;
+        }
+        if(storedBeaconTime <= 0)
+        {
+            NSString* m = [NSString stringWithFormat:@"*** invalid ACK for %@ from %@ with incomingBeaconTime <= 0",[other name],name];
+            postCritical(m,self);
+            return;
+        }
+        if((storedBeaconTime - incomingBeaconTime) <= 0)
+        {
+            NSString* m = [NSString stringWithFormat:@"*** invalid ACK for %@ from %@ with incomingBeaconTime <= 0",[other name],name];
+            postCritical(m,self);
+            return;
+        }
         adjustments[3] = refBeacon = storedBeaconTime - incomingBeaconTime;
         adjustments[4] = refBeaconAverage = [refBeaconAverageObj push:refBeacon];
+        validAckForOtherReceived = true;
+    }
+    else
+    {
+        NSString* m = [NSString stringWithFormat:@"ignoring ack for %@ from %@ with mismatched beacon count",[other name],name];
+        postProtocolLow(m,self);
+        return;
     }
 }
 
 -(EspTimeType) adjustmentForSyncMode:(int)mode
 {
-    return adjustments[mode];
+    if(mode == 0 || mode == 1 || mode == 2)
+    {
+        if(validAckForSelfReceived == false)
+        {
+            NSString* m = [NSString stringWithFormat:@"*** can't provide mode %d adjustment for %@ prior to ACK for self",mode,name];
+            postCritical(m,self);
+            return 0;
+        }
+        return adjustments[mode];
+    }
+    else if(mode == 3 || mode == 4)
+    {
+        if(validAckForOtherReceived == false && validAckForSelfReceived == false)
+        {
+            NSString* m = [NSString stringWithFormat:@"*** can't provide mode %d adjustment for %@ prior to any ACKs (self or other)",mode,name];
+            postCritical(m,self);
+            return 0;
+        }
+        if(validAckForOtherReceived == false)
+        {
+            if(mode == 3) mode = 0;
+            else if(mode == 4) mode = 2;
+        }
+        return adjustments[mode];
+    }
+    else
+    {
+        postCritical(@"*** attempt to query non-existent clock adjustment mode ***",self);
+        return 0;
+    }
 }
 
 -(void) updateLastBeaconStatus

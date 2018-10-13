@@ -139,11 +139,9 @@
 -(EspTimeType) adjustmentForPeer:(EspPeer*)peer
 {
     if(peer) return [peer adjustmentForSyncMode:[self syncMode]];
-    else {
-        NSString* l = [NSString stringWithFormat:
-                       @"nil peer(%@,%@) in [EspClock adjustmentForPeer]",
-                       [peer name],[peer ip],nil];
-        postCritical(l, self);
+    else
+    {
+        postCritical(@"nil peer in [EspClock adjustmentForPeer]",self);
         return 0;
     }
 }

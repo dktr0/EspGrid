@@ -153,10 +153,17 @@
         EspPeer* peer = [peerList findPeerWithName:name];
         if(peer == nil)
         {
-            postLog(@"dropping OSCFUTURE from unknown peer", self);
+            NSString* m = [NSString stringWithFormat:@"dropping OSCFUTURE from unknown peer %@",name];
+            postProtocolLow(m,self);
             return;
         }
         EspTimeType adjustment = [clock adjustmentForPeer:peer];
+        if(adjustment == 0)
+        {
+            NSString* m = [NSString stringWithFormat:@"dropping OSCFUTURE because clock adjustment 0 for peer %@",name];
+            postProtocolLow(m,self);
+            return;
+        }
         EspTimeType t2 = t + adjustment;
         NSMutableArray* params = [NSMutableArray arrayWithArray:[d objectForKey:@"params"]];
         // [params addObject:[d objectForKey:@"time"]]; // append timestamp as final parameter

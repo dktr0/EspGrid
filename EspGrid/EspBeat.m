@@ -107,7 +107,13 @@
 -(void) turnBeatOff
 {
     if([on boolValue]==NO) return;
-    EspTimeType elapsedTime = monotonicTime() - [self adjustedDownbeatTime];
+    EspTimeType prevDownbeatTime = [self adjustedDownbeatTime];
+    if(prevDownbeatTime == 0)
+    {
+        postCritical(@"*** no prevDownbeatTime = can't adjust beat parameters",self);
+        return;
+    }
+    EspTimeType elapsedTime = monotonicTime() - prevDownbeatTime;
     EspTimeType nanosPerBeat = 60000000000.0 / [tempo doubleValue];
     EspTimeType elapsedBeats = elapsedTime / nanosPerBeat;
     beatsIssued = elapsedBeats + [beat longValue];
@@ -128,6 +134,11 @@
     else
     {
         EspTimeType downbeat = [self adjustedDownbeatTime];
+        if(downbeat == 0)
+        {
+            postCritical(@"*** no previous downbeatTime = can't adjust beat parameters",self);
+            return;
+        }
         EspTimeType elapsedTime = monotonicTime() - downbeat;
         EspTimeType nanosPerBeat = 60000000000.0 / [tempo doubleValue];
         EspTimeType elapsedBeats = elapsedTime / nanosPerBeat;
@@ -140,8 +151,21 @@
 
 -(EspTimeType) adjustedDownbeatTime
 {
-    if([on boolValue]) return [time longLongValue] + [kvc clockAdjustmentForAuthority:@"beat.params"];
-    else return 0;
+    EspTimeType t = [time longLongValue];
+    if(t == 0)
+    {
+        postCritical(@"*** stored downbeat time is 0 in adjustedDownbeatTime",self);
+        return 0;
+    }
+    EspTimeType adjustment = [kvc clockAdjustmentForAuthority:@"beat.params"];
+    if(adjustment == -1)
+    {
+        postCritical(@"*** no clock adjustment available for downbeat calculation in adjustedDownbeatTime",self);
+        return 0;
+    }
+    return t + adjustment;
+    // if([on boolValue]) return [time longLongValue] + ;
+    // else return 0;
 }
 
 -(BOOL) handleOsc:(NSString*)address withParameters:(NSArray*)d fromHost:(NSString*)h port:(int)p

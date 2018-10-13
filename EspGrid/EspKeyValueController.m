@@ -171,7 +171,22 @@
 -(EspTimeType) clockAdjustmentForAuthority:(NSString*)keyPath
 {
     EspPeer* auth = [authorities objectForKey:keyPath];
-    return [clock adjustmentForPeer:auth];
+    if(auth == nil)
+    {
+        NSString* m = [NSString stringWithFormat:@"*** no authority for keyPath %@",keyPath];
+        postCritical(m,self);
+        return -1; // we use -1 to signal error in this method because...
+    }
+    else if(auth == [peerList selfInPeerList])
+    {
+        return 0; // ... the value of 0 is the clock adjustment when we are the authority for something
+    }
+    else
+    {
+        EspTimeType r = [clock adjustmentForPeer:auth];
+        if(r == 0) return -1;
+        return r;
+    }
 }
 
 -(void) handleOpcode:(EspOpcode *)opcode
@@ -182,28 +197,65 @@
 
     // look at time, path and authority to determine if this is most current info or not
     EspVariableInfo* info = &(((EspIntOpcode*)opcode)->info);
-    if(info->timeStamp == 0) return; // ignore initial, non-actioned settings
     info->path[ESP_MAXNAMELENGTH-1] = 0;
     NSString* path = [NSString stringWithCString:info->path encoding:NSUTF8StringEncoding];
     info->authority[ESP_MAXNAMELENGTH-1] = 0;
     NSString* authorityHandle = [NSString stringWithCString:info->authority encoding:NSUTF8StringEncoding];
     EspPeer* authority = [peerList findPeerWithName:authorityHandle];
     if(authority == nil) {
-        postProtocolHigh([NSString stringWithFormat:@"dropping KVC from unknown authority %@",authorityHandle], self);
+        postCritical([NSString stringWithFormat:@"dropping KVC from unknown authority %@",authorityHandle], self);
         return;
     }
-    EspTimeType t2 = info->timeStamp + [clock adjustmentForPeer:authority];
-    EspTimeType t1 = 0;
-    if(info->scope == ESP_SCOPE_GLOBAL || info->scope == ESP_SCOPE_SYSTEM) {
-      EspPeer* oldAuthority = [authorities objectForKey:path];
-      if(oldAuthority != nil) t1 = [[timeStamps objectForKey:path] longLongValue] + [clock adjustmentForPeer:oldAuthority];
+    EspTimeType adjustment = [clock adjustmentForPeer:authority];
+    if(adjustment == 0)
+    {
+        postCritical([NSString stringWithFormat:@"dropping KVC from authority %@ with clock adjustment 0",authorityHandle], self);
+        return;
     }
-    else if(info->scope == ESP_SCOPE_LOCAL) t1 = [authority adjustedTimeForPath:path];
-    else {
-      postCritical([NSString stringWithFormat:@"dropping KVC with invalid scope %d",info->scope], self);
+    if(info->timeStamp == 0)
+    {
+        postCritical([NSString stringWithFormat:@"dropping KVC with timestamp 0 (authority %@)",authorityHandle], self);
+        return; // ignore initial, non-actioned settings
+    }
+    EspTimeType adjustedTimeOfNewInfo = info->timeStamp + adjustment;
+    
+    // if we get this far, it means we are receiving information with a valid timestamp
+    // and where we have valid information about the authority that has let us adjust the timestamp to our own frame of reference
+    // so now we need to determine whether this is the most current information or not...
+    if(info->scope == ESP_SCOPE_GLOBAL || info->scope == ESP_SCOPE_SYSTEM) {
+        EspPeer* oldAuthority = [authorities objectForKey:path];
+        if(oldAuthority != nil)
+        { // if there is a previous authority recorded then we need to compare adjusted times for new and old information...
+            EspTimeType oldAdjustment = [clock adjustmentForPeer:oldAuthority];
+            if(oldAdjustment == 0)
+            {
+                postCritical([NSString stringWithFormat:@"dropping KVC because prior authority %@ has clock adjustment 0", [oldAuthority name]], self);
+                return;
+            }
+            EspTimeType oldTimeStamp = [[timeStamps objectForKey:path] longLongValue];
+            if(oldTimeStamp == 0)
+            {
+                postCritical([NSString stringWithFormat:@"dropping KVC because prior info (authority %@) has timestamp 0", [oldAuthority name]], self);
+                return;
+            }
+            EspTimeType adjustedTimeOfOldInfo = oldTimeStamp + oldAdjustment;
+            if(adjustedTimeOfOldInfo > adjustedTimeOfNewInfo)
+            {
+                postProtocolLow([NSString stringWithFormat:@"dropping KVC because adjusted time stamp older than previous info (authority %@)", [oldAuthority name]], self);
+                return;
+            }
+        } // ... and if there is no previous authority then the new information must be the most current!
+    }
+    else if(info->scope == ESP_SCOPE_LOCAL)
+    {
+        postCritical(@"*** ESP_SCOPE_LOCAL not properly implemented yet",self);
+        return;
+    }
+    else
+    {
+      postCritical([NSString stringWithFormat:@"*** dropping KVC with invalid scope %d",info->scope], self);
       return;
     }
-    if(t2 <= t1) return; // if this is NOT most current info, return without updating anything
 
     // extract value of opcode for storage
     id value;
@@ -251,13 +303,14 @@
     // for LOCAL scope values, just store values in corresponding entry in peerList
     if(info->scope == ESP_SCOPE_LOCAL) {
        // NSLog(@"scope is LOCAL, setting value in peerlist");
-      [authority storeValue:value forPath:path];
-      postLog([NSString stringWithFormat:@"new value %@ for %@ from %@",value,path,authorityHandle],self);
+        postCritical(@"*** ESP_SCOPE_LOCAL not properly implemented yet",self);
+        return;
+        // [authority storeValue:value forPath:path];
+        // postLog([NSString stringWithFormat:@"new value %@ for %@ from %@",value,path,authorityHandle],self);
     }
     // and for both SYSTEM and GLOBAL scope, update values stored "here"
     if(info ->scope == ESP_SCOPE_GLOBAL || info->scope == ESP_SCOPE_SYSTEM)
     {
-        // NSLog(@"scope is SYSTEM/GLOBAL, updating values stored here");
         [values setObject:value forKey:path];
         [timeStamps setObject:[NSNumber numberWithLongLong:info->timeStamp] forKey:path];
         [authorityNames setObject:[[authority name] copy] forKey:path];

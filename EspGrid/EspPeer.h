@@ -45,6 +45,10 @@
     EspTimeType* adjustments;
     EspMovingAverage* averageLatencyObj;
     EspMovingAverage* refBeaconAverageObj;
+
+    bool validBeaconReceived;
+    bool validAckForSelfReceived;
+    bool validAckForOtherReceived;
 }
 // these are set/updated from BEACON opcode
 @property (copy) NSString* name;
@@ -63,6 +67,10 @@
 @property (assign) EspTimeType lowestLatency;
 @property (assign) EspTimeType averageLatency;
 @property (assign) EspTimeType refBeacon,refBeaconAverage;
+
+@property (assign) bool validBeaconReceived;
+@property (assign) bool validAckForSelfReceived;
+@property (assign) bool validAckForOtherReceived;
 
 -(void) processBeacon:(EspBeaconOpcode*)opcode;
 -(void) processAckForSelf:(EspAckOpcode*)opcode peerCount:(int)count;
