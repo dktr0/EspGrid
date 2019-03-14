@@ -227,13 +227,13 @@
         if(oldAuthority != nil)
         { // if there is a previous authority recorded then we need to compare adjusted times for new and old information...
             EspTimeType oldAdjustment = [clock adjustmentForPeer:oldAuthority];
-            if(oldAdjustment == 0)
+            if(oldAdjustment == 0 && oldAuthority != [peerList selfInPeerList])
             {
                 postCritical([NSString stringWithFormat:@"dropping KVC because prior authority %@ has clock adjustment 0", [oldAuthority name]], self);
                 return;
             }
             EspTimeType oldTimeStamp = [[timeStamps objectForKey:path] longLongValue];
-            if(oldTimeStamp == 0)
+            if(oldTimeStamp == 0 && oldAuthority != [peerList selfInPeerList])
             {
                 postCritical([NSString stringWithFormat:@"dropping KVC because prior info (authority %@) has timestamp 0", [oldAuthority name]], self);
                 return;
@@ -244,10 +244,8 @@
                 postProtocolLow([NSString stringWithFormat:@"dropping KVC because adjusted time stamp older than previous info (authority %@)", [oldAuthority name]], self);
                 return;
             }
-            else if(adjustedTimeOfOldInfo == adjustedTimeOfNewInfo)
-            {
-                return; // silently drop opcode old time and new time are exactly identical
-            }
+            else if(adjustedTimeOfOldInfo == adjustedTimeOfNewInfo) return;
+            // silently drop opcode when old time and new time are exactly identical
         } // ... and if there is no previous authority then the new information must be the most current!
     }
     else if(info->scope == ESP_SCOPE_LOCAL)
