@@ -50,9 +50,10 @@
 -(id) init
 {
     self = [super init];
-    [self setOn:[NSNumber numberWithBool:NO]];
+    tempoHasBeenSet = false;
+    [self setOn:[NSNumber numberWithBool:YES]];
     [self setTempo:[NSNumber numberWithDouble:120.0]];
-    [self setTime:[NSNumber numberWithLongLong:0]];
+    [self setTime:[NSNumber numberWithLongLong:monotonicTime()]];
     [self setBeat:[NSNumber numberWithInt:0]];
     beatsIssued = 0;
     kvc = [EspKeyValueController keyValueController];
@@ -82,6 +83,7 @@
     [self setTempo:[params objectForKey:@"tempo"]];
     [self setTime:[params objectForKey:@"time"]];
     [self setOn:[params objectForKey:@"on"]];
+    tempoHasBeenSet = true;
 }
 
 -(void) atTime:(EspTimeType)t tempo:(double)bpm beatNumber:(long long)n on:(bool)o
@@ -94,6 +96,7 @@
                        [NSNumber numberWithLong:n],@"beat",
                        [NSNumber numberWithBool:o],@"on",nil];
     [kvc setValue:d forKeyPath:@"beat.params"];
+    tempoHasBeenSet = true;
 }
 
 -(void) turnBeatOn
@@ -152,11 +155,11 @@
 -(EspTimeType) adjustedDownbeatTime
 {
     EspTimeType t = [time longLongValue];
-    if(t == 0)
-    {
-        postCritical(@"*** stored downbeat time is 0 in adjustedDownbeatTime",self);
-        return 0;
-    }
+    // if no one, including us, has set the tempo, then the tempo start time will be whenever EspGrid
+    // started, and we do not need to adjust it relative to the clock of an authority
+    if(tempoHasBeenSet == false) return t;
+    // otherwise, someone has set the tempo and we adjust the time according to current estimate
+    // of the difference between our clock and the authority's clock
     EspTimeType adjustment = [kvc clockAdjustmentForAuthority:@"beat.params"];
     if(adjustment == -1)
     {
@@ -164,8 +167,6 @@
         return 0;
     }
     return t + adjustment;
-    // if([on boolValue]) return [time longLongValue] + ;
-    // else return 0;
 }
 
 -(BOOL) handleOsc:(NSString*)address withParameters:(NSArray*)d fromHost:(NSString*)h port:(int)p

@@ -26,6 +26,7 @@
     NSNumber* tempo;
     NSNumber* time;
     NSNumber* beat;
+    bool tempoHasBeenSet; 
     NSDictionary* params;
     unsigned long beatsIssued;
 }
