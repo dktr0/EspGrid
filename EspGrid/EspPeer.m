@@ -190,7 +190,7 @@
     if([other validBeaconReceived] == false)
     {
         NSString* m = [NSString stringWithFormat:@"*** ignoring ACK for %@ received from %@ without prior beacon received",[other name],name];
-        postCritical(m,self);
+        postProtocolHigh(m,self);
         return;
     }
     
@@ -225,7 +225,7 @@
     else
     {
         NSString* m = [NSString stringWithFormat:@"ignoring ack for %@ from %@ with mismatched beacon count",[other name],name];
-        postProtocolLow(m,self);
+        postProtocolHigh(m,self);
         return;
     }
 }
@@ -236,8 +236,8 @@
     {
         if(validAckForSelfReceived == false)
         {
-            NSString* m = [NSString stringWithFormat:@"*** can't provide mode %d adjustment for %@ prior to ACK for self",mode,name];
-            postCritical(m,self);
+            NSString* m = [NSString stringWithFormat:@"can't provide mode %d adjustment for %@ prior to ACK for self",mode,name];
+            postProtocolHigh(m,self);
             return 0;
         }
         return adjustments[mode];
@@ -246,8 +246,8 @@
     {
         if(validAckForOtherReceived == false && validAckForSelfReceived == false)
         {
-            NSString* m = [NSString stringWithFormat:@"*** can't provide mode %d adjustment for %@ prior to any ACKs (self or other)",mode,name];
-            postCritical(m,self);
+            NSString* m = [NSString stringWithFormat:@"can't provide mode %d adjustment for %@ prior to any ACKs (self or other)",mode,name];
+            postProtocolHigh(m,self);
             return 0;
         }
         if(validAckForOtherReceived == false)

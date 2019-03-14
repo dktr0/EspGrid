@@ -21,7 +21,7 @@
 
 #define ESPGRID_MAJORVERSION 0
 #define ESPGRID_MINORVERSION 58 // changes to external/internal protocol MUST increment MINORVERSION
-#define ESPGRID_SUBVERSION 6
+#define ESPGRID_SUBVERSION 7
 
 #define ESP_POST_CHAT 1
 #define ESP_POST_LOG 2
